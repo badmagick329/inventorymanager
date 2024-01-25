@@ -2,3 +2,5 @@
 __pycache__/
 .pytest_cache/
 db/
+nginx/conf.d/*
+!nginx/conf.d/main.conf.sample
