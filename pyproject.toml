@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "inventorymanager"
+version = "0.1.0"
+description = ""
+authors = ["badmagick"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+djangorestframework = "^3.14.0"
+django = "^5.0.1"
+python-dotenv = "^1.0.1"
+psycopg2-binary = "^2.9.9"
+django-rest-knox = "^4.2.0"
+
+
+[tool.poetry.group.dev.dependencies]
+django-stubs = "^4.2.7"
+djangorestframework-stubs = "^3.14.5"
+pytest-django = "^4.7.0"
+pytest-clarity = "^1.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tools.pyright]
+include= ["./backend"]
+exclude= [ "**/node_modules", "**/__pycache__", "src/experimental", "src/typestubs" ]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "backend.settings"
+python_files = ["test_*.py"]
