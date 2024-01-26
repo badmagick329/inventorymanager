@@ -1,11 +1,30 @@
+import React from 'react';
+import LoginForm from './LoginForm';
+import Image from 'next/image';
+import warehousePic from '../../public/warehouse.png';
+import FadeIn from './utils/transitions/FadeIn';
+import MoveUp from './utils/transitions/MoveUp';
+
 export const metadata = {
-  title: 'App Router',
+  title: 'Inventory Manager',
 };
 
-export default function Home() {
+export default function App() {
   return (
-    <main className='flex min-h-screen flex-col items-center justify-between p-24'>
-      <span className='text-4xl font-bold text-center'>Hello World!</span>
+    <main className='flex min-h-screen flex-col items-center p-24 gap-4'>
+      <div className='flex items-end'>
+        <MoveUp>
+          <Image
+            className='max-h-24 w-auto'
+            src={warehousePic}
+            alt='Picture of a warehouse'
+          />
+        </MoveUp>
+        <FadeIn>
+          <h1 className='text-4xl font-semibold py-2'>Inventory Manager</h1>
+        </FadeIn>
+      </div>
+      <LoginForm />
     </main>
   );
 }
