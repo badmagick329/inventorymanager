@@ -4,3 +4,4 @@ __pycache__/
 db/
 nginx/conf.d/*
 !nginx/conf.d/main.conf.sample
+notes/
