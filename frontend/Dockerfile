@@ -8,6 +8,7 @@ COPY next.config.mjs ./next.config.mjs
 COPY tsconfig.json ./tsconfig.json
 COPY tailwind.config.ts ./tailwind.config.ts
 COPY postcss.config.js ./postcss.config.js
+COPY .npmrc ./.npmrc
 COPY ./src ./src
 RUN pnpm install --frozen-lockfile
 RUN pnpm run build

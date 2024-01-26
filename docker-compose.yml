@@ -42,7 +42,7 @@ services:
     depends_on:
       - backend
     volumes:
-      - ./public:/app/public
+      - ./frontend/public:/app/public
 
   nginx:
     build:

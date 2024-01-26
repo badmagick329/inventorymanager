@@ -1,7 +1,6 @@
 import React from 'react';
 import LoginForm from './LoginForm';
 import Image from 'next/image';
-import warehousePic from '../../public/warehouse.png';
 import FadeIn from './utils/transitions/FadeIn';
 import MoveUp from './utils/transitions/MoveUp';
 
@@ -16,8 +15,9 @@ export default function App() {
         <MoveUp>
           <Image
             className='max-h-24 w-auto'
-            src={warehousePic}
+            src='images/warehouse.png'
             alt='Picture of a warehouse'
+            unoptimized
           />
         </MoveUp>
         <FadeIn>
