@@ -12,6 +12,7 @@ class LoginView(KnoxLoginView):
 
     def post(self, request: Request, format=None):
         serializer = AuthTokenSerializer(data=request.data)
+        print(f"request.data: {request.data}")
         if not serializer.is_valid():
             return Response(
                 serializer.errors, status=status.HTTP_401_UNAUTHORIZED
