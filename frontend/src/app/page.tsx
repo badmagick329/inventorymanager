@@ -14,7 +14,8 @@ export default function App() {
       <div className='flex items-end'>
         <MoveUp>
           <Image
-            className='max-h-24 w-auto'
+            width={100}
+            height={100}
             src='images/warehouse.png'
             alt='Picture of a warehouse'
             unoptimized

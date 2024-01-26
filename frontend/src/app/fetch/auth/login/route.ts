@@ -3,7 +3,7 @@ import { serialize } from 'cookie';
 const BASE_URL = process.env.BASE_URL;
 
 export async function POST(req: Request) {
-  const url = new URL(`${BASE_URL}/api/auth/login/`);
+  const url = `${BASE_URL}/api/auth/login`;
   const body = await req.json();
   const { username, password } = body;
   console.log(`${username} - ${password}`);
@@ -29,6 +29,7 @@ export async function POST(req: Request) {
     maxAge,
     sameSite: true,
   });
+  console.log(`Cookie: ${cookieSerialized}`);
   return new NextResponse(JSON.stringify({ message: 'hello from server' }), {
     status: 200,
     headers: {

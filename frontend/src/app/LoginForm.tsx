@@ -12,12 +12,11 @@ export default function LoginForm() {
 
   function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
-    const url = '/api/auth/login';
+    const url = '/fetch/auth/login';
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     const username = formData.get('username')?.toString();
     const password = formData.get('password')?.toString();
-    console.log(`username: ${username} password: ${password}`);
 
     const fetcher = async () => {
       const response = await fetch(url, {
@@ -25,9 +24,7 @@ export default function LoginForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
-      console.log(`got response ${response}`);
       const responseJson = await response.json();
-      console.log(responseJson);
       if (response.status === 200) {
         router.push('/me');
       }

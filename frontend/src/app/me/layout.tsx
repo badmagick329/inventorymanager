@@ -8,7 +8,7 @@ export default function MeLayout({ children }: { children: React.ReactNode }) {
   const [username, setUsername] = useState('');
   useEffect(() => {
     const fetcher = async () => {
-      const url = '/api/me';
+      const url = '/fetch/me';
       const response = await fetch(url);
       if (response.status !== 200) {
         router.push('/');
