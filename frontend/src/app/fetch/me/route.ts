@@ -4,7 +4,7 @@ const BASE_URL = process.env.BASE_URL;
 
 export async function GET(req: Request) {
   const cookieStore = cookies();
-  const url = new URL(`${BASE_URL}/api/me`);
+  const url = `${BASE_URL}/api/me`;
   const token = cookieStore.get('auth-token');
   if (!token) {
     return invalidResponse('No token', 401);

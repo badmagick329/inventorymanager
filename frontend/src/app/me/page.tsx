@@ -6,7 +6,7 @@ export default function MePage() {
 
   function unauthUser() {
     const fetcher = async () => {
-      const url = '/api/auth/logout';
+      const url = '/fetch/auth/logout';
       const response = await fetch(url, {
         method: 'POST',
       });
