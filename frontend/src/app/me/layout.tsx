@@ -14,7 +14,7 @@ export default function MeLayout({ children }: { children: React.ReactNode }) {
       .then((resp) => {
         setServerMessage(resp.data?.message);
       })
-      .catch((error) => {
+      .catch(() => {
         router.push('/');
         return;
       });
