@@ -1,25 +1,24 @@
 import { NextResponse } from 'next/server';
 import { serialize } from 'cookie';
+import axios from 'axios';
+import { AxiosResponse } from 'axios';
+import { createErrorResponse } from '@/app/utils/responses';
 const BASE_URL = process.env.BASE_URL;
 
 export async function POST(req: Request) {
   const url = `${BASE_URL}/api/auth/login`;
   const body = await req.json();
   const { username, password } = body;
-  console.log(`${username} - ${password}`);
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password }),
-  });
-  console.log(`Response from django: ${response.status}`);
-  if (response.status !== 200) {
-    return new NextResponse(JSON.stringify({ message: 'error' }), {
-      status: response.status,
-    });
+  try {
+    const response = await axios.post(url, { username, password });
+    return createLoginResponse(response);
+  } catch (error) {
+    return createErrorResponse(error);
   }
-  const responseJson = await response.json();
-  const { expiry, token } = responseJson;
+}
+
+function createLoginResponse(response: AxiosResponse<any, any>) {
+  const { expiry, token } = response.data;
   const now = new Date();
   const expiryDate = new Date(expiry);
   const maxAge = (expiryDate.getTime() - now.getTime()) / 1000;
@@ -29,7 +28,6 @@ export async function POST(req: Request) {
     maxAge,
     sameSite: true,
   });
-  console.log(`Cookie: ${cookieSerialized}`);
   return new NextResponse(JSON.stringify({ message: 'hello from server' }), {
     status: 200,
     headers: {

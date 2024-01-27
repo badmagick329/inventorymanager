@@ -1,23 +1,22 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 export default function MePage() {
   const router = useRouter();
 
   function unauthUser() {
-    const fetcher = async () => {
-      const url = '/fetch/auth/logout';
-      const response = await fetch(url, {
-        method: 'POST',
-      });
-      if (response.status !== 200) {
-        console.error(`Couldn't log out. ${response.status}`);
-        return;
-      }
-      router.push('/');
-    };
+    const url = '/fetch/auth/logout';
     console.log('attempting to log out');
-    fetcher();
+    const response = axios.post(url);
+    response
+      .then(() => {
+        router.push('/');
+      })
+      .catch((error) => {
+        console.error(`Couldn't log out`);
+        return;
+      });
   }
 
   return (
