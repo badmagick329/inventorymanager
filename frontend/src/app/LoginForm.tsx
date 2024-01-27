@@ -5,6 +5,7 @@ import { Button } from '@nextui-org/react';
 import { SyntheticEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import axios from 'axios';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -17,48 +18,45 @@ export default function LoginForm() {
     const formData = new FormData(form);
     const username = formData.get('username')?.toString();
     const password = formData.get('password')?.toString();
-
-    const fetcher = async () => {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-      const responseJson = await response.json();
-      if (response.status === 200) {
-        router.push('/me');
-      }
-      setLoading(false);
-    };
-    setLoading(true);
-    fetcher();
-  }
-
-  function renderButton() {
-    if (loading) {
-      return (
-        <Button
-          type='submit'
-          className='py-6 text-xl font-semibold'
-          color='primary'
-          variant='ghost'
-          isLoading
-        >
-          Logging in
-        </Button>
-      );
+    if (!username || !password) {
+      return;
     }
-    return (
-      <Button
-        type='submit'
-        className='py-6 text-xl font-semibold'
-        color='primary'
-        variant='ghost'
-      >
-        Login
-      </Button>
-    );
+
+    const loginResult = axios.post(url, { username, password });
+
+    setLoading(true);
+    loginResult
+      .then((response) => {
+        if (response.status === 200) {
+          router.push('/me');
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
+
+  const loadingButton = (
+    <Button
+      type='submit'
+      className='py-6 text-xl font-semibold'
+      color='primary'
+      variant='ghost'
+      isLoading
+    >
+      Logging in
+    </Button>
+  );
+  const loginButton = (
+    <Button
+      type='submit'
+      className='py-6 text-xl font-semibold'
+      color='primary'
+      variant='ghost'
+    >
+      Login
+    </Button>
+  );
 
   return (
     <form className='flex flex-col gap-2' onSubmit={handleSubmit}>
@@ -76,7 +74,7 @@ export default function LoginForm() {
         label='Password'
         autoComplete='off'
       />
-      {renderButton()}
+      {loading ? loadingButton : loginButton}
     </form>
   );
 }
