@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { serialize } from 'cookie';
 import axios from 'axios';
 import { AxiosResponse } from 'axios';
-import { createErrorResponse } from '@/app/utils/responses';
+import { createErrorResponse } from '@/utils/responses';
 const BASE_URL = process.env.BASE_URL;
 
 export async function POST(req: Request) {
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
 }
 
 function createLoginResponse(response: AxiosResponse<any, any>) {
-  const { expiry, token } = response.data;
+  const { expiry, token, showAdmin } = response.data;
   const now = new Date();
   const expiryDate = new Date(expiry);
   const maxAge = (expiryDate.getTime() - now.getTime()) / 1000;
@@ -28,7 +28,7 @@ function createLoginResponse(response: AxiosResponse<any, any>) {
     maxAge,
     sameSite: true,
   });
-  return new NextResponse(JSON.stringify({ message: 'hello from server' }), {
+  return new NextResponse(JSON.stringify({ showAdmin }), {
     status: 200,
     headers: {
       'Set-Cookie': cookieSerialized,

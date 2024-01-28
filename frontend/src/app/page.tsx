@@ -1,31 +1,40 @@
-import React from 'react';
-import LoginForm from './LoginForm';
-import Image from 'next/image';
-import FadeIn from './utils/transitions/FadeIn';
-import MoveUp from './utils/transitions/MoveUp';
+'use client';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { Location } from '@/types';
+import { useQuery } from '@tanstack/react-query';
+import UserNavBar from '@/components/UserNavBar/NavBar';
+import Spinner from '@/components/Spinner';
+import { LOCATIONS } from '@/consts/urls';
 
-export const metadata = {
-  title: 'Inventory Manager',
-};
+export default function Home() {
+  const router = useRouter();
+  const locationsQuery = useQuery({
+    queryKey: ['locations'],
+    queryFn: () => axios.get(LOCATIONS),
+    throwOnError: false,
+    retry: false,
+  });
 
-export default function App() {
-  return (
-    <main className='flex min-h-screen flex-col items-center p-24 gap-4'>
-      <div className='flex items-end'>
-        <MoveUp>
-          <Image
-            width={80}
-            height={80}
-            src='images/warehouse.png'
-            alt='Picture of a warehouse'
-            unoptimized
-          />
-        </MoveUp>
-        <FadeIn>
-          <h1 className='text-2xl font-semibold p-2'>Inventory Manager</h1>
-        </FadeIn>
+  if (locationsQuery.isError) {
+    router.push('/login');
+    return null;
+  }
+  if (locationsQuery.isLoading || !locationsQuery.data) {
+    return <Spinner />;
+  }
+
+  const locations = locationsQuery.data.data?.locations;
+  if (locationsQuery.isSuccess && locations) {
+    return (
+      <div className='flex flex-col foreground min-h-full items-center'>
+        <UserNavBar />
+        {locationsQuery.data.data.locations.map((l: Location, idx: number) => (
+          <span className='text-xl' key={idx}>
+            {l.name}
+          </span>
+        ))}
       </div>
-      <LoginForm />
-    </main>
-  );
+    );
+  }
 }

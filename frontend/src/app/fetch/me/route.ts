@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import axios from 'axios';
-import { createErrorResponse } from '@/app/utils/responses';
+import { createErrorResponse } from '@/utils/responses';
 const BASE_URL = process.env.BASE_URL;
 
 export async function GET(req: Request) {
