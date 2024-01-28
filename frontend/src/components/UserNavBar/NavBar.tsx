@@ -7,10 +7,10 @@ import {
   Link,
 } from '@nextui-org/react';
 import Image from 'next/image';
-import { ThemeSwitcher } from '@/app/components/ThemeSwitcher';
-import LogoutButton from '@/app/components/LogoutButton';
+import { ThemeSwitcher } from '@/components/UserNavBar/ThemeSwitcher';
+import LogoutButton from '@/components/UserNavBar/LogoutButton';
 
-export default function App() {
+export default function UserNavBar() {
   return (
     <Navbar>
       <NavbarContent className='flex gap-4' justify='start'>
@@ -26,6 +26,7 @@ export default function App() {
           </Link>
         </NavbarBrand>
       </NavbarContent>
+      {/* <AdminItems /> */}
       <NavbarContent justify='end'>
         <NavbarItem>
           <ThemeSwitcher />
@@ -35,5 +36,14 @@ export default function App() {
         </NavbarItem>
       </NavbarContent>
     </Navbar>
+  );
+}
+
+function AdminItems() {
+  return (
+    <NavbarContent justify='center'>
+      <NavbarItem>Something</NavbarItem>
+      <NavbarItem>Something else</NavbarItem>
+    </NavbarContent>
   );
 }
