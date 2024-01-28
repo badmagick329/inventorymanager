@@ -14,15 +14,15 @@ export default function App() {
       <div className='flex items-end'>
         <MoveUp>
           <Image
-            width={100}
-            height={100}
+            width={80}
+            height={80}
             src='images/warehouse.png'
             alt='Picture of a warehouse'
             unoptimized
           />
         </MoveUp>
         <FadeIn>
-          <h1 className='text-4xl font-semibold py-2'>Inventory Manager</h1>
+          <h1 className='text-2xl font-semibold p-2'>Inventory Manager</h1>
         </FadeIn>
       </div>
       <LoginForm />
