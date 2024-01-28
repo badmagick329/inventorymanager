@@ -1,32 +1,34 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
+import UserNavBar from '../components/UserNavBar';
+import Spinner from '../components/Spinner';
 
 export default function MeLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [serverMessage, setServerMessage] = useState('');
-  useEffect(() => {
-    const response = axios.get('/fetch/me');
-    console.log('fetching user');
-    response
-      .then((resp) => {
-        setServerMessage(resp.data?.message);
-      })
-      .catch(() => {
-        router.push('/');
-        return;
-      });
-  }, [router]);
+  const userQuery = useQuery({
+    queryKey: ['user', 'me'],
+    queryFn: () => axios.get('/fetch/me'),
+    throwOnError: false,
+    retry: false,
+  });
 
-  if (!serverMessage) {
-    return <span className='text-2xl'>Loading...</span>;
+  if (userQuery.isError) {
+    router.push('/');
+    return null;
   }
-  return (
-    <main className='flex flex-col'>
-      <span className='text-2xl'>{serverMessage}</span>
-      {children}
-    </main>
-  );
+  if (userQuery.isLoading || !userQuery.data) {
+    return <Spinner />;
+  }
+  if (userQuery.isSuccess && userQuery.data?.data?.message) {
+    return (
+      <main className='flex flex-col'>
+        <UserNavBar />
+        <span className='text-2xl'>{userQuery.data.data.message}</span>
+        {children}
+      </main>
+    );
+  }
 }

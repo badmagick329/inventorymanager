@@ -6,10 +6,13 @@ import { SyntheticEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import axios from 'axios';
+import { QueryClient } from '@tanstack/react-query';
 
 export default function LoginForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const queryClient = new QueryClient();
 
   function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
@@ -27,32 +30,32 @@ export default function LoginForm() {
     setLoading(true);
     loginResult
       .then((response) => {
-        if (response.status === 200) {
-          router.push('/me');
-        }
+        queryClient
+          .prefetchQuery({
+            queryKey: ['locations'],
+            queryFn: () => axios.get('/fetch/locations'),
+          })
+          .then(() => {
+            router.push('/home');
+          });
       })
-      .finally(() => {
+      .catch((error) => {
+        if (error.response.status === 401) {
+          setError('Invalid username or password');
+        } else {
+          console.error(error.response.status);
+          setError('Something went wrong');
+        }
         setLoading(false);
       });
   }
-
-  const loadingButton = (
-    <Button
-      type='submit'
-      className='py-6 text-xl font-semibold'
-      color='primary'
-      variant='ghost'
-      isLoading
-    >
-      Logging in
-    </Button>
-  );
   const loginButton = (
     <Button
       type='submit'
       className='py-6 text-xl font-semibold'
       color='primary'
       variant='ghost'
+      isLoading={loading}
     >
       Login
     </Button>
@@ -60,6 +63,7 @@ export default function LoginForm() {
 
   return (
     <form className='flex flex-col gap-2' onSubmit={handleSubmit}>
+      {error && <span className='text-danger-400'>{error}</span>}
       <Input
         name='username'
         type='text'
@@ -74,7 +78,7 @@ export default function LoginForm() {
         label='Password'
         autoComplete='off'
       />
-      {loading ? loadingButton : loginButton}
+      {loginButton}
     </form>
   );
 }
