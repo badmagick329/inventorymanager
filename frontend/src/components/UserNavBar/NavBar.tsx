@@ -9,6 +9,7 @@ import {
 import Image from 'next/image';
 import { ThemeSwitcher } from '@/components/UserNavBar/ThemeSwitcher';
 import LogoutButton from '@/components/UserNavBar/LogoutButton';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function UserNavBar() {
   return (
@@ -26,7 +27,7 @@ export default function UserNavBar() {
           </Link>
         </NavbarBrand>
       </NavbarContent>
-      {/* <AdminItems /> */}
+      <AdminItems />
       <NavbarContent justify='end'>
         <NavbarItem>
           <ThemeSwitcher />
@@ -40,6 +41,10 @@ export default function UserNavBar() {
 }
 
 function AdminItems() {
+  const queryClient = useQueryClient();
+  if (!queryClient.getQueryData(['showAdmin'])) {
+    return null;
+  }
   return (
     <NavbarContent justify='center'>
       <NavbarItem>Something</NavbarItem>
