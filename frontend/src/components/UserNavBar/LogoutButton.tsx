@@ -2,9 +2,11 @@
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { Button } from '@nextui-org/react';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function LogoutButton() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   function unauthUser() {
     const url = '/fetch/auth/logout';
@@ -12,6 +14,7 @@ export default function LogoutButton() {
     const response = axios.post(url);
     response
       .then(() => {
+        queryClient.removeQueries();
         router.push('/login');
       })
       .catch((error) => {
