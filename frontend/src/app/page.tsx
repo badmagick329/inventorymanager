@@ -1,37 +1,32 @@
-'use client';
-import { useRouter } from 'next/navigation';
-import { Location } from '@/types';
-import UserNavBar from '@/components/UserNavBar/NavBar';
-import Spinner from '@/components/Spinner';
-import useLocations from '@/hooks/useLocations';
-import { useQueryClient } from '@tanstack/react-query';
+import React from 'react';
+import LoginForm from '@/components/Main/LoginForm';
+import Image from 'next/image';
+import { FadeIn, MoveUp } from '@/transitions';
 
-export default function Home() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const { isSuccess, isError, isLoading, data } = useLocations();
+export const metadata = {
+  title: 'Inventory Manager',
+};
 
-  if (isError) {
-    router.push('/login');
-    return null;
-  }
-
-  const locations =
-    data?.data?.locations || queryClient.getQueryData(['locations']);
-  if (locations) {
-    return (
-      <div className='flex flex-col foreground min-h-full items-center'>
-        <UserNavBar />
-        {locations.map((l: Location, idx: number) => (
-          <span className='text-xl' key={idx}>
-            {l.name}
-          </span>
-        ))}
+export default function LoginPage() {
+  return (
+    <main className='flex min-h-screen flex-col items-center gap-4 p-24'>
+      <div className='flex items-end'>
+        <MoveUp>
+          <Image
+            width={80}
+            height={80}
+            src='images/warehouse-sm.png'
+            alt='Warehouse'
+            unoptimized
+          />
+        </MoveUp>
+        <FadeIn>
+          <h1 className='p-2 text-xl font-semibold md:text-2xl'>
+            Inventory Manager
+          </h1>
+        </FadeIn>
       </div>
-    );
-  }
-
-  if (isLoading) {
-    return <Spinner />;
-  }
+      <LoginForm />
+    </main>
+  );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
-import { SunIcon, MoonIcon, PaintBrushIcon } from '@heroicons/react/24/solid';
+import { Sun, Moon, Paintbrush } from 'lucide-react';
 
 import {
   Dropdown,
@@ -18,26 +18,15 @@ export function ThemeSwitcher() {
 
   useEffect(() => setMounted(true), []);
 
-  if (!mounted) return null;
-
-  function themeIcon() {
-    switch (theme) {
-      case 'light':
-        return <SunIcon className='h-4 w-4' />;
-      case 'dark':
-        return <MoonIcon className='h-4 w-4' />;
-      case 'modern':
-        return <PaintBrushIcon className='h-4 w-4' />;
-      default:
-        return <SunIcon className='h-4 w-4' />;
-    }
+  if (!mounted) {
+    return <Button color='primary' variant='flat' isIconOnly></Button>;
   }
 
   return (
     <Dropdown>
       <DropdownTrigger>
         <Button color='primary' variant='flat' isIconOnly>
-          {themeIcon()}
+          <ThemeIcon theme={theme} />
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label='Switch Theme Actions'>
@@ -53,4 +42,20 @@ export function ThemeSwitcher() {
       </DropdownMenu>
     </Dropdown>
   );
+}
+
+function ThemeIcon({ theme }: { theme: string | undefined }) {
+  if (!theme) {
+    return null;
+  }
+  switch (theme) {
+    case 'light':
+      return <Sun className='h-4 w-4' />;
+    case 'dark':
+      return <Moon className='h-4 w-4' />;
+    case 'modern':
+      return <Paintbrush className='h-4 w-4' />;
+    default:
+      return null;
+  }
 }

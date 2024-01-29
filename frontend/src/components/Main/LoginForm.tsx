@@ -8,6 +8,7 @@ import { useState, useRef } from 'react';
 import axios from 'axios';
 import { useQueryClient } from '@tanstack/react-query';
 import { LOCATIONS, LOGIN } from '@/consts/urls';
+import { APP_LOCATIONS } from '@/consts/appurls';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -32,8 +33,6 @@ export default function LoginForm() {
     setLoading(true);
     try {
       const response = await axios.post(LOGIN, { username, password });
-      const showAdmin = response.data?.showAdmin || false;
-      queryClient.setQueryData(['showAdmin'], showAdmin);
       await prefetchLocations();
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -50,7 +49,7 @@ export default function LoginForm() {
       queryKey: ['locations'],
       queryFn: () => axios.get(LOCATIONS),
     });
-    router.replace('/');
+    router.replace(APP_LOCATIONS);
   }
 
   return (

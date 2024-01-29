@@ -3,27 +3,11 @@ import { cookies } from 'next/headers';
 import axios from 'axios';
 import { createErrorResponse } from '@/utils/responses';
 const BASE_URL = process.env.BASE_URL;
-import { Location } from '@/types';
-
-const locations: Location[] = [
-  {
-    id: 1,
-    name: 'Very long location name that is long',
-  },
-  {
-    id: 2,
-    name: 'Location 2',
-  },
-  {
-    id: 3,
-    name: 'Location 3',
-  },
-];
 
 export async function GET(req: Request) {
   // TODO: Replace with actual query
   const cookieStore = cookies();
-  const url = `${BASE_URL}/api/auth/is-authed`;
+  const url = `${BASE_URL}/api/auth/is-admin`;
   const token = cookieStore.get('auth-token');
   if (!token) {
     return new NextResponse(JSON.stringify({ message: 'no token' }), {
@@ -35,10 +19,7 @@ export async function GET(req: Request) {
     const response = await axios.get(url, {
       headers: { Authorization: authHeader },
     });
-    const resp = {
-      locations,
-    };
-    return new NextResponse(JSON.stringify(resp), {
+    return new NextResponse(JSON.stringify({}), {
       status: 200,
     });
   } catch (error) {
