@@ -18,20 +18,20 @@ export async function POST(req: Request) {
 }
 
 function createLoginResponse(response: AxiosResponse<any, any>) {
-  const { expiry, token, showAdmin } = response.data;
+  const { expiry, token } = response.data;
   const now = new Date();
   const expiryDate = new Date(expiry);
   const maxAge = (expiryDate.getTime() - now.getTime()) / 1000;
-  const cookieSerialized = serialize('auth-token', JSON.stringify(token), {
+  const authCookieSerialized = serialize('auth-token', JSON.stringify(token), {
     path: '/',
     httpOnly: true,
     maxAge,
     sameSite: true,
   });
-  return new NextResponse(JSON.stringify({ showAdmin }), {
+  return new NextResponse(JSON.stringify({}), {
     status: 200,
     headers: {
-      'Set-Cookie': cookieSerialized,
+      'Set-Cookie': authCookieSerialized,
     },
   });
 }
