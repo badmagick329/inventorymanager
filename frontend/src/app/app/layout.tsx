@@ -1,5 +1,5 @@
 'use client';
-import { Header } from '@/components/Navbar/Header';
+import Navbar from '@/components/ui/navbar/Navbar';
 
 export default function AppLayout({
   children,
@@ -8,7 +8,7 @@ export default function AppLayout({
 }>) {
   return (
     <div className='foreground flex min-h-full w-full flex-col items-center'>
-      <Header />
+      <Navbar />
       {children}
     </div>
   );
