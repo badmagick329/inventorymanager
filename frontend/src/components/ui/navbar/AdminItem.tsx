@@ -1,15 +1,9 @@
-import axios from 'axios';
-import { APP_ADMIN, API_ADMIN } from '@/consts/urls';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { APP_ADMIN } from '@/consts/urls';
 import Link from 'next/link';
+import useIsAdmin from '@/hooks/useIsAdmin';
 
 export default function AdminItem() {
-  const query = useQuery({
-    queryKey: ['isAdmin'],
-    queryFn: () => axios.get(API_ADMIN),
-    placeholderData: keepPreviousData,
-  });
-  const isAdmin = query.isSuccess;
+  const isAdmin = useIsAdmin();
 
   if (!isAdmin) {
     return null;
@@ -17,7 +11,7 @@ export default function AdminItem() {
 
   return (
     <Link href={APP_ADMIN}>
-      <button className='rounded-md border-2 border-secondary-400 px-4 py-2 text-secondary-400 hover:bg-secondary-400 hover:text-white'>
+      <button className='rounded-md border-2 border-secondary-500 px-4 py-2 text-secondary-500 hover:bg-secondary-500 hover:text-white'>
         Admin
       </button>
     </Link>

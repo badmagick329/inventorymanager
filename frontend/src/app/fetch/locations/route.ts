@@ -4,6 +4,7 @@ import axios from 'axios';
 import { createErrorResponse } from '@/utils/responses';
 const BASE_URL = process.env.BASE_URL;
 import { Location } from '@/types';
+import { TOKEN_KEY } from '@/consts';
 
 const locations: Location[] = [
   {
@@ -24,7 +25,7 @@ export async function GET(req: Request) {
   // TODO: Replace with actual query
   const cookieStore = cookies();
   const url = `${BASE_URL}/api/auth/is-authed`;
-  const token = cookieStore.get('auth-token');
+  const token = cookieStore.get(TOKEN_KEY);
   if (!token) {
     return new NextResponse(JSON.stringify({ message: 'no token' }), {
       status: 400,

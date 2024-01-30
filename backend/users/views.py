@@ -6,8 +6,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import UserAccount
-
 
 class LoginView(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
@@ -20,9 +18,7 @@ class LoginView(KnoxLoginView):
             )
         user = serializer.validated_data["user"]
         login(request, user)
-        response = super(LoginView, self).post(request, format=None)
-        response.data["showAdmin"] = user.is_admin
-        return response
+        return super(LoginView, self).post(request, format=None)
 
 
 class UserView(APIView):
@@ -40,15 +36,8 @@ class IsAuthedView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request: Request):
-        user_account = request.user
-        show_admin = False
-        match (user_account):
-            case UserAccount(is_admin=True):
-                show_admin = True
-            case _:
-                show_admin = False
         return Response(
-            {"message": "You are authenticated!", "showAdmin": show_admin},
+            {"message": "You are authenticated!"},
             status=status.HTTP_200_OK,
         )
 
@@ -58,6 +47,6 @@ class IsAdminView(APIView):
 
     def get(self, request: Request):
         return Response(
-            {"message": "You are authenticated!", "showAdmin": True},
+            {"message": "You are authenticated!"},
             status=status.HTTP_200_OK,
         )

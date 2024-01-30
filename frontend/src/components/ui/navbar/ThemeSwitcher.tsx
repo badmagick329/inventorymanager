@@ -25,9 +25,9 @@ export function ThemeSwitcher() {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button color='primary' variant='flat' isIconOnly>
+        <button className='rounded-md border-2 border-primary-500 px-3 py-3 text-primary-500 hover:bg-primary-500 hover:text-white'>
           <ThemeIcon theme={theme} />
-        </Button>
+        </button>
       </DropdownTrigger>
       <DropdownMenu aria-label='Switch Theme Actions'>
         <DropdownItem key='light' onClick={() => setTheme('light')}>
@@ -37,7 +37,7 @@ export function ThemeSwitcher() {
           Dark
         </DropdownItem>
         <DropdownItem key='modern' onClick={() => setTheme('modern')}>
-          Modern
+          modern
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
@@ -50,11 +50,11 @@ function ThemeIcon({ theme }: { theme: string | undefined }) {
   }
   switch (theme) {
     case 'light':
-      return <Sun className='h-4 w-4' />;
+      return <Sun className='icon-sm' />;
     case 'dark':
-      return <Moon className='h-4 w-4' />;
+      return <Moon className='icon-sm' />;
     case 'modern':
-      return <Paintbrush className='h-4 w-4' />;
+      return <Paintbrush className='icon-sm' />;
     default:
       return null;
   }

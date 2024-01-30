@@ -4,12 +4,16 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import axios from 'axios';
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
-import { APP_LOCATIONS, API_LOCATIONS, API_LOGIN } from '@/consts/urls';
+import {
+  APP_LOCATIONS,
+  API_LOCATIONS,
+  API_LOGIN,
+  API_ADMIN,
+} from '@/consts/urls';
 import { useForm } from 'react-hook-form';
 import LoginButton from './LoginButton';
 import PasswordInput from './PasswordInput';
 import UsernameInput from './UsernameInput';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
 export type FormValues = {
   username: string;
@@ -31,7 +35,7 @@ export default function LoginForm() {
 
   async function submitForm(data: FormValues) {
     setIsLoading(true);
-    const loggedIn = await processLoginAndPrefetch(
+    const loggedIn = await tryLogin(
       data.username,
       data.password,
       setError,
@@ -40,7 +44,11 @@ export default function LoginForm() {
     if (!loggedIn) {
       return;
     }
-    await prefetchLocations(queryClient, router);
+    await Promise.allSettled([
+      prefetchLocations(queryClient),
+      prefetchIsAdmin(queryClient),
+    ]);
+    router.push(APP_LOCATIONS);
   }
 
   return (
@@ -48,7 +56,7 @@ export default function LoginForm() {
       className='flex w-64 flex-col gap-2'
       onSubmit={handleSubmit((data) => submitForm(data))}
     >
-      {error && <span className='text-danger-400'>{error}</span>}
+      {error && <span className='self-center text-danger-500'>{error}</span>}
       <UsernameInput register={register} formState={formState} />
       <PasswordInput register={register} formState={formState} />
       <LoginButton isLoading={isLoading} formState={formState} />
@@ -56,7 +64,7 @@ export default function LoginForm() {
   );
 }
 
-async function processLoginAndPrefetch(
+async function tryLogin(
   username: string,
   password: string,
   setError: (error: string) => void,
@@ -76,13 +84,16 @@ async function processLoginAndPrefetch(
   }
 }
 
-async function prefetchLocations(
-  queryClient: QueryClient,
-  router: AppRouterInstance
-) {
+async function prefetchLocations(queryClient: QueryClient) {
   await queryClient.prefetchQuery({
     queryKey: ['locations'],
     queryFn: () => axios.get(API_LOCATIONS),
   });
-  router.replace(APP_LOCATIONS);
+}
+
+async function prefetchIsAdmin(queryClient: QueryClient) {
+  await queryClient.prefetchQuery({
+    queryKey: ['isAdmin'],
+    queryFn: () => axios.get(API_ADMIN),
+  });
 }
