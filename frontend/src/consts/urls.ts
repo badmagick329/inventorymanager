@@ -1,7 +1,12 @@
-export const API_LOGIN = '/fetch/auth/login';
-export const API_LOGOUT = '/fetch/auth/logout';
-export const API_LOCATIONS = '/fetch/locations';
-export const API_ADMIN = '/fetch/admin';
+export const NEXT_LOGIN = '/fetch/auth/login';
+export const NEXT_LOGOUT = '/fetch/auth/logout';
+export const NEXT_LOCATIONS = '/fetch/locations';
+export const NEXT_ADMIN = '/fetch/admin';
 export const APP_LOCATIONS = '/app';
 export const APP_LOGIN = '/';
 export const APP_ADMIN = '/app/admin';
+export const API_LOGIN = '/api/users/auth/login';
+export const API_LOGOUT = '/api/users/auth/logout';
+export const API_IS_AUTHED = '/api/users/auth/is-authed';
+export const API_IS_ADMIN = '/api/users/auth/is-admin';
+export const API_LOCATIONS = '/api/items/locations';

@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 import axios from 'axios';
 import { createErrorResponse } from '@/utils/responses';
 import { TOKEN_KEY } from '@/consts';
+import { API_LOGOUT } from '@/consts/urls';
 const BASE_URL = process.env.BASE_URL;
 
 export async function POST(req: Request) {
@@ -17,7 +18,7 @@ export async function POST(req: Request) {
   }
   console.log(`token: ${JSON.stringify(token)}`);
   const authToken = JSON.parse(token.value);
-  const url = `${BASE_URL}/api/auth/logout`;
+  const url = `${BASE_URL}${API_LOGOUT}`;
   const headers = {
     'Set-Cookie': serialize(TOKEN_KEY, '', {
       path: '/',
