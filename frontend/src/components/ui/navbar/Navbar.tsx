@@ -7,7 +7,6 @@ import AdminItem from './AdminItem';
 
 export default function Navbar() {
   return (
-    // TODO: add theme based backgrounds color
     <div className='foreground flex w-full items-center p-2'>
       <ul className='flex w-full items-center justify-between gap-4'>
         <li>
@@ -25,7 +24,7 @@ export default function Navbar() {
           </div>
         </li>
         <li>
-          <div className='flex items-center gap-2'>
+          <div className='flex h-full items-center gap-2'>
             <ThemeSwitcher />
             <LogoutButton />
           </div>

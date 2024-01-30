@@ -2,7 +2,7 @@ import { CircularProgress } from '@nextui-org/react';
 
 export default function Spinner() {
   return (
-    <div className='flex flex-col items-center h-screen'>
+    <div className='flex h-full flex-col items-center'>
       <CircularProgress
         className='mt-24'
         color='primary'

@@ -11,7 +11,7 @@ export default function PasswordInput({
 }) {
   return (
     <>
-      <span className='text-danger-400'>
+      <span className='text-danger-500'>
         {formState.errors.password?.message}
       </span>
       <Input

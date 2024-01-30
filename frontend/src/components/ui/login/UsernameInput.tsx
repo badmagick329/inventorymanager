@@ -11,7 +11,7 @@ export default function UsernameInput({
 }) {
   return (
     <>
-      <span className='text-danger-400'>
+      <span className='text-danger-500'>
         {formState.errors.username?.message}
       </span>
       <Input

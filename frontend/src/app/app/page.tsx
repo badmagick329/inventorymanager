@@ -22,15 +22,17 @@ export default function Locations() {
     return (
       <>
         <div className='mb-8 mt-4 text-2xl font-semibold'>Locations</div>
-        {locations.map((l: Location, idx: number) => (
+        {locations.map((loc: Location, idx: number) => (
           <div key={idx} className='flex w-full flex-col items-center'>
             <div className='flex w-full justify-between px-6 md:w-2/3 2xl:w-1/3'>
-              <LocationName name={l.name} />
-              <LocationOverview
-                items={1500}
-                purchaseAmount={15000}
-                salesAmount={-25000}
-              />
+              <LocationName name={loc.name} />
+              <div className='flex justify-end gap-2 md:gap-4'>
+                <LocationOverview
+                  items={1500}
+                  purchaseAmount={15000}
+                  salesAmount={25000}
+                />
+              </div>
             </div>
             {idx !== locations.length - 1 && (
               <Divider className='my-6 w-full px-6 md:w-2/3 2xl:w-1/3' />
