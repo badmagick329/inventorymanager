@@ -2,16 +2,15 @@
 import { useRouter } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@nextui-org/react';
-import { ADMIN } from '@/consts/urls';
+import { APP_LOGIN, API_ADMIN } from '@/consts/urls';
 import axios from 'axios';
-import { APP_LOGIN } from '@/consts/appurls';
 
 export default function AdminPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { isError, isLoading, data, isSuccess } = useQuery({
     queryKey: ['manage'],
-    queryFn: () => axios.get(ADMIN),
+    queryFn: () => axios.get(API_ADMIN),
   });
 
   if (isError) {

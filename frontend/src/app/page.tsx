@@ -1,5 +1,5 @@
 import React from 'react';
-import LoginForm from '@/components/Main/LoginForm';
+import LoginForm from '@/components/ui/login/LoginForm';
 import Image from 'next/image';
 import { FadeIn, MoveUp } from '@/transitions';
 
@@ -9,8 +9,8 @@ export const metadata = {
 
 export default function LoginPage() {
   return (
-    <main className='flex min-h-screen flex-col items-center gap-4 p-24'>
-      <div className='flex items-end'>
+    <main className='flex min-h-screen flex-col items-center gap-4 px-2 py-24 xs:px-24'>
+      <div className='flex w-72 items-end justify-center'>
         <MoveUp>
           <Image
             width={80}
@@ -21,9 +21,7 @@ export default function LoginPage() {
           />
         </MoveUp>
         <FadeIn>
-          <h1 className='p-2 text-xl font-semibold md:text-2xl'>
-            Inventory Manager
-          </h1>
+          <h1 className='p-2 text-xl font-semibold'>Inventory Manager</h1>
         </FadeIn>
       </div>
       <LoginForm />
