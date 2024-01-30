@@ -5,9 +5,10 @@ import { AxiosResponse } from 'axios';
 import { createErrorResponse } from '@/utils/responses';
 import { TOKEN_KEY } from '@/consts';
 const BASE_URL = process.env.BASE_URL;
+import { API_LOGIN } from '@/consts/urls';
 
 export async function POST(req: Request) {
-  const url = `${BASE_URL}/api/auth/login`;
+  const url = `${BASE_URL}${API_LOGIN}`;
   const body = await req.json();
   const { username, password } = body;
   try {

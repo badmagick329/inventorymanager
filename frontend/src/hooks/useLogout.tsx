@@ -1,4 +1,4 @@
-import { API_LOGOUT, APP_LOGIN } from '@/consts/urls';
+import { NEXT_LOGOUT, APP_LOGIN } from '@/consts/urls';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -8,7 +8,7 @@ export default function useLogout() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationKey: ['logout'],
-    mutationFn: () => axios.post(API_LOGOUT),
+    mutationFn: () => axios.post(NEXT_LOGOUT),
     onSettled: () => {
       queryClient.removeQueries();
       router.push(APP_LOGIN);

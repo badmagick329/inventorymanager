@@ -5,6 +5,7 @@ import { createErrorResponse } from '@/utils/responses';
 const BASE_URL = process.env.BASE_URL;
 import { Location } from '@/types';
 import { TOKEN_KEY } from '@/consts';
+import { API_LOCATIONS } from '@/consts/urls';
 
 const locations: Location[] = [
   {

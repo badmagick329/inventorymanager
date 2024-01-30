@@ -3,12 +3,13 @@ import { cookies } from 'next/headers';
 import axios from 'axios';
 import { createErrorResponse } from '@/utils/responses';
 import { TOKEN_KEY } from '@/consts';
+import { API_IS_ADMIN } from '@/consts/urls';
 const BASE_URL = process.env.BASE_URL;
 
 export async function GET(req: Request) {
   // TODO: Replace with actual query
   const cookieStore = cookies();
-  const url = `${BASE_URL}/api/auth/is-admin`;
+  const url = `${BASE_URL}${API_IS_ADMIN}}`;
   const token = cookieStore.get(TOKEN_KEY);
   if (!token) {
     return new NextResponse(JSON.stringify({ message: 'no token' }), {

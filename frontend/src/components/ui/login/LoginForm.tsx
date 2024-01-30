@@ -6,9 +6,9 @@ import axios from 'axios';
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
 import {
   APP_LOCATIONS,
-  API_LOCATIONS,
-  API_LOGIN,
-  API_ADMIN,
+  NEXT_LOCATIONS,
+  NEXT_LOGIN,
+  NEXT_ADMIN,
 } from '@/consts/urls';
 import { useForm } from 'react-hook-form';
 import LoginButton from './LoginButton';
@@ -71,7 +71,7 @@ async function tryLogin(
   setIsLoading: (isLoading: boolean) => void
 ): Promise<boolean> {
   try {
-    await axios.post(API_LOGIN, { username, password });
+    await axios.post(NEXT_LOGIN, { username, password });
     return true;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -87,13 +87,13 @@ async function tryLogin(
 async function prefetchLocations(queryClient: QueryClient) {
   await queryClient.prefetchQuery({
     queryKey: ['locations'],
-    queryFn: () => axios.get(API_LOCATIONS),
+    queryFn: () => axios.get(NEXT_LOCATIONS),
   });
 }
 
 async function prefetchIsAdmin(queryClient: QueryClient) {
   await queryClient.prefetchQuery({
     queryKey: ['isAdmin'],
-    queryFn: () => axios.get(API_ADMIN),
+    queryFn: () => axios.get(NEXT_ADMIN),
   });
 }
