@@ -1,7 +1,12 @@
 from django.urls import path
 
-from .views import ItemLocations
+from .views import ItemLocationsDetail, ItemLocationsList
 
 urlpatterns = [
-    path("locations", ItemLocations.as_view(), name="locations"),
+    path("locations", ItemLocationsList.as_view(), name="locations"),
+    path(
+        "locations/<int:id>",
+        ItemLocationsDetail.as_view(),
+        name="location",
+    ),
 ]

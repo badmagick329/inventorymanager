@@ -9,7 +9,8 @@ class ItemLocation(models.Model):
     )
 
     def __str__(self):
-        return f"ItemLocation<(name={self.name})>"
+        usernames = [user.username for user in self.users.all()]
+        return f"ItemLocation<(id={self.id}, name={self.name}, users={usernames})>"
 
     class Meta:  # type: ignore
         ordering = ["name"]
