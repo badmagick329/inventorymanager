@@ -57,3 +57,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):  # type: ignore
     def is_staff(self):
         "Is the user a member of staff?"
         return self.is_admin
+
+    def clean_fields(self, exclude=None):
+        self.username = self.username.strip().lower()
+        super().clean_fields(exclude=exclude)
