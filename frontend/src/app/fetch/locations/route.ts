@@ -25,7 +25,7 @@ const locations: Location[] = [
 export async function GET(req: Request) {
   // TODO: Replace with actual query
   const cookieStore = cookies();
-  const url = `${BASE_URL}/api/auth/is-authed`;
+  const url = `${BASE_URL}${API_LOCATIONS}`;
   const token = cookieStore.get(TOKEN_KEY);
   if (!token) {
     return new NextResponse(JSON.stringify({ message: 'no token' }), {
