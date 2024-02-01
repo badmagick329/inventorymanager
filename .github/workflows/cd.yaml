@@ -20,6 +20,6 @@ jobs:
             cd ~/apps/inventorymanager
             eval $(ssh-agent -s) 1> /dev/null
             ssh-add -q ~/.ssh/github
-            git pull origin master
+            git pull origin main
             git status
             echo ${{ secrets.USER_PASS }} | sudo -S ./deploy.sh
