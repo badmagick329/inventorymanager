@@ -1,6 +1,6 @@
 import { APP_ADMIN } from '@/consts/urls';
-import Link from 'next/link';
 import useIsAdmin from '@/hooks/useIsAdmin';
+import { Button, Link } from '@nextui-org/react';
 
 export default function AdminItem() {
   const isAdmin = useIsAdmin();
@@ -10,10 +10,14 @@ export default function AdminItem() {
   }
 
   return (
-    <Link href={APP_ADMIN}>
-      <button className='rounded-md border-2 border-secondary-500 px-4 py-2 text-secondary-500 hover:bg-secondary-500 hover:text-white'>
-        Admin
-      </button>
-    </Link>
+    <Button
+      as={Link}
+      href={APP_ADMIN}
+      className='rounded-md'
+      color='secondary'
+      variant='ghost'
+    >
+      Admin
+    </Button>
   );
 }

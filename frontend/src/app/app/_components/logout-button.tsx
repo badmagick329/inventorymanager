@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { Loader2 as Loader } from 'lucide-react';
 import { useLogout } from '@/hooks';
+import { Button } from '@nextui-org/react';
 
 export default function LogoutButton() {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,24 +16,14 @@ export default function LogoutButton() {
   }
 
   return (
-    <button
-      className='rounded-md border-2 border-default-500 px-4 py-2 text-default-500 hover:bg-default-500 hover:text-white'
+    <Button
+      className='rounded-md'
+      isLoading={isLoading}
       onClick={unauthUser}
-      disabled={isLoading}
+      variant='ghost'
+      color='default'
     >
-      <LogoutButtonText isLoading={isLoading} />
-    </button>
+      Logout
+    </Button>
   );
-}
-
-function LogoutButtonText({ isLoading }: { isLoading: boolean }) {
-  if (isLoading) {
-    return (
-      <div className='flex items-center gap-1'>
-        <Loader className='icon-sm animate-spin' />
-        <span>Logout</span>
-      </div>
-    );
-  }
-  return <span>Logout</span>;
 }

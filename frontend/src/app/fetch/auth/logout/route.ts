@@ -16,7 +16,6 @@ export async function POST(req: Request) {
       status: 400,
     });
   }
-  console.log(`token: ${JSON.stringify(token)}`);
   const authToken = JSON.parse(token.value);
   const url = `${BASE_URL}${API_LOGOUT}`;
   const headers = {
