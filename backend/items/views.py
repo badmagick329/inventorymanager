@@ -1,4 +1,3 @@
-from pytest import fail
 from rest_framework import permissions, status
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
