@@ -1,9 +1,9 @@
 import { APP_LOCATIONS } from '@/consts/urls';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ThemeSwitcher } from '@/components/ui/navbar/ThemeSwitcher';
-import LogoutButton from '@/components/ui/navbar/LogoutButton';
-import AdminItem from './AdminItem';
+import { ThemeSwitcher } from '@/app/app/_components/theme-switcher';
+import LogoutButton from '@/app/app/_components/logout-button';
+import AdminItem from '@/app/app/_components/admin-item';
 
 export default function Navbar() {
   return (

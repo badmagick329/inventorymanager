@@ -6,7 +6,6 @@ type Props = {
 };
 
 export default function GlobalLoader(props: Props) {
-  console.log('Inside GlobalLoader');
   const isLoading = props.isLoading ?? true;
   if (!isLoading) {
     return null;

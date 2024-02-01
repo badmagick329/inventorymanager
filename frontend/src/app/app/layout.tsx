@@ -1,5 +1,5 @@
 'use client';
-import Navbar from '@/components/ui/navbar/Navbar';
+import Navbar from '@/app/app/_components/navbar';
 
 export default function AppLayout({
   children,

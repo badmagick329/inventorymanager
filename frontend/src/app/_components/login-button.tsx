@@ -1,5 +1,5 @@
 import { Button } from '@nextui-org/react';
-import { FormValues } from './LoginForm';
+import { FormValues } from '@/app/_components/login-form';
 import { FormState } from 'react-hook-form';
 
 export default function LoginButton({
