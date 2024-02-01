@@ -5,3 +5,4 @@ db/
 nginx/conf.d/*
 !nginx/conf.d/main.conf.sample
 notes/
+deploy.sh
