@@ -25,9 +25,14 @@ export function ThemeSwitcher() {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <button className='rounded-md border-2 border-primary-500 px-3 py-3 text-primary-500 hover:bg-primary-500 hover:text-white'>
+        <Button
+          className='rounded-md'
+          color='primary'
+          variant='flat'
+          isIconOnly
+        >
           <ThemeIcon theme={theme} />
-        </button>
+        </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label='Switch Theme Actions'>
         <DropdownItem key='light' onClick={() => setTheme('light')}>

@@ -18,6 +18,7 @@ export default function useLogout() {
     },
     onError: () => {
       console.log('error during logout');
+      router.push(APP_LOGIN);
     },
   });
   return mutation;
