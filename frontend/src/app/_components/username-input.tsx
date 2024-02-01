@@ -1,8 +1,8 @@
 import { Input } from '@nextui-org/react';
-import { FormValues } from './LoginForm';
+import { FormValues } from '@/app/_components/login-form';
 import { FormState, UseFormRegister } from 'react-hook-form';
 
-export default function PasswordInput({
+export default function UsernameInput({
   register,
   formState,
 }: {
@@ -12,14 +12,14 @@ export default function PasswordInput({
   return (
     <>
       <span className='text-danger-500'>
-        {formState.errors.password?.message}
+        {formState.errors.username?.message}
       </span>
       <Input
-        type='password'
+        type='text'
         variant='flat'
-        label='Password'
+        label='Username'
         autoComplete='off'
-        {...register('password', { required: 'Password is required' })}
+        {...register('username', { required: 'Username is required' })}
       />
     </>
   );

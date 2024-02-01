@@ -11,9 +11,9 @@ import {
   NEXT_ADMIN,
 } from '@/consts/urls';
 import { useForm } from 'react-hook-form';
-import LoginButton from './LoginButton';
-import PasswordInput from './PasswordInput';
-import UsernameInput from './UsernameInput';
+import LoginButton from '@/app/_components/login-button';
+import PasswordInput from '@/app/_components/password-input';
+import UsernameInput from '@/app/_components/username-input';
 
 export type FormValues = {
   username: string;

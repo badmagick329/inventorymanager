@@ -1,12 +1,12 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { Location } from '@/types';
-import Spinner from '@/components/shared/Spinner';
+import Spinner from '@/components/Spinner';
 import useLocations from '@/hooks/useLocations';
 import { Divider } from '@nextui-org/react';
 import { APP_LOGIN } from '@/consts/urls';
-import LocationOverview from '@/components/ui/locations/LocationOverview';
-import LocationName from '@/components/ui/locations/Location';
+import LocationOverview from '@/app/app/location-overview';
+import LocationName from '@/app/app/location';
 
 export default function Locations() {
   const router = useRouter();

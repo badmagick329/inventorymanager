@@ -1,5 +1,5 @@
 import React from 'react';
-import LoginForm from '@/components/ui/login/LoginForm';
+import LoginForm from '@/app/_components/login-form';
 import Image from 'next/image';
 import { FadeIn, MoveUp } from '@/transitions';
 
