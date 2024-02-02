@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -17,5 +18,15 @@ class ItemLocation(models.Model):
         verbose_name = "ItemLocation"
 
     def clean_fields(self, exclude=None) -> None:
-        self.name = self.name.strip().lower()
+        self.name = self.name.strip()
+        saved_instance = ItemLocation.objects.filter(
+            name__iexact=self.name
+        ).first()
+        if saved_instance and saved_instance.id != self.id:
+            raise ValidationError(
+                "ItemLocation with name %(value)s already exists",
+                params={"value": self.name},
+                code="unique",
+            )
+
         super().clean_fields(exclude=exclude)

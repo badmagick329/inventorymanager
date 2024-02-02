@@ -55,14 +55,14 @@ export default function LocationCard({
   return (
     <Card className='flex min-w-[280px] max-w-[320px] flex-col rounded-md md:min-w-[480px] md:max-w-[640px]'>
       <CardHeader>
-        <p className='text-md md:text-semibold w-full text-center capitalize md:text-base'>
+        <p className='text-md md:text-semibold w-full text-center md:text-base'>
           {name}
         </p>
       </CardHeader>
       <Divider />
       <CardBody>
         {usersText === '' ? (
-          <div className='text-default-400 flex w-full justify-center gap-2 text-center'>
+          <div className='flex w-full justify-center gap-2 text-center text-default-400'>
             <EyeOff />
           </div>
         ) : (

@@ -73,13 +73,6 @@ class ItemLocationsDetail(APIView):
                 data=serializer.data,
                 status=status.HTTP_200_OK,
             )
-        # if not serializer.is_valid():
-        #     print(f"encountered errors in patch: {serializer.errors}")
-        # serializer.save()
-        # return Response(
-        #     data=serializer.data,
-        #     status=status.HTTP_200_OK,
-        # )
 
 
 class ItemLocationsList(APIView):
@@ -91,7 +84,6 @@ class ItemLocationsList(APIView):
     def post(self, request: Request):
         serializer = ItemLocationSerializer(data=request.data)
         if not serializer.is_valid(raise_exception=False):
-            print(serializer.errors)
             return Response(
                 data=serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST,
