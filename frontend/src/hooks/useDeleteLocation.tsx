@@ -27,6 +27,5 @@ async function deleteLocation(locationId: number | undefined) {
   if (!locationId) {
     throw new Error('locationId is undefined');
   }
-  console.log(`about to delete locationId: ${locationId}`);
   return await axios.delete(`${NEXT_LOCATIONS}/${locationId}`);
 }

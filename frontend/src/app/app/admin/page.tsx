@@ -9,7 +9,7 @@ export default function AdminPage() {
       <Button
         as={Link}
         href={APP_MANAGE_LOCATIONS}
-        className='w-64 rounded-md text-xl'
+        className='w-64 rounded-md font-semibold'
         color='secondary'
         variant='ghost'
         size='lg'
@@ -17,7 +17,7 @@ export default function AdminPage() {
         Manage Locations
       </Button>
       <Button
-        className='w-64 rounded-md text-xl'
+        className='w-64 rounded-md font-semibold'
         color='secondary'
         variant='ghost'
         size='lg'

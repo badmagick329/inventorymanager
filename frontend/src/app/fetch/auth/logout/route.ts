@@ -8,7 +8,6 @@ import { API_LOGOUT } from '@/consts/urls';
 const BASE_URL = process.env.BASE_URL;
 
 export async function POST(req: Request) {
-  console.log('logout route');
   const cookieStore = cookies();
   const token = cookieStore.get(TOKEN_KEY);
   if (!token) {
@@ -27,7 +26,6 @@ export async function POST(req: Request) {
     }),
   };
   try {
-    console.log('Sending logout request');
     const response = await axios.post(
       url,
       {},
@@ -35,7 +33,7 @@ export async function POST(req: Request) {
         headers: { Authorization: `Token ${authToken}` },
       }
     );
-    console.log(`logout status ${response.status}`);
+    console.log(`logout ${response.status}`);
     return new NextResponse(JSON.stringify({ message: 'success' }), {
       status: 200,
       headers: headers,
