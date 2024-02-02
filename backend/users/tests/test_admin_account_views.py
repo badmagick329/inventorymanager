@@ -45,3 +45,25 @@ def test_admin_can_logout(api_client: APIClient, user_factory) -> None:
     api_client.credentials(HTTP_AUTHORIZATION="Token " + token)
     logout_response = api_client.post("/api/users/auth/logout")
     assert logout_response.status_code == 204
+
+
+def test_admin_can_create_user(api_client: APIClient, user_factory) -> None:
+    admin_user, _ = user_factory(is_admin=True)
+    api_client.force_authenticate(user=admin_user)
+    response = api_client.post(
+        "/api/users",
+        {
+            "username": "testuser",
+            "password": "testuser123456",
+        },
+        format="json",
+    )
+    assert response.status_code == 201
+
+
+def test_admin_can_delete_user(api_client: APIClient, user_factory) -> None:
+    admin_user, password = user_factory(is_admin=True)
+    api_client.force_authenticate(user=admin_user)
+    user, _ = user_factory(username="testuser")
+    response = api_client.delete(f"/api/users/{user.id}")
+    assert response.status_code == 204

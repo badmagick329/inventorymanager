@@ -1,7 +1,6 @@
 export const NEXT_LOGIN = '/fetch/auth/login';
 export const NEXT_LOGOUT = '/fetch/auth/logout';
 export const NEXT_LOCATIONS = '/fetch/locations';
-export const NEXT_LOCATION_DETAIL = '/fetch/locations/[id]';
 export const NEXT_ADMIN = '/fetch/admin';
 export const APP_LOCATIONS = '/app';
 export const APP_LOGIN = '/';
@@ -13,3 +12,4 @@ export const API_IS_AUTHED = '/api/users/auth/is-authed';
 export const API_IS_ADMIN = '/api/users/auth/is-admin';
 export const API_LOCATIONS = '/api/items/locations';
 export const API_LOCATION_DETAIL = '/api/items/locations';
+export const API_USERS = '/api/users';
