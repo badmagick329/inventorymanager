@@ -88,11 +88,7 @@ export default function LocationForm({
           selectedNames={selectedNames}
         />
         <CancelButton onCancel={onCancel} />
-        <SubmitButton
-          isLoading={false}
-          formState={formState}
-          editMode={locationId ? true : false}
-        />
+        <SubmitButton isLoading={false} formState={formState} />
       </div>
     </form>
   );
