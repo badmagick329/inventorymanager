@@ -45,7 +45,7 @@ class ItemLocationSerializer(serializers.ModelSerializer):
         if "users" in data:
             data["users"] = [user.strip().lower() for user in data["users"]]
         if "name" in data:
-            data["name"] = data["name"].strip().lower()
+            data["name"] = data["name"].strip()
         if hasattr(data, "_mutable"):
             data._mutable = False
         return super().to_internal_value(data)

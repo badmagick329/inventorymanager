@@ -42,9 +42,9 @@ def test_user_can_see_item_locations_with_permission_only(
 ):
     user, _ = user_factory()
     item_location_factory(
-        name="Test Item Location", users=[user], full_clean=True
+        name="test item location", users=[user], full_clean=True
     )
-    item_location_factory(name="Test Item Location 2", full_clean=True)
+    item_location_factory(name="test item location 2", full_clean=True)
     api_client.force_authenticate(user=user)
     response = api_client.get(LOCATIONS)
     assert response.status_code == 200
@@ -58,9 +58,9 @@ def test_admin_can_see_all_item_locations(
 ):
     admin, _ = user_factory(is_admin=True)
     item_location_factory(
-        name="Test Item Location", users=[admin], full_clean=True
+        name="test item location", users=[admin], full_clean=True
     )
-    item_location_factory(name="Test Item Location 2", full_clean=True)
+    item_location_factory(name="test item location 2", full_clean=True)
     api_client.force_authenticate(user=admin)
     response = api_client.get(LOCATIONS)
     assert response.status_code == 200
