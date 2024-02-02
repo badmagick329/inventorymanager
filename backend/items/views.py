@@ -73,6 +73,13 @@ class ItemLocationsDetail(APIView):
                 data=serializer.data,
                 status=status.HTTP_200_OK,
             )
+        # if not serializer.is_valid():
+        #     print(f"encountered errors in patch: {serializer.errors}")
+        # serializer.save()
+        # return Response(
+        #     data=serializer.data,
+        #     status=status.HTTP_200_OK,
+        # )
 
 
 class ItemLocationsList(APIView):

@@ -12,13 +12,18 @@ import { UseFormSetValue } from 'react-hook-form';
 type UsernamesDropdownProps = {
   usernames: string[];
   setValue: UseFormSetValue<FormValues>;
+  selectedNames?: string[];
 };
 
 export default function UsernamesDropdown({
   usernames,
   setValue,
+  selectedNames,
 }: UsernamesDropdownProps) {
-  const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
+  selectedNames = selectedNames || [];
+  const [selectedKeys, setSelectedKeys] = React.useState(
+    new Set<string>(selectedNames)
+  );
 
   const selectedValue = React.useMemo(() => {
     setValue('usernames', Array.from(selectedKeys));
@@ -29,7 +34,7 @@ export default function UsernamesDropdown({
       return `${selectedKeys.size} users selected`;
     }
     return Array.from(selectedKeys).join(', ').replaceAll('_', ' ');
-  }, [selectedKeys, setValue]);
+  }, [selectedKeys]);
 
   return (
     <Dropdown>

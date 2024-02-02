@@ -22,7 +22,6 @@ export async function GET(req: Request) {
     };
 
     const response = await axios.get(url, { headers });
-    console.log(`response.data`, response.data);
     return new NextResponse(JSON.stringify(response.data), {
       status: 200,
     });

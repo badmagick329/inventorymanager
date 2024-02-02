@@ -1,9 +1,4 @@
 'use client';
-import Spinner from '@/components/Spinner';
-import LocationForm from './location-form';
-import { Location } from '@/types';
-import { useLocations } from '@/hooks';
-import LocationLink from '@/components/location-link';
 import React from 'react';
 import {
   Card,
@@ -13,14 +8,12 @@ import {
   Divider,
   Button,
   useDisclosure,
-  Modal,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
 } from '@nextui-org/react';
 import { Eye, EyeOff, Pencil, Trash } from 'lucide-react';
 import { useDeleteLocation } from '@/hooks';
 import { useQueryClient } from '@tanstack/react-query';
+import DeleteModal from './delete-modal';
+import LocationFormCard from './location-form-card';
 
 type LocationCardProps = {
   locationId?: number;
@@ -34,8 +27,9 @@ export default function LocationCard({
   users,
 }: LocationCardProps) {
   const queryClient = useQueryClient();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const disclosure = useDisclosure();
   const deleteLocation = useDeleteLocation();
+  const [showForm, setShowForm] = React.useState(false);
   let usersText = users?.join(', ');
   if (!usersText) {
     usersText = '';
@@ -43,6 +37,19 @@ export default function LocationCard({
 
   function fetchingLocations() {
     return queryClient.isFetching({ queryKey: ['locations'] }) > 0;
+  }
+  // TODO: Get usernames from the server
+  const usernames = ['testuser1'];
+
+  if (showForm) {
+    return (
+      <LocationFormCard
+        location={name}
+        usernames={usernames}
+        setShowForm={setShowForm}
+        locationId={locationId}
+      />
+    );
   }
 
   return (
@@ -55,7 +62,7 @@ export default function LocationCard({
       <Divider />
       <CardBody>
         {usersText === '' ? (
-          <div className='flex w-full justify-center gap-2 text-center text-default-400'>
+          <div className='text-default-400 flex w-full justify-center gap-2 text-center'>
             <EyeOff />
           </div>
         ) : (
@@ -69,44 +76,25 @@ export default function LocationCard({
       <CardFooter>
         <div className='flex w-full justify-center gap-4'>
           <div className='flex h-full gap-4'>
-            <Button className='text-warning-600' variant='light' size='lg'>
+            <Button
+              className='text-warning-600'
+              variant='light'
+              size='lg'
+              onClick={() => setShowForm(true)}
+            >
               <Pencil size={24} /> Edit
             </Button>
             <Button
               className='text-danger-600'
-              onPress={onOpen}
+              onPress={disclosure.onOpen}
               variant='light'
               size='lg'
               isLoading={deleteLocation.isPending || fetchingLocations()}
             >
               <Trash size={24} /> Delete
             </Button>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-              <ModalContent>
-                {(onClose) => (
-                  <>
-                    <ModalHeader className='flex flex-col gap-1'>
-                      Confirm Deletion
-                    </ModalHeader>
-                    <ModalFooter>
-                      <Button color='default' variant='light' onPress={onClose}>
-                        Cancel
-                      </Button>
-                      <Button
-                        color='danger'
-                        onPress={() => {
-                          deleteLocation.mutate(locationId);
-                          onClose();
-                        }}
-                      >
-                        Delete
-                      </Button>
-                    </ModalFooter>
-                  </>
-                )}
-              </ModalContent>
-            </Modal>
           </div>
+          <DeleteModal disclosure={disclosure} locationId={locationId} />
         </div>
       </CardFooter>
     </Card>

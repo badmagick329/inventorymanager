@@ -16,11 +16,11 @@ export default function useLogout() {
     },
     onSuccess: () => {
       console.log('successfully logged out');
-      router.push(APP_LOGIN);
+      // router.push(APP_LOGIN);
     },
     onError: (error) => {
       console.log(`error during logout. ${error}`);
-      router.push(APP_LOGIN);
+      // router.push(APP_LOGIN);
     },
   });
   return mutation;

@@ -1,6 +1,5 @@
 'use client';
 import Spinner from '@/components/Spinner';
-import LocationForm from './_components/location-form';
 import { Location } from '@/types';
 import { useLocations } from '@/hooks';
 import React from 'react';
