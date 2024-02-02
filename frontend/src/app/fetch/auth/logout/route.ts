@@ -35,8 +35,8 @@ export async function POST(req: Request) {
         headers: { Authorization: `Token ${authToken}` },
       }
     );
-    console.log(`logout result: ${JSON.stringify(response.data)}`);
-    return new NextResponse(JSON.stringify({}), {
+    console.log(`logout status ${response.status}`);
+    return new NextResponse(JSON.stringify({ message: 'success' }), {
       status: 200,
       headers: headers,
     });

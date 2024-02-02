@@ -9,10 +9,27 @@ export function createErrorResponse(
 ) {
   if (axios.isAxiosError(error)) {
     const axiosError = error as AxiosError;
+    if (headers) {
+      return new NextResponse(
+        JSON.stringify({ message: errorMessage ?? 'error' }),
+        {
+          status: axiosError.response?.status ?? 500,
+          headers,
+        }
+      );
+    }
     return new NextResponse(
       JSON.stringify({ message: errorMessage ?? 'error' }),
       {
         status: axiosError.response?.status ?? 500,
+      }
+    );
+  }
+  if (headers) {
+    return new NextResponse(
+      JSON.stringify({ message: errorMessage ?? 'error' }),
+      {
+        status: 500,
         headers,
       }
     );
@@ -21,7 +38,6 @@ export function createErrorResponse(
     JSON.stringify({ message: errorMessage ?? 'error' }),
     {
       status: 500,
-      headers,
     }
   );
 }

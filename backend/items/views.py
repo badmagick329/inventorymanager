@@ -83,10 +83,16 @@ class ItemLocationsList(APIView):
 
     def post(self, request: Request):
         serializer = ItemLocationSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.create(serializer.validated_data)
+        if not serializer.is_valid(raise_exception=False):
+            print(serializer.errors)
+            return Response(
+                data=serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        created = serializer.create(serializer.validated_data)
+        serialized = ItemLocationSerializer(created)
         return Response(
-            data=serializer.data,
+            data=serialized.data,
             status=status.HTTP_201_CREATED,
         )
 
@@ -95,10 +101,21 @@ class ItemLocationsList(APIView):
         assert isinstance(user, UserAccount)
         if user.is_admin:
             locations = ItemLocation.objects.all()
+            serialized = [
+                {
+                    "id": location.id,
+                    "name": location.name,
+                    "users": [user.username for user in location.users.all()],
+                }
+                for location in locations
+            ]
         else:
             locations = ItemLocation.objects.filter(users__in=[user]).all()
-        location_names = [location.name for location in locations]
+            serialized = [
+                {"id": location.id, "name": location.name}
+                for location in locations
+            ]
         return Response(
-            {"locations": location_names},
+            data=serialized,
             status=status.HTTP_200_OK,
         )

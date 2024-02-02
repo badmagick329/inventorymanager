@@ -27,8 +27,8 @@ export function ThemeSwitcher() {
       <DropdownTrigger>
         <Button
           className='rounded-md'
-          color='primary'
-          variant='flat'
+          color='default'
+          variant='bordered'
           isIconOnly
         >
           <ThemeIcon theme={theme} />

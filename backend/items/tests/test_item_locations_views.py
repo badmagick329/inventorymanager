@@ -33,7 +33,7 @@ def test_user_can_access_item_locations_list(
     api_client.force_authenticate(user=user)
     response = api_client.get(LOCATIONS)
     assert response.status_code == 200
-    locations = response.json()["locations"]
+    locations = response.json()
     assert len(locations) == 0
 
 
@@ -48,9 +48,9 @@ def test_user_can_see_item_locations_with_permission_only(
     api_client.force_authenticate(user=user)
     response = api_client.get(LOCATIONS)
     assert response.status_code == 200
-    locations = response.json()["locations"]
+    locations = response.json()
     assert len(locations) == 1
-    assert locations[0] == "test item location"
+    assert locations[0]["name"] == "test item location"
 
 
 def test_admin_can_see_all_item_locations(
@@ -64,10 +64,10 @@ def test_admin_can_see_all_item_locations(
     api_client.force_authenticate(user=admin)
     response = api_client.get(LOCATIONS)
     assert response.status_code == 200
-    locations = response.json()["locations"]
+    locations = response.json()
     assert len(locations) == 2
-    assert locations[0] == "test item location"
-    assert locations[1] == "test item location 2"
+    assert locations[0]["name"] == "test item location"
+    assert locations[1]["name"] == "test item location 2"
 
 
 @pytest.mark.parametrize(LOCATION_LIST_POST_LABELS, LOCATION_LIST_POST_VALUES)
@@ -97,6 +97,7 @@ def test_location_list_post_endpoint(
         )
         assert response.status_code == expected_status
         if expected_json:
+            del response.json()["id"]
             assert response.json() == expected_json
     except Exception as e:
         raise_with(test_name, response, e)

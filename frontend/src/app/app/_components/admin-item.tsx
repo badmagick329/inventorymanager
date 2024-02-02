@@ -3,9 +3,9 @@ import useIsAdmin from '@/hooks/useIsAdmin';
 import { Button, Link } from '@nextui-org/react';
 
 export default function AdminItem() {
-  const isAdmin = useIsAdmin();
+  const { isAdmin, isLoading } = useIsAdmin();
 
-  if (!isAdmin) {
+  if (isLoading || !isAdmin) {
     return null;
   }
 
