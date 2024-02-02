@@ -24,7 +24,7 @@ class ItemLocation(models.Model):
         ).first()
         if saved_instance and saved_instance.id != self.id:
             raise ValidationError(
-                "ItemLocation with name %(value)s already exists",
+                {"name": "ItemLocation with this name already exists"},
                 params={"value": self.name},
                 code="unique",
             )
