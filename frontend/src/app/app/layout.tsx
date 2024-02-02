@@ -7,7 +7,7 @@ export default function AppLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className='foreground flex min-h-full w-full flex-col items-center'>
+    <div className='foreground flex min-h-screen w-full flex-col items-center'>
       <Navbar />
       {children}
     </div>

@@ -11,5 +11,8 @@ export default function useIsAdmin() {
     retry: false,
     staleTime: SHORT_STALE_TIME,
   });
-  return query.isSuccess;
+  return {
+    isAdmin: query.isSuccess,
+    isLoading: query.isLoading,
+  };
 }

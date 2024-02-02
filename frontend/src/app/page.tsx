@@ -2,6 +2,7 @@ import React from 'react';
 import LoginForm from '@/app/_components/login-form';
 import Image from 'next/image';
 import { FadeIn, MoveUp } from '@/transitions';
+import WarehouseImage from '../../public/images/warehouse-sm.png';
 
 export const metadata = {
   title: 'Inventory Manager',
@@ -15,7 +16,7 @@ export default function LoginPage() {
           <Image
             width={80}
             height={80}
-            src='images/warehouse-sm.png'
+            src={WarehouseImage}
             alt='Warehouse'
             unoptimized
           />

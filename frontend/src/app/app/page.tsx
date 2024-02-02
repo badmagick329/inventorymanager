@@ -1,31 +1,34 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { Location } from '@/types';
 import Spinner from '@/components/Spinner';
 import useLocations from '@/hooks/useLocations';
 import { Divider } from '@nextui-org/react';
 import { APP_LOGIN } from '@/consts/urls';
-import LocationOverview from '@/app/app/location-overview';
-import LocationName from '@/app/app/location';
+import LocationOverview from '@/app/app/_components/location-overview';
+import LocationLink from '@/components/location-link';
+import { Location } from '@/types';
+import { useEffect } from 'react';
 
 export default function Locations() {
   const router = useRouter();
-  const { isError, isLoading, data } = useLocations();
+  const { error, isError, isLoading, data } = useLocations();
 
-  if (isError) {
-    router.push(APP_LOGIN);
-    return null;
-  }
+  useEffect(() => {
+    if (isError) {
+      console.log(`Received error ${error}`);
+      router.push(APP_LOGIN);
+    }
+  }, []);
 
-  const locations = data?.data?.locations;
+  const locations = data?.data;
   if (locations) {
     return (
       <>
         <div className='mb-8 mt-4 text-2xl font-semibold'>Locations</div>
         {locations.map((loc: Location, idx: number) => (
-          <div key={idx} className='flex w-full flex-col items-center'>
+          <div key={loc.name} className='flex w-full flex-col items-center'>
             <div className='flex w-full justify-between px-6 md:w-2/3 2xl:w-1/3'>
-              <LocationName name={loc.name} />
+              <LocationLink name={loc.name} />
               <div className='flex justify-end gap-2 md:gap-4'>
                 <LocationOverview
                   items={1500}

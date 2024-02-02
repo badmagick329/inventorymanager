@@ -1,4 +1,5 @@
 export type Location = {
-  id: number;
+  id?: number;
   name: string;
+  users?: string[];
 };

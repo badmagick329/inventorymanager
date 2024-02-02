@@ -9,15 +9,17 @@ export default function useLogout() {
   const mutation = useMutation({
     mutationKey: ['logout'],
     mutationFn: () => axios.post(NEXT_LOGOUT),
+    retry: false,
     onSettled: () => {
-      queryClient.removeQueries();
+      console.log('settled logout');
       router.push(APP_LOGIN);
     },
     onSuccess: () => {
       console.log('successfully logged out');
+      router.push(APP_LOGIN);
     },
-    onError: () => {
-      console.log('error during logout');
+    onError: (error) => {
+      console.log(`error during logout. ${error}`);
       router.push(APP_LOGIN);
     },
   });

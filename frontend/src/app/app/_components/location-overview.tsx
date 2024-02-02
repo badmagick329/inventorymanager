@@ -13,8 +13,8 @@ export default function LocationOverview({
   purchaseAmount,
   salesAmount,
 }: Props) {
-  const isAdmin = useIsAdmin();
-  if (!isAdmin) {
+  const { isAdmin, isLoading } = useIsAdmin();
+  if (!isAdmin || isLoading) {
     return null;
   }
   return (

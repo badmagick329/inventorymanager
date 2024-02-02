@@ -13,7 +13,7 @@ class ItemLocation(models.Model):
         return f"ItemLocation<(id={self.id}, name={self.name}, users={usernames})>"
 
     class Meta:  # type: ignore
-        ordering = ["name"]
+        ordering = ["id"]
         verbose_name = "ItemLocation"
 
     def clean_fields(self, exclude=None) -> None:
