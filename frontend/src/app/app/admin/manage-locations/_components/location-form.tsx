@@ -10,6 +10,7 @@ import CancelButton from './cancel-new-button';
 import { useQueryClient } from '@tanstack/react-query';
 import { Location } from '@/types';
 import { AxiosResponse } from 'axios';
+import { useCreateLocation, useUpdateLocation } from '@/hooks';
 
 export type FormValues = {
   location: string;
@@ -41,17 +42,21 @@ export default function LocationForm({
   const { register, handleSubmit, formState, setValue } = useForm({
     defaultValues: defaultValues,
   });
+  const createLocation = useCreateLocation();
+  const updateLocation = useUpdateLocation();
 
   const selectedNames = getUsersWithAccessTo(locationId);
 
   async function submitForm(data: FormValues) {
     try {
       let response;
-      // TODO: Replace with mutations
       if (locationId) {
-        response = await axios.patch(`${NEXT_LOCATIONS}/${locationId}`, data);
+        response = await updateLocation.mutateAsync({
+          ...data,
+          locationId,
+        });
       } else {
-        response = await axios.post(NEXT_LOCATIONS, data);
+        response = await createLocation.mutateAsync(data);
       }
       console.log('response', response.data);
       onSuccess && onSuccess();
