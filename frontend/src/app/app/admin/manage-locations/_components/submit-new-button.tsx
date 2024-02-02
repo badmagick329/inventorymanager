@@ -1,16 +1,14 @@
 import { Button } from '@nextui-org/react';
 import { FormValues } from './location-form';
 import { FormState } from 'react-hook-form';
-import { Plus, Pencil } from 'lucide-react';
+import { Check } from 'lucide-react';
 
 export default function SubmitButton({
   isLoading,
   formState,
-  editMode,
 }: {
   isLoading: boolean;
   formState: FormState<FormValues>;
-  editMode?: boolean;
 }) {
   return (
     <Button
@@ -21,7 +19,7 @@ export default function SubmitButton({
       isLoading={formState.isSubmitting || isLoading}
       isIconOnly
     >
-      {editMode ? <Pencil size={24} /> : <Plus size={24} />}
+      <Check />
     </Button>
   );
 }
