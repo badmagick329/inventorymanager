@@ -10,6 +10,7 @@ COPY tailwind.config.ts ./tailwind.config.ts
 COPY postcss.config.js ./postcss.config.js
 COPY .npmrc ./.npmrc
 COPY ./src ./src
+COPY ./public ./public
 RUN pnpm install --frozen-lockfile
 RUN pnpm run build
 EXPOSE 3000
