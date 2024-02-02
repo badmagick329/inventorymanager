@@ -41,8 +41,6 @@ services:
     restart: "on-failure"
     depends_on:
       - backend
-    volumes:
-      - ./frontend/public:/app/public
 
   nginx:
     build:
