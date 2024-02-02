@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from rest_framework import permissions, status
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
@@ -67,8 +68,15 @@ class ItemLocationsDetail(APIView):
         serializer = ItemLocationSerializer(
             item_location, request.data, partial=True
         )
+
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            try:
+                serializer.update(item_location, serializer.validated_data)
+            except ValidationError as e:
+                return Response(
+                    data=str(e),
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             return Response(
                 data=serializer.data,
                 status=status.HTTP_200_OK,

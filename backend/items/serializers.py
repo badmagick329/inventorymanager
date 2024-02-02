@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from users.models import UserAccount
 
@@ -31,13 +32,29 @@ class ItemLocationSerializer(serializers.ModelSerializer):
             username__in=validated_data.get("users", [])
         ).all()
         item_location.users.set(users)
+        try:
+            item_location.full_clean()
+        except ValidationError as e:
+            item_location.delete()
+            raise serializers.ValidationError(e.message_dict)
         item_location.save()
         return item_location
 
     def update(self, instance, validated_data):
-        # users = validated_data.get("users", [])
-        # user_accounts = UserAccount.objects.filter(username__in=users).all()
+        name = validated_data.get("name", instance.name).strip()
+        self.validate_new_name(name, instance.id)
         return super().update(instance, validated_data)
+
+    def validate_new_name(self, name, self_id):
+        name = name.strip()
+        if not name:
+            raise serializers.ValidationError("Name cannot be empty")
+        saved_instance = ItemLocation.objects.filter(name__iexact=name).first()
+        if saved_instance and saved_instance.id != self_id:
+            raise serializers.ValidationError(
+                {"name": f"ItemLocation with name {name} already exists"}
+            )
+        return name
 
     def to_internal_value(self, data):
         if hasattr(data, "_mutable"):
