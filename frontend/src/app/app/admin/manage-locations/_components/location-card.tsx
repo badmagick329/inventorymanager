@@ -14,6 +14,7 @@ import { useDeleteLocation } from '@/hooks';
 import { useQueryClient } from '@tanstack/react-query';
 import DeleteModal from './delete-modal';
 import LocationFormCard from './location-form-card';
+import { ICON_MD } from '@/consts';
 
 type LocationCardProps = {
   locationId?: number;
@@ -82,7 +83,7 @@ export default function LocationCard({
               size='lg'
               onClick={() => setShowForm(true)}
             >
-              <Pencil size={24} /> Edit
+              <Pencil size={ICON_MD} /> Edit
             </Button>
             <Button
               className='text-danger-600'
@@ -91,7 +92,7 @@ export default function LocationCard({
               size='lg'
               isLoading={deleteLocation.isPending || fetchingLocations()}
             >
-              <Trash size={24} /> Delete
+              <Trash size={ICON_MD} /> Delete
             </Button>
           </div>
           <DeleteModal disclosure={disclosure} locationId={locationId} />

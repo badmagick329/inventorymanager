@@ -4,7 +4,6 @@ import React from 'react';
 import UsernamesDropdown from './usernames-dropdown';
 import LocationInput from './location-input';
 import SubmitButton from './submit-new-button';
-import { NEXT_LOCATIONS } from '@/consts/urls';
 import axios from 'axios';
 import CancelButton from './cancel-new-button';
 import { useQueryClient } from '@tanstack/react-query';

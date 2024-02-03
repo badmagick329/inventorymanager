@@ -72,9 +72,21 @@ class UserAccountsList(APIView):
     permission_classes = (permissions.IsAdminUser,)
 
     def get(self, request: Request):
-        users = UserAccount.objects.all()
+        users = UserAccount.objects.all().prefetch_related("item_locations")
+        data = list()
+        for user in users:
+            data.append(
+                {
+                    "id": user.id,
+                    "username": user.username,
+                    "locations": [
+                        item_location.name
+                        for item_location in user.item_locations.all()
+                    ],
+                }
+            )
         return Response(
-            data=[user.username for user in users],
+            data=data,
             status=status.HTTP_200_OK,
         )
 

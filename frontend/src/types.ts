@@ -4,6 +4,12 @@ export type Location = {
   users?: string[];
 };
 
+export type User = {
+  id: number;
+  username: string;
+  locations: string[];
+};
+
 export type Disclosure = {
   isOpen: boolean;
   onOpen: () => void;
