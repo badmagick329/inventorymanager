@@ -1,6 +1,6 @@
 'use client';
 import { Link, Button } from '@nextui-org/react';
-import { APP_MANAGE_LOCATIONS } from '@/consts/urls';
+import { APP_MANAGE_LOCATIONS, APP_MANAGE_USERS } from '@/consts/urls';
 
 export default function AdminPage() {
   return (
@@ -17,6 +17,8 @@ export default function AdminPage() {
         Manage Locations
       </Button>
       <Button
+        as={Link}
+        href={APP_MANAGE_USERS}
         className='w-64 rounded-md font-semibold'
         color='secondary'
         variant='ghost'

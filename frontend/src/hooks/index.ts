@@ -4,6 +4,9 @@ import useLogout from './useLogout';
 import useDeleteLocation from './useDeleteLocation';
 import useCreateLocation from './useCreateLocation';
 import useUpdateLocation from './useUpdateLocation';
+import useUsers from './useUsers';
+import useDeleteUser from './useDeleteUser';
+import useCreateUser from './useCreateUser';
 
 export {
   useLocations,
@@ -12,4 +15,7 @@ export {
   useDeleteLocation,
   useCreateLocation,
   useUpdateLocation,
+  useUsers,
+  useDeleteUser,
+  useCreateUser,
 };

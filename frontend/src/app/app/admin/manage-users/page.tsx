@@ -1,0 +1,43 @@
+'use client';
+import Spinner from '@/components/Spinner';
+import React from 'react';
+import UserCard from './_components/user-card';
+import NewForm from './_components/new-form';
+import { User } from '@/types';
+import { useUsers } from '@/hooks';
+
+export default function ManageUsers() {
+  const { error, isError, isLoading, data, refetch } = useUsers();
+  if (isError) {
+    return (
+      <div>
+        <span>An error occurred. Try again?</span>
+        <button onClick={() => refetch()}>Retry</button>
+      </div>
+    );
+  }
+  const users = data?.data;
+  if (users) {
+    return (
+      <div className='flex h-full w-full flex-grow flex-col items-center gap-4 p-4'>
+        <div className='flex text-2xl font-semibold'>Manage Users</div>
+        <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8 2xl:grid-cols-3'>
+          {users.map((user: User) => {
+            return (
+              <UserCard
+                key={user.username}
+                username={user.username}
+                locations={user.locations}
+                userId={user.id}
+              />
+            );
+          })}
+          <NewForm />
+        </div>
+      </div>
+    );
+  }
+  if (isLoading) {
+    return <Spinner />;
+  }
+}
