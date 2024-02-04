@@ -6,14 +6,12 @@ import { User as UserIcon } from 'lucide-react';
 
 type UsernamesSelectProps = {
   usernames: string[];
-  setValue: UseFormSetValue<FormValues>;
   selectedNames?: string[];
   register: UseFormRegister<FormValues>;
 };
 
 export default function UsernamesSelect({
   usernames,
-  setValue,
   selectedNames,
   register,
 }: UsernamesSelectProps) {
