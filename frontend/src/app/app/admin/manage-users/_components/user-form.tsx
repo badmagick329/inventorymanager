@@ -3,7 +3,7 @@ import { useState } from 'react';
 import React from 'react';
 import SubmitButton from './submit-new-button';
 import CancelButton from './cancel-new-button';
-import { Input, Select, SelectItem } from '@nextui-org/react';
+import { Input } from '@nextui-org/react';
 import { useCreateUser } from '@/hooks';
 import axios from 'axios';
 
@@ -83,19 +83,6 @@ export default function UserForm({ onSuccess, onCancel }: FormProps) {
         autoComplete='off'
         {...register('password2', { required: 'Password cannot be empty' })}
       />
-      <Select
-        label='Favorite Animal'
-        placeholder='Select an animal'
-        selectionMode='multiple'
-        className='max-w-xs'
-      >
-        <SelectItem key={'dog'} value='dog'>
-          Dog
-        </SelectItem>
-        <SelectItem key={'cat'} value='cat'>
-          Cat
-        </SelectItem>
-      </Select>
       {/* TODO: Add loading state */}
       <div className='flex w-full items-center justify-around'>
         <CancelButton onCancel={onCancel} />
