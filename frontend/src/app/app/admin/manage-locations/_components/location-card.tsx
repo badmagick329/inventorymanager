@@ -10,11 +10,12 @@ import {
   useDisclosure,
 } from '@nextui-org/react';
 import { Eye, EyeOff, Pencil, Trash } from 'lucide-react';
-import { useDeleteLocation } from '@/hooks';
-import { useQueryClient } from '@tanstack/react-query';
+import { useDeleteLocation, useUsers } from '@/hooks';
 import DeleteModal from './delete-modal';
 import LocationFormCard from './location-form-card';
 import { ICON_MD } from '@/consts';
+import Spinner from '@/components/Spinner';
+import { User } from '@/types';
 
 type LocationCardProps = {
   locationId?: number;
@@ -27,7 +28,6 @@ export default function LocationCard({
   name,
   users,
 }: LocationCardProps) {
-  const queryClient = useQueryClient();
   const disclosure = useDisclosure();
   const deleteLocation = useDeleteLocation();
   const [showForm, setShowForm] = React.useState(false);
@@ -36,11 +36,34 @@ export default function LocationCard({
     usersText = '';
   }
 
-  function fetchingLocations() {
-    return queryClient.isFetching({ queryKey: ['locations'] }) > 0;
+  const { error, isError, isLoading, data, refetch } = useUsers();
+  if (isLoading) {
+    return <Spinner />;
   }
-  // TODO: Get usernames from the server
-  const usernames = ['testuser1'];
+  if (isError) {
+    return (
+      <div>
+        <span>An error occurred. Try again?</span>
+        <Button color='danger' variant='solid' onClick={() => refetch()}>
+          Retry?
+        </Button>
+      </div>
+    );
+  }
+
+  const fetchedUsers = data?.data;
+  if (!fetchedUsers) {
+    <div>
+      <span>No users found</span>
+      <Button color='danger' variant='solid' onClick={() => refetch()}>
+        Retry?
+      </Button>
+    </div>;
+  }
+
+  const usernames = fetchedUsers.map(
+    (fetchedUser: User) => fetchedUser.username
+  );
 
   if (showForm) {
     return (
@@ -90,7 +113,7 @@ export default function LocationCard({
               onPress={disclosure.onOpen}
               variant='light'
               size='lg'
-              isLoading={deleteLocation.isPending || fetchingLocations()}
+              isLoading={deleteLocation.isPending}
             >
               <Trash size={ICON_MD} /> Delete
             </Button>
