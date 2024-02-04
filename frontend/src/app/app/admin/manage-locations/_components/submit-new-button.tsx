@@ -4,10 +4,8 @@ import { FormState } from 'react-hook-form';
 import { Check } from 'lucide-react';
 
 export default function SubmitButton({
-  isLoading,
   formState,
 }: {
-  isLoading: boolean;
   formState: FormState<FormValues>;
 }) {
   return (
@@ -16,7 +14,7 @@ export default function SubmitButton({
       type='submit'
       color='success'
       variant='light'
-      isLoading={formState.isSubmitting || isLoading}
+      isLoading={formState.isSubmitting}
       isIconOnly
     >
       <Check />

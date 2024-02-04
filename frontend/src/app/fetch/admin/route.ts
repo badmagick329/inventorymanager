@@ -7,7 +7,6 @@ import { API_IS_ADMIN } from '@/consts/urls';
 const BASE_URL = process.env.BASE_URL;
 
 export async function GET(req: Request) {
-  // TODO: Replace with actual query
   const cookieStore = cookies();
   const url = `${BASE_URL}${API_IS_ADMIN}`;
   const token = cookieStore.get(TOKEN_KEY);

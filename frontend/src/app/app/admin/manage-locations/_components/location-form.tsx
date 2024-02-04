@@ -1,7 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import React from 'react';
-import UsernamesDropdown from './usernames-dropdown';
 import LocationInput from './location-input';
 import SubmitButton from './submit-new-button';
 import axios from 'axios';
@@ -10,6 +9,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Location } from '@/types';
 import { AxiosResponse } from 'axios';
 import { useCreateLocation, useUpdateLocation } from '@/hooks';
+import UsernamesSelect from './usernames-select';
 
 export type FormValues = {
   location: string;
@@ -38,12 +38,11 @@ export default function LocationForm({
     location: location || '',
     usernames: (usernames || []) as string[],
   };
-  const { register, handleSubmit, formState, setValue } = useForm({
+  const { register, handleSubmit, formState } = useForm({
     defaultValues: defaultValues,
   });
   const createLocation = useCreateLocation();
   const updateLocation = useUpdateLocation();
-
   const selectedNames = getUsersWithAccessTo(locationId);
 
   async function submitForm(data: FormValues) {
@@ -57,11 +56,9 @@ export default function LocationForm({
       } else {
         response = await createLocation.mutateAsync(data);
       }
-      console.log('response', response.data);
       onSuccess && onSuccess();
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log('axios error', error.response?.data);
         const errorResponse = error.response?.data;
         if (error.response?.status === 400 && errorResponse) {
           for (const [_, value] of Object.entries(errorResponse)) {
@@ -86,13 +83,15 @@ export default function LocationForm({
         formState={formState}
       />
       <div className='flex w-full items-center justify-between'>
-        <UsernamesDropdown
+        <UsernamesSelect
           usernames={usernames}
-          setValue={setValue}
           selectedNames={selectedNames}
+          register={register}
         />
-        <CancelButton onCancel={onCancel} />
-        <SubmitButton isLoading={false} formState={formState} />
+        <div className='flex gap-4'>
+          <CancelButton onCancel={onCancel} />
+          <SubmitButton formState={formState} />
+        </div>
       </div>
     </form>
   );

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "esnext",
     "lib": [
       "dom",
       "dom.iterable",
@@ -18,14 +19,14 @@
     "incremental": true,
     "plugins": [
       {
-        "name": "next"
-      }
+        "name": "next",
+      },
     ],
     "paths": {
       "@/*": [
         "./src/*"
-      ]
-    }
+      ],
+    },
   },
   "include": [
     "next-env.d.ts",
@@ -35,5 +36,5 @@
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
 }
