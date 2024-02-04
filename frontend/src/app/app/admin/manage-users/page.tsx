@@ -23,14 +23,7 @@ export default function ManageUsers() {
         <div className='flex text-2xl font-semibold'>Manage Users</div>
         <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8 2xl:grid-cols-3'>
           {users.map((user: User) => {
-            return (
-              <UserCard
-                key={user.username}
-                username={user.username}
-                locations={user.locations}
-                userId={user.id}
-              />
-            );
+            return <UserCard key={user.username} user={user} />;
           })}
           <NewForm />
         </div>
