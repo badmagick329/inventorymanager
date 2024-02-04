@@ -15,17 +15,13 @@ import { useQueryClient } from '@tanstack/react-query';
 import DeleteModal from './delete-modal';
 import { ICON_MD } from '@/consts';
 
+import { User } from '@/types';
+
 type UserCardProps = {
-  userId: number;
-  username: string;
-  locations: string[];
+  user: User;
 };
 
-export default function UserCard({
-  userId,
-  username,
-  locations,
-}: UserCardProps) {
+export default function UserCard({ user }: UserCardProps) {
   const queryClient = useQueryClient();
   const disclosure = useDisclosure();
   const [showForm, setShowForm] = React.useState(false);
@@ -34,14 +30,14 @@ export default function UserCard({
     <Card className='flex min-w-[280px] max-w-[320px] flex-col rounded-md md:min-w-[480px] md:max-w-[640px]'>
       <CardHeader>
         <p className='text-md md:text-semibold w-full text-center md:text-base'>
-          {username}
+          {user.username}
         </p>
       </CardHeader>
       <Divider />
       <CardBody>
         <div className='flex flex-col gap-2'>
-          {locations.map((location) => (
-            <p>{location}</p>
+          {user.locations.map((location) => (
+            <p key={location.name}>{location.name}</p>
           ))}
         </div>
       </CardBody>
@@ -58,7 +54,7 @@ export default function UserCard({
               <Trash size={ICON_MD} /> Delete
             </Button>
           </div>
-          <DeleteModal disclosure={disclosure} userId={userId} />
+          <DeleteModal disclosure={disclosure} userId={user.id} />
         </div>
       </CardFooter>
     </Card>

@@ -7,7 +7,7 @@ export type Location = {
 export type User = {
   id: number;
   username: string;
-  locations: string[];
+  locations: Location[];
 };
 
 export type Disclosure = {

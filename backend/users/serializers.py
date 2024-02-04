@@ -15,3 +15,19 @@ class UserAccountSerializer(serializers.ModelSerializer):
             password=validated_data["password"],
         )
         return user
+
+
+class UserAccountWithLocationsSerializer(serializers.BaseSerializer):
+    def to_representation(self, instance: UserAccount):
+        return {
+            "id": instance.id,  # type: ignore
+            "username": instance.username,
+            "locations": [
+                {
+                    "id": location.id,
+                    "name": location.name,
+                    "users": [user.username for user in location.users.all()],
+                }
+                for location in instance.item_locations.all()  # type: ignore
+            ],
+        }
