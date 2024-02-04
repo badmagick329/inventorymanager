@@ -15,7 +15,7 @@ class ItemLocation(models.Model):
 
     class Meta:  # type: ignore
         ordering = ["id"]
-        verbose_name = "ItemLocation"
+        verbose_name = "Location"
 
     def clean_fields(self, exclude=None) -> None:
         self.name = self.name.strip()

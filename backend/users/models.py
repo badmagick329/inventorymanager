@@ -42,6 +42,9 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):  # type: ignore
 
     USERNAME_FIELD = "username"
 
+    class Meta:  # type: ignore
+        ordering = ["id"]
+
     def __str__(self):
         return self.username
 
