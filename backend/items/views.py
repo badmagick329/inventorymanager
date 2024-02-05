@@ -108,14 +108,7 @@ class ItemLocationsList(APIView):
         assert isinstance(user, UserAccount)
         if user.is_admin:
             locations = ItemLocation.objects.all()
-            serialized = [
-                {
-                    "id": location.id,
-                    "name": location.name,
-                    "users": [user.username for user in location.users.all()],
-                }
-                for location in locations
-            ]
+            serialized = ItemLocationSerializer(locations, many=True).data
         else:
             locations = ItemLocation.objects.filter(users__in=[user]).all()
             serialized = [
