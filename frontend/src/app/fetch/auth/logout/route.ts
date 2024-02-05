@@ -1,23 +1,20 @@
 import { serialize } from 'cookie';
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import axios from 'axios';
 import { createErrorResponse } from '@/utils/responses';
 import { TOKEN_KEY } from '@/consts';
 import { API_LOGOUT } from '@/consts/urls';
+import { createAuthHeader } from '@/utils/responses';
 const BASE_URL = process.env.BASE_URL;
 
 export async function POST(req: Request) {
-  const cookieStore = cookies();
-  const token = cookieStore.get(TOKEN_KEY);
-  if (!token) {
-    return new NextResponse(JSON.stringify({ message: 'no token' }), {
-      status: 400,
-    });
-  }
-  const authToken = JSON.parse(token.value);
   const url = `${BASE_URL}${API_LOGOUT}`;
-  const headers = {
+  const { Authorization, ErrorResponse } = createAuthHeader();
+  if (ErrorResponse) {
+    return ErrorResponse;
+  }
+  const headers = { Authorization };
+  const responseHeaders = {
     'Set-Cookie': serialize(TOKEN_KEY, '', {
       path: '/',
       httpOnly: true,
@@ -30,15 +27,15 @@ export async function POST(req: Request) {
       url,
       {},
       {
-        headers: { Authorization: `Token ${authToken}` },
+        headers,
       }
     );
     console.log(`logout ${response.status}`);
     return new NextResponse(JSON.stringify({ message: 'success' }), {
       status: 200,
-      headers: headers,
+      headers: responseHeaders,
     });
   } catch (error) {
-    return createErrorResponse(error, '', headers);
+    return createErrorResponse(error, '', responseHeaders);
   }
 }
