@@ -1,7 +1,7 @@
 import React from 'react';
 import LoginForm from '@/app/_components/login-form';
 import Image from 'next/image';
-import { FadeIn, MoveUp } from '@/transitions';
+import { MoveRight, MoveUp } from '@/transitions';
 import WarehouseImage from '../../public/images/warehouse-sm.png';
 
 export const metadata = {
@@ -21,9 +21,9 @@ export default function LoginPage() {
             unoptimized
           />
         </MoveUp>
-        <FadeIn>
+        <MoveRight>
           <h1 className='p-2 text-xl font-semibold'>Inventory Manager</h1>
-        </FadeIn>
+        </MoveRight>
       </div>
       <LoginForm />
     </main>

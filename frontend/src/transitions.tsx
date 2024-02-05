@@ -1,19 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 
-export function PageTransition({ children }: { children: React.ReactNode }) {
-  return (
-    <motion.div
-      initial={{ y: 20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ ease: 'easeInOut', duration: 0.75 }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-export function FadeIn({ children }: { children: React.ReactNode }) {
+export function MoveRight({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
       initial={{ x: -30, rotate: 0 }}
