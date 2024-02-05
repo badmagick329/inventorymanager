@@ -1,21 +1,18 @@
 'use client';
-import Spinner from '@/components/Spinner';
+import { Spinner } from '@/components/loaders';
 import { Location } from '@/types';
 import { useLocations } from '@/hooks';
 import React from 'react';
 import LocationCard from './_components/location-card';
 import NewForm from './_components/new-form';
+import { ConnectionError } from '@/components/errors';
 
 export default function ManageLocation() {
-  const { error, isError, isLoading, data, refetch } = useLocations();
+  const { isError, isLoading, data } = useLocations();
   if (isError) {
-    return (
-      <div>
-        <span>An error occurred. Try again?</span>
-        <button onClick={() => refetch()}>Retry</button>
-      </div>
-    );
+    return <ConnectionError />;
   }
+  return <ConnectionError />;
   const locations = data?.data;
   if (locations) {
     return (

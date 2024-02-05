@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import Spinner from '@/components/Spinner';
+import { Spinner } from '@/components/loaders';
 import useLocations from '@/hooks/useLocations';
 import { Divider } from '@nextui-org/react';
 import { APP_LOGIN } from '@/consts/urls';

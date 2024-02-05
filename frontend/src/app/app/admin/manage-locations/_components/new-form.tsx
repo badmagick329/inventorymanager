@@ -3,34 +3,22 @@ import LocationFormCard from './location-form-card';
 import NewFormCover from './new-form-cover';
 import { useUsers } from '@/hooks';
 import { User } from '@/types';
-import Spinner from '@/components/Spinner';
-import { Button } from '@nextui-org/react';
+import { Spinner } from '@/components/loaders';
+import { ConnectionError } from '@/components/errors';
 
 export default function NewForm() {
   const [showForm, setShowForm] = useState(false);
-  const { error, isError, isLoading, data, refetch } = useUsers();
+  const { isError, isLoading, data } = useUsers();
   if (isLoading) {
     return <Spinner />;
   }
   if (isError) {
-    return (
-      <div>
-        <span>An error occurred. Try again?</span>
-        <Button color='danger' variant='solid' onClick={() => refetch()}>
-          Retry?
-        </Button>
-      </div>
-    );
+    return <ConnectionError />;
   }
 
   const users = data?.data;
   if (!users) {
-    <div>
-      <span>No users found</span>
-      <Button color='danger' variant='solid' onClick={() => refetch()}>
-        Retry?
-      </Button>
-    </div>;
+    <ConnectionError message='No users found' />;
   }
 
   const usernames = users.map((user: User) => user.username);
