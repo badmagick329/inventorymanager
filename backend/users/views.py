@@ -73,7 +73,18 @@ class UserAccountsList(APIView):
     permission_classes = (permissions.IsAdminUser,)
 
     def get(self, request: Request):
-        users = UserAccount.objects.all().prefetch_related("item_locations")
+        params = request.GET
+        include_admins = (
+            params.get("include_admins", "false").lower() == "true"
+        )
+        if include_admins:
+            users = UserAccount.objects.all().prefetch_related(
+                "item_locations"
+            )
+        else:
+            users = UserAccount.objects.filter(
+                is_admin=False
+            ).prefetch_related("item_locations")
         data = list()
         for user in users:
             data.append(UserAccountSerializer(user).data)

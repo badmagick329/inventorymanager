@@ -74,7 +74,7 @@ def test_admin_can_list_users(api_client: APIClient, user_factory) -> None:
     admin_user, password = user_factory(is_admin=True)
     api_client.force_authenticate(user=admin_user)
     user, _ = user_factory(username="testuser")
-    response = api_client.get("/api/users")
+    response = api_client.get("/api/users?include_admins=true")
     assert response.status_code == 200
     assert len(response.data) == 2
     assert response.data[0]["username"] == admin_user.username
@@ -98,7 +98,7 @@ def test_admin_gets_location_list_with_users(
     item_location = item_location_factory()
     item_location.users.add(user)
     item_location.save()
-    response = api_client.get("/api/users")
+    response = api_client.get("/api/users?include_admins=true")
     assert response.status_code == 200
     assert len(response.data) == 2
     expected_location_keys = [
@@ -108,3 +108,22 @@ def test_admin_gets_location_list_with_users(
     ]
     for key in expected_location_keys:
         assert key in response.data[1]["locations"][0]
+
+
+def test_admin_can_list_non_admin_users(
+    api_client: APIClient, user_factory
+) -> None:
+    admin_user, password = user_factory(is_admin=True)
+    api_client.force_authenticate(user=admin_user)
+    user, _ = user_factory(username="testuser")
+    response = api_client.get("/api/users")
+    assert response.status_code == 200
+    assert len(response.data) == 1
+    assert response.data[0]["username"] == user.username
+    expected_user_keys = [
+        "id",
+        "username",
+        "locations",
+    ]
+    for key in expected_user_keys:
+        assert key in response.data[0]

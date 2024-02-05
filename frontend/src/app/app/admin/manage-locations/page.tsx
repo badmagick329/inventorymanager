@@ -12,7 +12,6 @@ export default function ManageLocation() {
   if (isError) {
     return <ConnectionError />;
   }
-  return <ConnectionError />;
   const locations = data?.data;
   if (locations) {
     return (
