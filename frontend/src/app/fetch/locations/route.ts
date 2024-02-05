@@ -1,26 +1,18 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import axios from 'axios';
 import { createErrorResponse } from '@/utils/responses';
 const BASE_URL = process.env.BASE_URL;
-import { TOKEN_KEY } from '@/consts';
 import { API_LOCATIONS } from '@/consts/urls';
+import { createAuthHeader } from '@/utils/responses';
 
 export async function GET(req: Request) {
-  const cookieStore = cookies();
   const url = `${BASE_URL}${API_LOCATIONS}`;
-  const token = cookieStore.get(TOKEN_KEY);
-  if (!token) {
-    return new NextResponse(JSON.stringify({ message: 'no token' }), {
-      status: 400,
-    });
+  const { Authorization, ErrorResponse } = createAuthHeader();
+  if (ErrorResponse) {
+    return ErrorResponse;
   }
-  const authHeader = `Token ${JSON.parse(token.value)}`;
+  const headers = { Authorization };
   try {
-    const headers = {
-      Authorization: authHeader,
-    };
-
     const response = await axios.get(url, { headers });
     return new NextResponse(JSON.stringify(response.data), {
       status: 200,
@@ -31,19 +23,13 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const cookieStore = cookies();
   const url = `${BASE_URL}${API_LOCATIONS}`;
-  const token = cookieStore.get(TOKEN_KEY);
-  if (!token) {
-    return new NextResponse(JSON.stringify({ message: 'no token' }), {
-      status: 400,
-    });
+  const { Authorization, ErrorResponse } = createAuthHeader();
+  if (ErrorResponse) {
+    return ErrorResponse;
   }
-  const authHeader = `Token ${JSON.parse(token.value)}`;
+  const headers = { Authorization };
   try {
-    const headers = {
-      Authorization: authHeader,
-    };
     const body = await req.json();
     const payload = {
       name: body.location,

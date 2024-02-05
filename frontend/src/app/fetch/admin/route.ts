@@ -1,25 +1,19 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import axios from 'axios';
 import { createErrorResponse } from '@/utils/responses';
-import { TOKEN_KEY } from '@/consts';
 import { API_IS_ADMIN } from '@/consts/urls';
 const BASE_URL = process.env.BASE_URL;
+import { createAuthHeader } from '@/utils/responses';
 
 export async function GET(req: Request) {
-  const cookieStore = cookies();
   const url = `${BASE_URL}${API_IS_ADMIN}`;
-  const token = cookieStore.get(TOKEN_KEY);
-  if (!token) {
-    return new NextResponse(JSON.stringify({ message: 'no token' }), {
-      status: 400,
-    });
+  const { Authorization, ErrorResponse } = createAuthHeader();
+  if (ErrorResponse) {
+    return ErrorResponse;
   }
-  const authHeader = `Token ${JSON.parse(token.value)}`;
+  const headers = { Authorization };
   try {
-    const response = await axios.get(url, {
-      headers: { Authorization: authHeader },
-    });
+    await axios.get(url, { headers });
     return new NextResponse(JSON.stringify({}), {
       status: 200,
     });
