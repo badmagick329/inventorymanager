@@ -62,7 +62,7 @@ class UserAccountsDetail(APIView):
         user = UserAccount.objects.filter(id=user_id).first()
         if not user:
             return Response(
-                data={"error": "User not found"},
+                data={"errors": "User not found"},
                 status=status.HTTP_404_NOT_FOUND,
             )
         user.delete()
@@ -94,10 +94,16 @@ class UserAccountsList(APIView):
         )
 
     def post(self, request: Request):
-        user = UserAccount.objects.create_user(
-            username=request.data["username"].strip().lower(),
-            password=request.data["password"],
-        )
+        try:
+            user = UserAccount.objects.create_user(
+                username=request.data["username"].strip().lower(),
+                password=request.data["password"],
+            )
+        except Exception as e:
+            return Response(
+                data={"errors": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         return Response(
             data={"id": user.id, "username": user.username},
             status=status.HTTP_201_CREATED,

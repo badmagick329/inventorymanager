@@ -62,12 +62,39 @@ def test_admin_can_create_user(api_client: APIClient, user_factory) -> None:
     assert response.status_code == 201
 
 
+def test_admin_cannot_create_user_with_empty_string_username(
+    api_client: APIClient, user_factory
+) -> None:
+    admin_user, _ = user_factory(is_admin=True)
+    api_client.force_authenticate(user=admin_user)
+    response = api_client.post(
+        "/api/users",
+        {
+            "username": "",
+            "password": "testuser123456",
+        },
+        format="json",
+    )
+    assert "errors" in response.data
+    assert response.status_code == 400
+
+
 def test_admin_can_delete_user(api_client: APIClient, user_factory) -> None:
     admin_user, password = user_factory(is_admin=True)
     api_client.force_authenticate(user=admin_user)
     user, _ = user_factory(username="testuser")
     response = api_client.delete(f"/api/users/{user.id}")
     assert response.status_code == 204
+
+
+def test_admin_cannot_delete_non_existent_user(
+    api_client: APIClient, user_factory
+) -> None:
+    admin_user, password = user_factory(is_admin=True)
+    api_client.force_authenticate(user=admin_user)
+    response = api_client.delete("/api/users/999")
+    assert "errors" in response.data
+    assert response.status_code == 404
 
 
 def test_admin_can_list_users(api_client: APIClient, user_factory) -> None:
