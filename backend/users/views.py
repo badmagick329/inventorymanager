@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import UserAccount
-from .serializers import UserAccountWithLocationsSerializer
+from .serializers import UserAccountSerializer
 
 
 class LoginView(KnoxLoginView):
@@ -76,7 +76,7 @@ class UserAccountsList(APIView):
         users = UserAccount.objects.all().prefetch_related("item_locations")
         data = list()
         for user in users:
-            data.append(UserAccountWithLocationsSerializer(user).data)
+            data.append(UserAccountSerializer(user).data)
         return Response(
             data=data,
             status=status.HTTP_200_OK,
