@@ -16,8 +16,6 @@ class UserAccountSerializer(serializers.ModelSerializer):
         )
         return user
 
-
-class UserAccountWithLocationsSerializer(serializers.BaseSerializer):
     def to_representation(self, instance: UserAccount):
         return {
             "id": instance.id,  # type: ignore
