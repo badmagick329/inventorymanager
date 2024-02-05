@@ -27,6 +27,14 @@ LOCATION_LIST_POST_VALUES = [
         {"name": "test item location", "users": []},
     ),
     (
+        "create item location with empty string fails",
+        [],
+        [],
+        {"name": "", "users": ""},
+        400,
+        {},
+    ),
+    (
         "item location with missing fields fails",
         [],
         [],
@@ -104,6 +112,14 @@ LOCATION_PATCH_VALUES = [
         {"name": "location 3", "users": ""},
         200,
         {"name": "location 3", "users": []},
+    ),
+    (
+        "cannot edit item location name to an empty string",
+        [],
+        ["location 1", "location 2"],
+        {"name": "", "users": ""},
+        400,
+        {},
     ),
     (
         "can edit item location with multiple users",

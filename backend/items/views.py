@@ -39,7 +39,7 @@ class ItemLocationsDetail(APIView):
             ).first()
         if not item_location:
             return Response(
-                data={"error": "Item location not found"},
+                data={"errors": "Item location not found"},
                 status=status.HTTP_404_NOT_FOUND,
             )
         serializer = ItemLocationSerializer(item_location)
@@ -52,7 +52,7 @@ class ItemLocationsDetail(APIView):
         item_location = ItemLocation.objects.filter(id=id).first()
         if not item_location:
             return Response(
-                data={"error": "Item location not found"},
+                data={"errors": "Item location not found"},
                 status=status.HTTP_404_NOT_FOUND,
             )
         item_location.delete()
@@ -62,7 +62,7 @@ class ItemLocationsDetail(APIView):
         item_location = ItemLocation.objects.filter(id=id).first()
         if not item_location:
             return Response(
-                data={"error": "Item location not found"},
+                data={"errors": "Item location not found"},
                 status=status.HTTP_404_NOT_FOUND,
             )
         serializer = ItemLocationSerializer(
