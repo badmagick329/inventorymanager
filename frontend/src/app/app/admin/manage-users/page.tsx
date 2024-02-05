@@ -1,20 +1,16 @@
 'use client';
-import Spinner from '@/components/Spinner';
+import { Spinner } from '@/components/loaders';
 import React from 'react';
 import UserCard from './_components/user-card';
 import NewForm from './_components/new-form';
 import { User } from '@/types';
 import { useUsers } from '@/hooks';
+import { ConnectionError } from '@/components/errors';
 
 export default function ManageUsers() {
-  const { error, isError, isLoading, data, refetch } = useUsers();
+  const { isError, isLoading, data } = useUsers();
   if (isError) {
-    return (
-      <div>
-        <span>An error occurred. Try again?</span>
-        <button onClick={() => refetch()}>Retry</button>
-      </div>
-    );
+    return <ConnectionError />;
   }
   const users = data?.data;
   if (users) {

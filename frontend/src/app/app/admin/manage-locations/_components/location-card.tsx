@@ -14,7 +14,7 @@ import { useDeleteLocation, useUsers } from '@/hooks';
 import DeleteModal from './delete-modal';
 import LocationFormCard from './location-form-card';
 import { ICON_MD } from '@/consts';
-import Spinner from '@/components/Spinner';
+import { Spinner } from '@/components/loaders';
 import { User } from '@/types';
 
 type LocationCardProps = {
