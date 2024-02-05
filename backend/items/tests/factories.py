@@ -1,5 +1,5 @@
 import pytest
-from items.models import ItemLocation
+from items.models import ItemLocation, Vendor
 from users.models import UserAccount
 
 
@@ -18,3 +18,13 @@ def item_location_factory(db):
         return item_location
 
     return create_item_locations
+
+
+@pytest.fixture
+def vendor_factory(db):
+    def create_vendors(name="Test Vendor", location_name="Test Item Location"):
+        item_location = ItemLocation.objects.create(name=location_name)
+        vendor = Vendor.objects.create(name=name, location=item_location)
+        return vendor, item_location
+
+    return create_vendors

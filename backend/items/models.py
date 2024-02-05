@@ -1,5 +1,5 @@
-from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.functions import Lower
 
 
 class ItemLocation(models.Model):
@@ -16,17 +16,34 @@ class ItemLocation(models.Model):
     class Meta:  # type: ignore
         ordering = ["id"]
         verbose_name = "Location"
+        constraints = [
+            models.UniqueConstraint(
+                Lower("name"), name="unique_item_location_name"
+            ),
+            models.CheckConstraint(
+                name="non_empty_item_location_name", check=~models.Q(name="")
+            ),
+        ]
 
-    def clean_fields(self, exclude=None) -> None:
-        self.name = self.name.strip()
-        saved_instance = ItemLocation.objects.filter(
-            name__iexact=self.name
-        ).first()
-        if saved_instance and saved_instance.id != self.id:
-            raise ValidationError(
-                {"name": "ItemLocation with this name already exists"},
-                params={"value": self.name},
-                code="unique",
-            )
 
-        super().clean_fields(exclude=exclude)
+class Vendor(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100, unique=True)
+    location = models.ForeignKey(
+        "items.ItemLocation", on_delete=models.CASCADE, related_name="vendors"
+    )
+
+    class Meta:  # type: ignore
+        ordering = ["id"]
+        verbose_name = "Vendor"
+        constraints = [
+            models.UniqueConstraint(
+                Lower("name"), "location_id", name="unique_vendor_name"
+            ),
+            models.CheckConstraint(
+                name="non_empty_vendor_name", check=~models.Q(name="")
+            ),
+        ]
+
+    def __str__(self):
+        return f"Vendor<(id={self.id}, name={self.name}, location={self.location})>"
