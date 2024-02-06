@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import pytest
-from items.models import ItemLocation, Order, Vendor
+from items.models import ItemLocation, Order, Sale, Vendor
 from users.models import UserAccount
 
 
@@ -80,3 +80,34 @@ def order_factory(db):
         return order
 
     return create_orders
+
+
+@pytest.fixture
+def sale_factory(db):
+    def create_sales(
+        order: Order,
+        vendor: Vendor,
+        date: str | datetime = "1970-01-01",
+        quantity: int = 5,
+        price: float = 200.0,
+        debt: float | None = None,
+        user: UserAccount | None = None,
+    ):
+        match date:
+            case str():
+                date = datetime.strptime(date, "%Y-%m-%d")
+            case datetime():
+                date = date
+            case _:
+                raise ValueError("Invalid date")
+        sale = Sale.objects.create(
+            order=order,
+            date=date,
+            price=price,
+            quantity=quantity,
+            debt=debt,
+            last_modified_by=user,
+        )
+        return sale
+
+    return create_sales

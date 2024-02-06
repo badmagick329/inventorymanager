@@ -2,10 +2,11 @@ from datetime import datetime
 
 import pytest
 from django.db import IntegrityError
-from items.models import Order
+from items.models import Order, Sale
 from items.tests.factories import (
     item_location_factory,
     order_factory,
+    sale_factory,
     vendor_factory,
 )
 from users.tests.factories import user_factory
