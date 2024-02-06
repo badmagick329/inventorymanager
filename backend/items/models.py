@@ -146,8 +146,8 @@ class Order(models.Model):
         ]
 
     @property
-    def price_each(self):
-        return self.price / self.quantity
+    def total_price(self):
+        return self.price * self.quantity
 
     @property
     def _history_user(self):
@@ -165,6 +165,9 @@ class Order(models.Model):
             ), "user passed to save must be a UserAccount instance"
             self.last_modified_by = user
         super().save(*args, **kwargs)
+
+    def cost(self):
+        return self.price * self.quantity
 
     def current_stock(self):
         raise NotImplementedError("current_stock method not implemented")
@@ -185,3 +188,113 @@ class Order(models.Model):
             f"last_modified_by={self.last_modified_by.username}, "
             f"last_modified={self.last_modified})>"
         )
+
+
+class Sale(models.Model):
+    id = models.AutoField(primary_key=True)
+    order = models.ForeignKey(
+        "items.Order", on_delete=models.CASCADE, related_name="sales"
+    )
+    vendor = models.ForeignKey(
+        "items.Vendor", on_delete=models.CASCADE, related_name="sales"
+    )
+    date = models.DateField(blank=True, null=True)
+    quantity = models.IntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_modified_by = models.ForeignKey(
+        "users.UserAccount",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="sales",
+    )
+    last_modified = models.DateTimeField(auto_now=True)
+    history = HistoricalRecords()
+
+    class Meta:  # type: ignore
+        ordering = ["id"]
+        verbose_name = "Sale"
+        constraints = [
+            models.UniqueConstraint(
+                "order_id",
+                "vendor_id",
+                "date",
+                "quantity",
+                "price",
+                "amount_paid",
+                name="unique_sale",
+            ),
+            models.CheckConstraint(
+                name="positive_sale_quantity", check=models.Q(quantity__gt=0)
+            ),
+            models.CheckConstraint(
+                name="positive_sale_price", check=models.Q(price__gt=0)
+            ),
+            models.CheckConstraint(
+                name="positive_sale_amount_paid",
+                check=models.Q(amount_paid__gt=0),
+            ),
+        ]
+
+    @property
+    def _history_user(self):
+        return self.last_modified_by
+
+    @_history_user.setter
+    def _history_user(self, user):
+        self.last_modified_by = user
+
+    def save(self, *args, **kwargs):
+        if "user" in kwargs:
+            user = kwargs.pop("user")
+            assert isinstance(
+                user, UserAccount
+            ), "user passed to save must be a UserAccount instance"
+            self.last_modified_by = user
+        super().save(*args, **kwargs)
+
+    def profit(self):
+        order_sales = self.order.sales.filter(vendor=self.vendor)
+        if order_sales.count() == 0:
+            return 0
+        amount_paid = sum([sale.amount_paid for sale in order_sales])
+        order_cost = self.order_cost()
+        return (amount_paid - order_cost) / len(order_sales)
+
+    def total_profit(self):
+        return self.profit() * self.quantity
+
+    def profit_percentage(self):
+        cost = self.order_cost()
+        return (self.amount_paid - cost) / cost * 100
+
+    def order_cost(self):
+        order_sales = self.order.sales.filter(vendor=self.vendor)
+        sale_quantity = sum([sale.quantity for sale in order_sales])
+        return self.order.price * sale_quantity
+
+    def calculate_potential_revenue_by_filter(self, filters: list):
+        order_sales = self.order.sales.filter(*filters)
+        return calculate_potential_revenue_for_sales(order_sales)
+
+    def __str__(self):
+        date_str = self.date.strftime("%Y-%m-%d") if self.date else "None"
+        return (
+            f"Sale<(id={self.id}, order={self.order.name}, "
+            f"vendor={self.vendor.name}, "
+            f"date={date_str}, "
+            f"quantity={self.quantity}, "
+            f"price={self.price}, "
+            f"amount_paid={self.amount_paid}, "
+            f"created_at={self.created_at}, "
+            f"last_modified_by={self.last_modified_by.username}, "
+            f"last_modified={self.last_modified})>"
+        )
+
+
+def calculate_potential_revenue_for_sales(sales: list["Sale"]):
+    revenue = 0
+    for sale in sales:
+        revenue += sale.quantity * sale.price
+    return revenue
