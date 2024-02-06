@@ -43,7 +43,7 @@ def order_factory(db):
         location: str | ItemLocation = "Test Item Location",
         user: str | UserAccount = "Test User",
         date: str | datetime = "1970-01-01",
-        price: float = 1000.0,
+        price_per_item: float = 1000.0,
         quantity: int = 10,
         current_sale_price: float = 200.0,
     ):
@@ -72,7 +72,7 @@ def order_factory(db):
             name=name,
             location=item_location,
             date=date,
-            price=price,
+            price_per_item=price_per_item,
             quantity=quantity,
             current_sale_price=current_sale_price,
             last_modified_by=user,
@@ -89,7 +89,7 @@ def sale_factory(db):
         vendor: Vendor,
         date: str | datetime = "1970-01-01",
         quantity: int = 5,
-        price: float = 200.0,
+        price_per_item: float = 200.0,
         debt: float | None = None,
         user: UserAccount | None = None,
     ):
@@ -103,7 +103,7 @@ def sale_factory(db):
         sale = Sale.objects.create(
             order=order,
             date=date,
-            price=price,
+            price_per_item=price_per_item,
             quantity=quantity,
             debt=debt,
             last_modified_by=user,

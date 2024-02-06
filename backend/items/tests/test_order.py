@@ -39,7 +39,7 @@ def test_order_creation_fails_with_non_unique_name(order_factory):
 
 def test_price_must_be_positive(order_factory):
     with pytest.raises(IntegrityError):
-        order_factory(price=0)
+        order_factory(price_per_item=0)
 
 
 def test_current_price_must_be_positive(order_factory):
