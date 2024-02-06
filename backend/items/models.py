@@ -2,15 +2,7 @@ from django.db import models
 from django.db.models.functions import Lower
 from django.dispatch import receiver
 from simple_history.models import HistoricalRecords
-from simple_history.signals import pre_create_historical_record
 from users.models import UserAccount
-
-
-@receiver(pre_create_historical_record)
-def set_history_user(sender, **kwargs):
-    history_instance = kwargs["history_instance"]
-    user = kwargs["history_user"]
-    history_instance.history_user = user
 
 
 class ItemLocation(models.Model):
@@ -105,8 +97,7 @@ class Order(models.Model):
     location = models.ForeignKey(
         "items.ItemLocation", on_delete=models.CASCADE, related_name="orders"
     )
-    # per item price
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price_per_item = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
     current_sale_price = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -127,7 +118,7 @@ class Order(models.Model):
                 Lower("name"),
                 "location_id",
                 "date",
-                "price",
+                "price_per_item",
                 "quantity",
                 name="unique_order_name",
             ),
@@ -135,7 +126,8 @@ class Order(models.Model):
                 name="non_empty_order_name", check=~models.Q(name="")
             ),
             models.CheckConstraint(
-                name="positive_order_price", check=models.Q(price__gt=0)
+                name="positive_order_price",
+                check=models.Q(price_per_item__gt=0),
             ),
             models.CheckConstraint(
                 name="positive_order_quantity", check=models.Q(quantity__gt=0)
@@ -148,7 +140,7 @@ class Order(models.Model):
 
     @property
     def total_price(self):
-        return self.price * self.quantity
+        return self.price_per_item * self.quantity
 
     @property
     def _history_user(self):
@@ -171,8 +163,8 @@ class Order(models.Model):
         if vendor:
             order_sales = self.sales.filter(vendor=vendor)  # type: ignore
             order_quantity = sum([sale.quantity for sale in order_sales])
-            return self.price * order_quantity
-        return self.price * self.quantity
+            return self.price_per_item * order_quantity
+        return self.price_per_item * self.quantity
 
     def revenue(self, vendor: Vendor | None = None):
         if vendor:
@@ -205,7 +197,7 @@ class Order(models.Model):
             f"Order<(id={self.id}, name={self.name}, "
             f"date={date_str}, "
             f"location={self.location.name}, "
-            f"price={self.price}, "
+            f"price_per_item={self.price_per_item}, "
             f"quantity={self.quantity}, "
             f"current_sale_price={self.current_sale_price}, "
             f"created_at={self.created_at}, "
@@ -224,8 +216,7 @@ class Sale(models.Model):
     )
     date = models.DateField(blank=True, null=True)
     quantity = models.IntegerField()
-    # per item price
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price_per_item = models.DecimalField(max_digits=10, decimal_places=2)
     debt = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True
     )
@@ -248,14 +239,15 @@ class Sale(models.Model):
                 "vendor_id",
                 "date",
                 "quantity",
-                "price",
+                "price_per_item",
                 name="unique_sale",
             ),
             models.CheckConstraint(
                 name="positive_sale_quantity", check=models.Q(quantity__gt=0)
             ),
             models.CheckConstraint(
-                name="positive_sale_price", check=models.Q(price__gt=0)
+                name="positive_sale_price",
+                check=models.Q(price_per_item__gt=0),
             ),
             models.CheckConstraint(
                 name="positive_sale_debt",
@@ -279,7 +271,7 @@ class Sale(models.Model):
             ), "user passed to save must be a UserAccount instance"
             self.last_modified_by = user
         if self.debt is None:
-            self.debt = self.price * self.quantity
+            self.debt = self.price_per_item * self.quantity
         if self.debt > self.potential_revenue():
             raise ValueError("Debt cannot be higher than potential revenue")
         super().save(*args, **kwargs)
@@ -288,10 +280,10 @@ class Sale(models.Model):
         return self.order.price * self.quantity
 
     def revenue(self):
-        return (self.price * self.quantity) - self.debt
+        return (self.price_per_item * self.quantity) - self.debt
 
     def potential_revenue(self):
-        return self.price * self.quantity
+        return self.price_per_item * self.quantity
 
     def profit(self):
         return self.revenue() - self.cost()
@@ -321,7 +313,7 @@ class Sale(models.Model):
             f"vendor={self.vendor.name}, "
             f"date={date_str}, "
             f"quantity={self.quantity}, "
-            f"price={self.price}, "
+            f"price_per_item={self.price_per_item}, "
             f"debt={self.debt}, "
             f"created_at={self.created_at}, "
             f"last_modified_by={self.last_modified_by.username}, "
