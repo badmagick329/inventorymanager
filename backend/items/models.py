@@ -105,6 +105,7 @@ class Order(models.Model):
     location = models.ForeignKey(
         "items.ItemLocation", on_delete=models.CASCADE, related_name="orders"
     )
+    # per item price
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
     current_sale_price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -166,14 +167,37 @@ class Order(models.Model):
             self.last_modified_by = user
         super().save(*args, **kwargs)
 
-    def cost(self):
+    def cost(self, vendor: Vendor | None = None):
+        if vendor:
+            order_sales = self.sales.filter(vendor=vendor)  # type: ignore
+            order_quantity = sum([sale.quantity for sale in order_sales])
+            return self.price * order_quantity
         return self.price * self.quantity
 
-    def current_stock(self):
-        raise NotImplementedError("current_stock method not implemented")
+    def revenue(self, vendor: Vendor | None = None):
+        if vendor:
+            order_sales = self.sales.filter(vendor=vendor)  # type: ignore
+        else:
+            order_sales = self.sales.all()  # type: ignore
+        return sum([sale.revenue for sale in order_sales])
 
-    def stock_sold(self):
-        raise NotImplementedError("stock_sold method not implemented")
+    def profit(self, vendor: Vendor | None = None):
+        return self.revenue(vendor) - self.cost(vendor)
+
+    def profit_percentage(self, vendor: Vendor | None = None):
+        cost = self.cost(vendor)
+        return (self.revenue(vendor) - cost) / cost * 100
+
+    def profit_per_item(self, vendor: Vendor | None = None):
+        cost = self.cost(vendor)
+        return (self.revenue(vendor) - cost) / self.quantity
+
+    def current_quantity(self):
+        sold_quantity = sum([sale.quantity for sale in self.sales()])  # type: ignore
+        return self.quantity - sold_quantity
+
+    def sold_quantity(self):
+        return sum([sale.quantity for sale in self.sales()])  # type: ignore
 
     def __str__(self):
         date_str = self.date.strftime("%Y-%m-%d") if self.date else "None"
@@ -200,8 +224,11 @@ class Sale(models.Model):
     )
     date = models.DateField(blank=True, null=True)
     quantity = models.IntegerField()
+    # per item price
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
+    debt = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified_by = models.ForeignKey(
         "users.UserAccount",
@@ -222,7 +249,6 @@ class Sale(models.Model):
                 "date",
                 "quantity",
                 "price",
-                "amount_paid",
                 name="unique_sale",
             ),
             models.CheckConstraint(
@@ -232,8 +258,8 @@ class Sale(models.Model):
                 name="positive_sale_price", check=models.Q(price__gt=0)
             ),
             models.CheckConstraint(
-                name="positive_sale_amount_paid",
-                check=models.Q(amount_paid__gt=0),
+                name="positive_sale_debt",
+                check=models.Q(debt__gte=0),
             ),
         ]
 
@@ -252,31 +278,41 @@ class Sale(models.Model):
                 user, UserAccount
             ), "user passed to save must be a UserAccount instance"
             self.last_modified_by = user
+        if self.debt is None:
+            self.debt = self.price * self.quantity
+        if self.debt > self.potential_revenue():
+            raise ValueError("Debt cannot be higher than potential revenue")
         super().save(*args, **kwargs)
 
-    def profit(self):
-        order_sales = self.order.sales.filter(vendor=self.vendor)
-        if order_sales.count() == 0:
-            return 0
-        amount_paid = sum([sale.amount_paid for sale in order_sales])
-        order_cost = self.order_cost()
-        return (amount_paid - order_cost) / len(order_sales)
+    def cost(self):
+        return self.order.price * self.quantity
 
-    def total_profit(self):
-        return self.profit() * self.quantity
+    def revenue(self):
+        return (self.price * self.quantity) - self.debt
+
+    def potential_revenue(self):
+        return self.price * self.quantity
+
+    def profit(self):
+        return self.revenue() - self.cost()
 
     def profit_percentage(self):
-        cost = self.order_cost()
-        return (self.amount_paid - cost) / cost * 100
+        return (self.revenue() - self.cost()) / self.cost * 100
 
-    def order_cost(self):
-        order_sales = self.order.sales.filter(vendor=self.vendor)
-        sale_quantity = sum([sale.quantity for sale in order_sales])
-        return self.order.price * sale_quantity
+    def profit_per_item(self):
+        return (self.revenue() - self.cost()) / self.quantity
 
-    def calculate_potential_revenue_by_filter(self, filters: list):
-        order_sales = self.order.sales.filter(*filters)
-        return calculate_potential_revenue_for_sales(order_sales)
+    def potential_profit(self):
+        return self.potential_revenue() - self.cost()
+
+    def potential_profit_percentage(self):
+        return (self.potential_revenue() - self.cost()) / self.cost * 100
+
+    def potential_profit_per_item(self):
+        return (self.potential_revenue() - self.cost()) / self.quantity
+
+    def amount_paid(self):
+        return self.potential_revenue() - self.debt
 
     def __str__(self):
         date_str = self.date.strftime("%Y-%m-%d") if self.date else "None"
@@ -286,15 +322,8 @@ class Sale(models.Model):
             f"date={date_str}, "
             f"quantity={self.quantity}, "
             f"price={self.price}, "
-            f"amount_paid={self.amount_paid}, "
+            f"debt={self.debt}, "
             f"created_at={self.created_at}, "
             f"last_modified_by={self.last_modified_by.username}, "
             f"last_modified={self.last_modified})>"
         )
-
-
-def calculate_potential_revenue_for_sales(sales: list["Sale"]):
-    revenue = 0
-    for sale in sales:
-        revenue += sale.quantity * sale.price
-    return revenue
