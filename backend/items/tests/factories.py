@@ -14,7 +14,11 @@ def item_location_factory(db):
         if users:
             item_location.users.set(users)
         if full_clean:
-            item_location.full_clean()
+            try:
+                item_location.full_clean()
+            except Exception as e:
+                item_location.delete()
+                raise e
         item_location.save()
 
         return item_location
