@@ -2,7 +2,6 @@ import pytest
 from consts import HistoryType as ht
 from items.models import HistoricalVendor, Vendor  # type: ignore
 from items.tests.factories import item_location_factory, vendor_factory
-from users.models import UserAccount
 from users.tests.factories import user_factory
 
 
@@ -61,8 +60,7 @@ def test_vendor_history_has_user_information(vendor_factory, user_factory):
     assert history.history_user is None
     user, _ = user_factory()
     vendor.name = "New Vendor"
-    vendor.last_change_by = user
-    vendor.save()
+    vendor.save(user=user)
     assert vendor.history.first().history_user == user
 
 
@@ -83,11 +81,10 @@ def test_vendor_edit_can_be_reverted(item_location_factory, user_factory):
     item_location = item_location_factory()
     user, _ = user_factory()
     vendor = Vendor.objects.create(
-        name="Test Vendor", location=item_location, last_change_by=user
+        name="Test Vendor", location=item_location, last_modified_by=user
     )
     vendor.name = "New Vendor"
-    vendor.last_change_by = user
-    vendor.save()
+    vendor.save(user=user)
     history = HistoricalVendor.objects.all()
     assert history.count() == 2
     assert history[0].history_type == ht.EDIT
