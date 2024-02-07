@@ -1,6 +1,5 @@
 from django.urls import path
-
-from .views import ItemLocationsDetail, ItemLocationsList
+from items.views.locations import ItemLocationsDetail, ItemLocationsList
 
 urlpatterns = [
     path("/locations", ItemLocationsList.as_view(), name="locations"),

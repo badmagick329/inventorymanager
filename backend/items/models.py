@@ -1,8 +1,8 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.functions import Lower
-from django.dispatch import receiver
+from items.mixins import LastModifiedByMixin
 from simple_history.models import HistoricalRecords
-from users.models import UserAccount
 
 
 class ItemLocation(models.Model):
@@ -21,15 +21,19 @@ class ItemLocation(models.Model):
         verbose_name = "Location"
         constraints = [
             models.UniqueConstraint(
-                Lower("name"), name="unique_item_location_name"
+                Lower("name"),
+                name="unique_item_location_name",
+                violation_error_message="Name must be unique.",
             ),
             models.CheckConstraint(
-                name="non_empty_item_location_name", check=~models.Q(name="")
+                name="non_empty_item_location_name",
+                check=~models.Q(name=""),
+                violation_error_message="Name cannot be empty.",
             ),
         ]
 
 
-class Vendor(models.Model):
+class Vendor(models.Model, LastModifiedByMixin):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, unique=True)
     location = models.ForeignKey(
@@ -55,14 +59,6 @@ class Vendor(models.Model):
             ),
         ]
 
-    @property
-    def _history_user(self):
-        return self.last_modified_by
-
-    @_history_user.setter
-    def _history_user(self, user):
-        self.last_modified_by = user
-
     def revert_to_history_instance(self, history_instance):
         if history_instance.instance == self:
             return
@@ -74,23 +70,22 @@ class Vendor(models.Model):
             self.revert_to_history_instance(history_instance)
 
     def save(self, *args, **kwargs):
-        if "user" in kwargs:
-            user = kwargs.pop("user")
-            assert isinstance(
-                user, UserAccount
-            ), "user passed to save must be a UserAccount instance"
-            self.last_modified_by = user
+        kwargs = super().set_last_modified_by(**kwargs)
+        self.full_clean()
         super().save(*args, **kwargs)
 
     def __str__(self):
+        username = (
+            self.last_modified_by.username if self.last_modified_by else "None"
+        )
         return (
             f"Vendor<(id={self.id}, name={self.name}, "
             f"location={self.location.name}, "
-            f"last_modified_by={self.last_modified_by.username})>"
+            f"last_modified_by={username})>"
         )
 
 
-class Order(models.Model):
+class Order(models.Model, LastModifiedByMixin):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, unique=True)
     date = models.DateField(blank=True, null=True)
@@ -123,18 +118,24 @@ class Order(models.Model):
                 name="unique_order_name",
             ),
             models.CheckConstraint(
-                name="non_empty_order_name", check=~models.Q(name="")
+                name="non_empty_order_name",
+                check=~models.Q(name=""),
+                violation_error_message="Name cannot be empty.",
             ),
             models.CheckConstraint(
                 name="positive_order_price",
                 check=models.Q(price_per_item__gt=0),
+                violation_error_message="Price must be greater than 0.",
             ),
             models.CheckConstraint(
-                name="positive_order_quantity", check=models.Q(quantity__gt=0)
+                name="positive_order_quantity",
+                check=models.Q(quantity__gt=0),
+                violation_error_message="Quantity must be greater than 0.",
             ),
             models.CheckConstraint(
                 name="positive_order_current_sale_price",
                 check=models.Q(current_sale_price__gt=0),
+                violation_error_message="Current sale price must be greater than 0.",
             ),
         ]
 
@@ -142,21 +143,9 @@ class Order(models.Model):
     def total_price(self):
         return self.price_per_item * self.quantity
 
-    @property
-    def _history_user(self):
-        return self.last_modified_by
-
-    @_history_user.setter
-    def _history_user(self, user):
-        self.last_modified_by = user
-
     def save(self, *args, **kwargs):
-        if "user" in kwargs:
-            user = kwargs.pop("user")
-            assert isinstance(
-                user, UserAccount
-            ), "user passed to save must be a UserAccount instance"
-            self.last_modified_by = user
+        kwargs = super().set_last_modified_by(**kwargs)
+        self.full_clean()
         super().save(*args, **kwargs)
 
     def cost(self, vendor: Vendor | None = None):
@@ -193,6 +182,9 @@ class Order(models.Model):
 
     def __str__(self):
         date_str = self.date.strftime("%Y-%m-%d") if self.date else "None"
+        username = (
+            self.last_modified_by.username if self.last_modified_by else "None"
+        )
         return (
             f"Order<(id={self.id}, name={self.name}, "
             f"date={date_str}, "
@@ -201,12 +193,12 @@ class Order(models.Model):
             f"quantity={self.quantity}, "
             f"current_sale_price={self.current_sale_price}, "
             f"created_at={self.created_at}, "
-            f"last_modified_by={self.last_modified_by.username}, "
+            f"last_modified_by={username}, "
             f"last_modified={self.last_modified})>"
         )
 
 
-class Sale(models.Model):
+class Sale(models.Model, LastModifiedByMixin):
     id = models.AutoField(primary_key=True)
     order = models.ForeignKey(
         "items.Order", on_delete=models.CASCADE, related_name="sales"
@@ -243,38 +235,35 @@ class Sale(models.Model):
                 name="unique_sale",
             ),
             models.CheckConstraint(
-                name="positive_sale_quantity", check=models.Q(quantity__gt=0)
+                name="positive_sale_quantity",
+                check=models.Q(quantity__gt=0),
+                violation_error_message="Quantity must be greater than 0.",
             ),
             models.CheckConstraint(
                 name="positive_sale_price",
                 check=models.Q(price_per_item__gt=0),
+                violation_error_message="Price must be greater than 0.",
             ),
             models.CheckConstraint(
                 name="positive_sale_debt",
                 check=models.Q(debt__gte=0),
+                violation_error_message="Debt cannot be negative.",
             ),
         ]
 
-    @property
-    def _history_user(self):
-        return self.last_modified_by
-
-    @_history_user.setter
-    def _history_user(self, user):
-        self.last_modified_by = user
-
     def save(self, *args, **kwargs):
-        if "user" in kwargs:
-            user = kwargs.pop("user")
-            assert isinstance(
-                user, UserAccount
-            ), "user passed to save must be a UserAccount instance"
-            self.last_modified_by = user
+        kwargs = super().set_last_modified_by(**kwargs)
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def full_clean(self, *args, **kwargs):
         if self.debt is None:
             self.debt = self.price_per_item * self.quantity
         if self.debt > self.potential_revenue():
-            raise ValueError("Debt cannot be higher than potential revenue")
-        super().save(*args, **kwargs)
+            raise ValidationError(
+                {"debt": "Debt cannot be greater than potential revenue."}
+            )
+        super().full_clean(*args, **kwargs)
 
     def cost(self):
         return self.order.price * self.quantity
@@ -308,6 +297,9 @@ class Sale(models.Model):
 
     def __str__(self):
         date_str = self.date.strftime("%Y-%m-%d") if self.date else "None"
+        username = (
+            self.last_modified_by.username if self.last_modified_by else "None"
+        )
         return (
             f"Sale<(id={self.id}, order={self.order.name}, "
             f"vendor={self.vendor.name}, "
@@ -316,6 +308,6 @@ class Sale(models.Model):
             f"price_per_item={self.price_per_item}, "
             f"debt={self.debt}, "
             f"created_at={self.created_at}, "
-            f"last_modified_by={self.last_modified_by.username}, "
+            f"last_modified_by={username}, "
             f"last_modified={self.last_modified})>"
         )
