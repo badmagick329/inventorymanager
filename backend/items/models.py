@@ -16,6 +16,9 @@ class ItemLocation(models.Model):
         usernames = [user.username for user in self.users.all()]
         return f"ItemLocation<(id={self.id}, name={self.name}, users={usernames})>"
 
+    def is_visible_to(self, user):
+        return user.is_admin or self.users.filter(id=user.id).exists()
+
     class Meta:  # type: ignore
         ordering = ["id"]
         verbose_name = "Location"
@@ -153,7 +156,7 @@ class Order(models.Model, LastModifiedByMixin):
             order_sales = self.sales.filter(vendor=vendor)  # type: ignore
             order_quantity = sum([sale.quantity for sale in order_sales])
             return self.price_per_item * order_quantity
-        return self.price_per_item * self.quantity
+        return self.total_price
 
     def revenue(self, vendor: Vendor | None = None):
         if vendor:
@@ -179,6 +182,9 @@ class Order(models.Model, LastModifiedByMixin):
 
     def sold_quantity(self):
         return sum([sale.quantity for sale in self.sales()])  # type: ignore
+
+    def is_visible_to(self, user):
+        return user.is_admin or self.location.users.filter(id=user.id).exists()
 
     def __str__(self):
         date_str = self.date.strftime("%Y-%m-%d") if self.date else "None"

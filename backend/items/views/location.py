@@ -1,13 +1,12 @@
 from django.core.exceptions import ValidationError
+from items.models import ItemLocation
+from items.serializers.location import ItemLocationSerializer
 from rest_framework import permissions, status
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from users.models import UserAccount
-
-from .models import ItemLocation
-from .serializers import ItemLocationSerializer
 
 
 class ItemLocationPermission(BasePermission):

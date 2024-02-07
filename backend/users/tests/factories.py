@@ -4,7 +4,11 @@ from users.models import UserAccount
 
 @pytest.fixture
 def user_factory(db):
-    def create_user(username="test_user", is_admin=False, full_clean=False):
+    def create_user(
+        username: str = "test_user",
+        is_admin: bool = False,
+        full_clean: bool = False,
+    ) -> tuple[UserAccount, str]:
         password = f"{username}123456789"
         saved_user = UserAccount.objects.filter(username=username).first()
         idx = 1
