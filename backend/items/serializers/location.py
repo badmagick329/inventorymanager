@@ -1,8 +1,7 @@
 from django.core.exceptions import ValidationError
+from items.models import ItemLocation
 from rest_framework import serializers
 from users.models import UserAccount
-
-from .models import ItemLocation
 
 
 class ItemLocationSerializer(serializers.ModelSerializer):
@@ -13,16 +12,6 @@ class ItemLocationSerializer(serializers.ModelSerializer):
     class Meta:  # type: ignore
         model = ItemLocation
         fields = ["id", "name", "users"]
-
-    def validate_users(self, users):
-        if not users:
-            return users
-        for user in users:
-            if not user.is_active:
-                raise serializers.ValidationError(
-                    f"User {user.username} is not active"
-                )
-        return users
 
     def create(self, validated_data) -> ItemLocation:
         item_location = ItemLocation.objects.create(
