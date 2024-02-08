@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import UserFormCard from './user-form-card';
-import NewFormCover from './new-form-cover';
+import NewFormCover from '@/components/new-form-cover';
 
 export default function NewForm() {
   const [showForm, setShowForm] = useState(false);
@@ -8,5 +8,5 @@ export default function NewForm() {
   if (showForm) {
     return <UserFormCard setShowForm={setShowForm} />;
   }
-  return <NewFormCover setShowForm={setShowForm} />;
+  <NewFormCover title={'Create New User'} setShowForm={setShowForm} />;
 }

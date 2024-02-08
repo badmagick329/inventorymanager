@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import LocationFormCard from './location-form-card';
-import NewFormCover from './new-form-cover';
+import NewFormCover from '@/components/new-form-cover';
 import { useUsers } from '@/hooks';
 import { User } from '@/types';
 import { Spinner } from '@/components/loaders';
@@ -31,5 +31,7 @@ export default function NewForm() {
       />
     );
   }
-  return <NewFormCover setShowForm={setShowForm} />;
+  return (
+    <NewFormCover title={'Create New Location'} setShowForm={setShowForm} />
+  );
 }
