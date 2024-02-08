@@ -1,5 +1,5 @@
 export type Location = {
-  id?: number;
+  id: number;
   name: string;
   users?: string[];
 };
@@ -13,7 +13,7 @@ export type User = {
 export type OrderResponse = {
   id: number;
   name: string;
-  date: string;
+  date: string | null;
   location: string;
   pricePerItem: number;
   quantity: number;

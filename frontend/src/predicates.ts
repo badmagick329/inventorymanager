@@ -6,7 +6,7 @@ export function isOrderResponse(body: any): body is OrderResponse {
     typeof body === 'object' &&
     typeof body.id === 'number' &&
     typeof body.name === 'string' &&
-    typeof body.date === 'string' &&
+    (body.date === null || typeof body.date === 'string') &&
     typeof body.location === 'string' &&
     typeof body.pricePerItem === 'number' &&
     typeof body.quantity === 'number' &&
