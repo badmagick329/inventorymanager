@@ -1,4 +1,4 @@
-import { API_LOCATION } from '@/consts/urls';
+import { API_LOCATIONS } from '@/consts/urls';
 import axios from 'axios';
 import { createErrorResponse } from '@/utils/responses';
 import { NextResponse } from 'next/server';
@@ -9,7 +9,7 @@ export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const url = `${BASE_URL}${API_LOCATION}`;
+  const url = `${BASE_URL}${API_LOCATIONS}`;
   const { Authorization, ErrorResponse } = createAuthHeader();
   if (ErrorResponse) {
     return ErrorResponse;
@@ -31,7 +31,7 @@ export async function PATCH(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const url = `${BASE_URL}${API_LOCATION}`;
+  const url = `${BASE_URL}${API_LOCATIONS}`;
   const { Authorization, ErrorResponse } = createAuthHeader();
   if (ErrorResponse) {
     return ErrorResponse;
