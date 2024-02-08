@@ -1,6 +1,13 @@
-import { APP_ADMIN } from '@/consts/urls';
+import { APP_MANAGE_LOCATIONS, APP_MANAGE_USERS } from '@/consts/urls';
 import useIsAdmin from '@/hooks/useIsAdmin';
-import { Button, Link } from '@nextui-org/react';
+import {
+  Link,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+} from '@nextui-org/react';
 
 export default function AdminItem() {
   const { isAdmin, isLoading } = useIsAdmin();
@@ -10,14 +17,30 @@ export default function AdminItem() {
   }
 
   return (
-    <Button
-      as={Link}
-      href={APP_ADMIN}
-      className='rounded-md'
-      color='secondary'
-      variant='ghost'
-    >
-      Admin
-    </Button>
+    <Dropdown>
+      <DropdownTrigger>
+        <Button className='rounded-md' color='secondary' variant='bordered'>
+          Admin
+        </Button>
+      </DropdownTrigger>
+      <DropdownMenu aria-label='Admin Actions'>
+        <DropdownItem
+          className='text-secondary-500'
+          key='users'
+          as={Link}
+          href={APP_MANAGE_USERS}
+        >
+          Users
+        </DropdownItem>
+        <DropdownItem
+          className='text-secondary-500'
+          key='locations'
+          as={Link}
+          href={APP_MANAGE_LOCATIONS}
+        >
+          Locations
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
   );
 }
