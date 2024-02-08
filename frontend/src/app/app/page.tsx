@@ -13,12 +13,10 @@ export default function Locations() {
   const router = useRouter();
   const { error, isError, isLoading, data } = useLocations();
 
-  useEffect(() => {
-    if (isError) {
-      console.log(`Received error ${error}`);
-      router.push(APP_LOGIN);
-    }
-  }, []);
+  if (isError) {
+    console.log(`Received error ${error}`);
+    router.push(APP_LOGIN);
+  }
 
   const locations = data?.data;
   if (locations) {
@@ -28,7 +26,7 @@ export default function Locations() {
         {locations.map((loc: Location, idx: number) => (
           <div key={loc.name} className='flex w-full flex-col items-center'>
             <div className='flex w-full justify-between px-6 md:w-2/3 2xl:w-1/3'>
-              <LocationLink name={loc.name} />
+              <LocationLink id={loc.id} name={loc.name} />
               <div className='flex justify-end gap-2 md:gap-4'>
                 <LocationOverview
                   items={1500}

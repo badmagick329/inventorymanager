@@ -40,6 +40,7 @@ export async function POST(req: Request) {
       status: 200,
     });
   } catch (error) {
+    // TODO: This shouldn't be needed? test and remove
     if (axios.isAxiosError(error)) {
       return new NextResponse(JSON.stringify(error.response?.data), {
         status: error.response?.status,
