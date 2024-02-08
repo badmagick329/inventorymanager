@@ -12,7 +12,7 @@ export default function LoginButton({
   return (
     <Button
       type='submit'
-      className='py-6 text-xl font-semibold'
+      className='mt-2 py-6 text-xl font-semibold'
       color='primary'
       variant='ghost'
       isLoading={formState.isSubmitting || isLoading}
