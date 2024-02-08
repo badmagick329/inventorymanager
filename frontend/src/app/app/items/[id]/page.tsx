@@ -7,6 +7,17 @@ import { usePathname } from 'next/navigation';
 import { isOrderResponseArray } from '@/predicates';
 import { ConnectionError } from '@/components/errors';
 import { OrderResponse } from '@/types';
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  getKeyValue,
+  Spacer,
+} from '@nextui-org/react';
+import { formatNumber } from '@/utils';
 
 export default function Orders() {
   const locationId = usePathname().split('/')[3];
@@ -24,24 +35,46 @@ export default function Orders() {
     return <ConnectionError message='Failed to load orders' />;
   }
 
+  const columns = [
+    // { key: 'id', label: 'ID' },
+    { key: 'name', label: 'Name' },
+    { key: 'price', label: 'Purchase Price' },
+    { key: 'quantity', label: 'Quantity' },
+  ];
+  const tableData = createTableData(orders);
+
   return (
-    <div className='flex w-full flex-col items-center justify-center'>
-      {orders.map((order: OrderResponse) => (
-        <Order key={order.id} {...order} />
-      ))}
-      {orders.length === 0 && <span>No items found</span>}
+    <div className='flex w-full flex-col justify-center p-4'>
+      <Spacer y={4} />
+      <Table aria-label='Items Table'>
+        <TableHeader columns={columns}>
+          {(column) => (
+            <TableColumn key={column.key}>{column.label}</TableColumn>
+          )}
+        </TableHeader>
+        <TableBody emptyContent={'No items added'}>
+          {tableData.map((row) => (
+            <TableRow key={row.id}>
+              {(columnKey) => (
+                <TableCell>{getKeyValue(row, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
 
-function Order(order: OrderResponse) {
-  return (
-    <>
-      <span>ID {order.id}</span>
-      <span>Name {order.name}</span>
-      <span>Price/Item {order.pricePerItem}</span>
-      <span>Quantity {order.quantity}</span>
-      <span>Total {order.pricePerItem * order.quantity}</span>
-    </>
-  );
+function createTableData(orders: OrderResponse[]) {
+  return orders.map((order) => {
+    const totalPrice = order.pricePerItem * order.quantity;
+    const priceString = `${formatNumber(totalPrice)} (${formatNumber(order.pricePerItem)}/item)`;
+    return {
+      id: order.id,
+      name: order.name,
+      price: priceString,
+      quantity: order.quantity,
+    };
+  });
 }
