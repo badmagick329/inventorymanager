@@ -25,10 +25,11 @@ export default function Orders() {
   }
 
   return (
-    <div className='flex flex-col w-full justify-center items-center'>
+    <div className='flex w-full flex-col items-center justify-center'>
       {orders.map((order: OrderResponse) => (
         <Order key={order.id} {...order} />
       ))}
+      {orders.length === 0 && <span>No items found</span>}
     </div>
   );
 }

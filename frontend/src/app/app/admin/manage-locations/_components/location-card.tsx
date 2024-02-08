@@ -9,13 +9,15 @@ import {
   Button,
   useDisclosure,
 } from '@nextui-org/react';
-import { Eye, EyeOff, Pencil, Trash } from 'lucide-react';
+import { Pencil, Trash, Warehouse, User as UserIcon } from 'lucide-react';
 import { useDeleteLocation, useUsers } from '@/hooks';
 import DeleteModal from './delete-modal';
 import LocationFormCard from './location-form-card';
 import { ICON_MD } from '@/consts';
-import { Spinner } from '@/components/loaders';
 import { User } from '@/types';
+import LocationCardSkeleton from './location-card-skeleton';
+import { Link } from '@nextui-org/react';
+import { APP_ITEMS, APP_MANAGE_USERS } from '@/consts/urls';
 
 type LocationCardProps = {
   locationId?: number;
@@ -36,9 +38,9 @@ export default function LocationCard({
     usersText = '';
   }
 
-  const { error, isError, isLoading, data, refetch } = useUsers();
+  const { isError, isLoading, data, refetch } = useUsers();
   if (isLoading) {
-    return <Spinner />;
+    return <LocationCardSkeleton />;
   }
   if (isError) {
     return (
@@ -78,21 +80,38 @@ export default function LocationCard({
 
   return (
     <Card className='flex min-w-[280px] max-w-[320px] flex-col rounded-md md:min-w-[480px] md:max-w-[640px]'>
-      <CardHeader>
-        <p className='text-md md:text-semibold w-full text-center md:text-base'>
+      <CardHeader className='flex w-full items-center justify-center gap-2'>
+        <Warehouse className='pb-1' size={ICON_MD} />
+        <Link
+          color='foreground'
+          className='font-semibold'
+          href={`${APP_ITEMS}/${locationId}`}
+        >
           {name}
-        </p>
+        </Link>
       </CardHeader>
       <Divider />
       <CardBody>
-        {usersText === '' ? (
-          <div className='flex w-full justify-center gap-2 text-center text-default-400'>
-            <EyeOff />
-          </div>
-        ) : (
-          <div className='flex w-full justify-center gap-2 text-center'>
-            <Eye />
-            <span>{usersText}</span>
+        <ul className='flex flex-wrap justify-center gap-8'>
+          {users?.map((user: string) => {
+            return (
+              <div key={user} className='flex gap-2'>
+                <UserIcon className='pb-1' size={ICON_MD} />
+                <span>{user}</span>
+              </div>
+            );
+          })}
+        </ul>
+        {users?.length === 0 && (
+          <div className='flex w-full justify-center gap-2'>
+            <span>No users assigned. </span>
+            <Link
+              color='foreground'
+              href={APP_MANAGE_USERS}
+              className='underline'
+            >
+              Create new user?
+            </Link>
           </div>
         )}
       </CardBody>

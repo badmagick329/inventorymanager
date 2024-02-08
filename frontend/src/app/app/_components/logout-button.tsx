@@ -17,7 +17,7 @@ export default function LogoutButton() {
 
   return (
     <Button
-      className='rounded-md'
+      className='rounded-md border-foreground'
       isLoading={isLoading}
       onClick={unauthUser}
       variant='ghost'
