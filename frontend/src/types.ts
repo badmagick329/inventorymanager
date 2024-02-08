@@ -10,6 +10,27 @@ export type User = {
   locations: Location[];
 };
 
+export type OrderResponse = {
+  id: number;
+  name: string;
+  date: string;
+  location: string;
+  pricePerItem: number;
+  quantity: number;
+  currentSalePrice: number;
+  created: string;
+  lastModifiedBy: string;
+  lastModified: string;
+};
+
+export type OrderPost = {
+  name: string;
+  date: string;
+  pricePerItem: number;
+  quantity: number;
+  currentSalePrice: number;
+};
+
 export type Disclosure = {
   isOpen: boolean;
   onOpen: () => void;

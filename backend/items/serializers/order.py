@@ -74,7 +74,6 @@ class OrderSerializer(serializers.BaseSerializer):
             "location": instance.location.name,
             "pricePerItem": instance.price_per_item,
             "quantity": instance.quantity,
-            "totalPrice": instance.total_price,
             "currentSalePrice": instance.current_sale_price,
             "created": instance.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "lastModifiedBy": instance.last_modified_by.username,

@@ -1,4 +1,4 @@
-import { API_USER_DETAIL } from '@/consts/urls';
+import { API_USERS } from '@/consts/urls';
 import axios from 'axios';
 import { createErrorResponse } from '@/utils/responses';
 import { NextResponse } from 'next/server';
@@ -9,7 +9,7 @@ export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const url = `${BASE_URL}${API_USER_DETAIL}`;
+  const url = `${BASE_URL}${API_USERS}`;
   const { Authorization, ErrorResponse } = createAuthHeader();
   if (ErrorResponse) {
     return ErrorResponse;
