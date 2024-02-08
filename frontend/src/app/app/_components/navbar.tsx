@@ -8,12 +8,12 @@ import { Button } from '@nextui-org/react';
 
 export default function Navbar() {
   return (
-    <div className='foreground flex w-full items-center p-2'>
+    <nav className='foreground flex w-full items-center bg-neutral-200 p-2 dark:bg-neutral-950'>
       <ul className='flex w-full items-center justify-between gap-4'>
         <li>
           <div className='flex items-center gap-2'>
             <Button
-              className='rounded-md p-2'
+              className='rounded-md border-foreground p-2'
               variant='bordered'
               as={Link}
               href={APP_LOCATIONS}
@@ -37,6 +37,6 @@ export default function Navbar() {
           </div>
         </li>
       </ul>
-    </div>
+    </nav>
   );
 }

@@ -19,7 +19,11 @@ export default function AdminItem() {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button className='rounded-md' color='secondary' variant='bordered'>
+        <Button
+          className='rounded-md border-secondary-500 p-2'
+          color='secondary'
+          variant='bordered'
+        >
           Admin
         </Button>
       </DropdownTrigger>
