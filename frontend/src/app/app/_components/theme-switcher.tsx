@@ -2,9 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, Paintbrush } from 'lucide-react';
 
-import { Button, Switch } from '@nextui-org/react';
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+} from '@nextui-org/react';
 
 export function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
@@ -17,18 +23,35 @@ export function ThemeSwitcher() {
   }
 
   return (
-    <Switch
-      defaultSelected
-      size='lg'
-      color='default'
-      onChange={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-      thumbIcon={({ isSelected, className }) =>
-        isSelected ? (
-          <Moon className={className} />
-        ) : (
-          <Sun className={className} />
-        )
-      }
-    ></Switch>
+    <Dropdown>
+      <DropdownTrigger>
+        <Button
+          className='rounded-md border-foreground-600'
+          color='default'
+          variant='bordered'
+          isIconOnly
+        >
+          <ThemeIcon theme={theme} />
+        </Button>
+      </DropdownTrigger>
+      <DropdownMenu aria-label='Switch Theme Actions'>
+        <DropdownItem key='light' onClick={() => setTheme('light')}>
+          Light
+        </DropdownItem>
+        <DropdownItem key='dark' onClick={() => setTheme('dark')}>
+          Dark
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
   );
+}
+
+function ThemeIcon({ theme }: { theme: string | undefined }) {
+  if (!theme) {
+    return null;
+  }
+  if (theme === 'light') {
+    return <Sun className='icon-sm' />;
+  }
+  return <Moon className='icon-sm' />;
 }
