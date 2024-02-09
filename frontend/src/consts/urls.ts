@@ -5,6 +5,7 @@ export const NEXT_USERS = '/fetch/users';
 export const NEXT_ADMIN = '/fetch/admin';
 export const NEXT_ORDERS = '/fetch/orders';
 export const NEXT_ORDER_DETAIL = '/fetch/orders/detail';
+export const NEXT_SALES = '/fetch/sales';
 export const APP_LOCATIONS = '/app';
 export const APP_LOGIN = '/';
 export const APP_ADMIN = '/app/admin';
