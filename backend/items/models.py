@@ -171,7 +171,7 @@ class Order(models.Model, LastModifiedByMixin):
         return (self.revenue(vendor) - cost) / self.quantity
 
     def current_quantity(self):
-        sold_quantity = sum([sale.quantity for sale in self.sales()])  # type: ignore
+        sold_quantity = sum([sale.quantity for sale in self.sales.all()])  # type: ignore
         return self.quantity - sold_quantity
 
     def sold_quantity(self):
@@ -254,6 +254,12 @@ class Sale(models.Model, LastModifiedByMixin):
         if self.debt > self.potential_revenue():
             raise ValidationError(
                 {"debt": "Debt cannot be greater than potential revenue."}
+            )
+        if self.order.current_quantity() < self.quantity:
+            raise ValidationError(
+                {
+                    "quantity": "Quantity cannot be greater than remaining quantity."
+                }
             )
         super().full_clean(*args, **kwargs)
 
