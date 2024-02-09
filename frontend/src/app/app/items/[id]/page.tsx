@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/loaders';
-import { useOrders } from '@/hooks';
+import { useOrders, useSales } from '@/hooks';
 import { APP_LOGIN } from '@/consts/urls';
 import { usePathname } from 'next/navigation';
 import { isOrderResponseArray } from '@/predicates';
@@ -18,6 +18,8 @@ import {
   Spacer,
 } from '@nextui-org/react';
 import { formatNumber } from '@/utils';
+import { ShoppingCart, ArrowUpIcon } from 'lucide-react';
+import { ICON_MD } from '@/consts';
 
 export default function Orders() {
   const locationId = usePathname().split('/')[3];
@@ -38,8 +40,13 @@ export default function Orders() {
   const columns = [
     // { key: 'id', label: 'ID' },
     { key: 'name', label: 'Name' },
-    { key: 'price', label: 'Purchase Price' },
+    { key: 'purchaseDate', label: 'Purchase Date' },
     { key: 'quantity', label: 'Quantity' },
+    { key: 'cost', label: 'Cost' },
+    { key: 'amountPaidDue', label: 'Amount Paid / Due' },
+    { key: 'profit', label: 'Profit' },
+    { key: 'stockInOut', label: 'Stock In / Out' },
+    { key: 'vendors', label: 'Vendor(s)' },
   ];
   const tableData = createTableData(orders);
 
@@ -55,9 +62,71 @@ export default function Orders() {
         <TableBody emptyContent={'No items added'}>
           {tableData.map((row) => (
             <TableRow key={row.id}>
-              {(columnKey) => (
-                <TableCell>{getKeyValue(row, columnKey)}</TableCell>
-              )}
+              {(columnKey) => {
+                const text = getKeyValue(row, columnKey);
+                if (columnKey === 'amountPaidDue') {
+                  const [amountPaid, debt] = text.split(' / ');
+                  const paidColor =
+                    parseFloat(amountPaid) > 0 ? 'success-500' : 'foreground';
+                  const debtColor =
+                    parseFloat(debt) > 0 ? 'danger-500' : 'foreground';
+                  return (
+                    <TableCell>
+                      <span className={`text-${paidColor}`}>{amountPaid}</span>
+                      <span> / </span>
+                      <span className={`text-${debtColor}`}>{debt}</span>
+                    </TableCell>
+                  );
+                }
+                if (columnKey === 'profit') {
+                  const profit = parseFloat(text);
+                  let color;
+                  if (profit < 0) {
+                    color = 'danger-500';
+                  } else if (profit === 0) {
+                    color = 'foreground';
+                  } else {
+                    color = 'success-500';
+                  }
+                  return (
+                    <TableCell className={`text-${color}`}>{text}</TableCell>
+                  );
+                }
+                if (columnKey === 'stockInOut') {
+                  let [stockIn, stockOut] = text.split(' / ');
+                  stockOut = parseInt(stockOut);
+                  stockIn = parseInt(stockIn);
+                  let outColor;
+                  if (stockOut > 0 && stockIn > 0) {
+                    outColor = 'primary-500';
+                  } else if (stockOut > 0 && stockIn === 0) {
+                    outColor = 'success-500';
+                  } else {
+                    outColor = 'foreground';
+                  }
+                  let inColor;
+                  if (stockIn > 0 && stockOut > 0) {
+                    inColor = 'primary-500';
+                  } else if (stockIn > 0 && stockOut === 0) {
+                    inColor = 'foreground';
+                  } else {
+                    inColor = 'success-500';
+                  }
+                  return (
+                    <TableCell className='flex gap-2'>
+                      <span className={`flex gap-2 text-${inColor}`}>
+                        <ShoppingCart size={16} />
+                        {stockIn}
+                      </span>
+                      <span className={`flex gap-2 text-${outColor}`}>
+                        <ArrowUpIcon size={16} />
+                        {stockOut}
+                      </span>
+                    </TableCell>
+                  );
+                }
+                return <TableCell>{getKeyValue(row, columnKey)}</TableCell>;
+              }}
             </TableRow>
           ))}
         </TableBody>
@@ -69,12 +138,30 @@ export default function Orders() {
 function createTableData(orders: OrderResponse[]) {
   return orders.map((order) => {
     const totalPrice = order.pricePerItem * order.quantity;
-    const priceString = `${formatNumber(totalPrice)} (${formatNumber(order.pricePerItem)}/item)`;
+    const amountPaid = order.amountPaid;
+    const amountPaidDue = `${formatNumber(amountPaid)} / ${formatNumber(order.debt)}`;
+    const profit = order.profit;
+    const profitPerItem = order.profitPerItem;
+    const remainingStock = order.quantity - order.soldQuantity;
+    const stockString = `${remainingStock} / ${order.soldQuantity}`;
+
+    let profitString;
+    if (profit > 0) {
+      profitString = `${formatNumber(profit)} [${formatNumber(profitPerItem)} ea.]`;
+    } else {
+      profitString = formatNumber(profit);
+    }
     return {
       id: order.id,
       name: order.name,
-      price: priceString,
+      cost: `${formatNumber(totalPrice)}`,
+      purchaseDate: order.date,
+      profit: profitString,
       quantity: order.quantity,
+      debt: formatNumber(order.debt),
+      amountPaidDue,
+      stockInOut: stockString,
+      vendors: order.vendors.join(', '),
     };
   });
 }

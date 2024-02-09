@@ -272,7 +272,7 @@ class Sale(models.Model, LastModifiedByMixin):
         super().full_clean(*args, **kwargs)
 
     def cost(self):
-        return self.order.price * self.quantity
+        return self.order.price_per_item * self.quantity
 
     def revenue(self):
         return (self.price_per_item * self.quantity) - self.debt

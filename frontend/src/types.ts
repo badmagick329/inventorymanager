@@ -17,7 +17,14 @@ export type OrderResponse = {
   location: string;
   pricePerItem: number;
   quantity: number;
+  soldQuantity: number;
   currentSalePrice: number;
+  profit: number;
+  profitPerItem: number;
+  debt: number;
+  amountPaid: number;
+  potentialProfit: number;
+  vendors: string[];
   created: string;
   lastModifiedBy: string;
   lastModified: string;
@@ -29,6 +36,16 @@ export type OrderPost = {
   pricePerItem: number;
   quantity: number;
   currentSalePrice: number;
+};
+
+export type SaleResponse = {
+  id: number;
+  order: string;
+  vendor: string;
+  date: string;
+  quantity: number;
+  pricePerItem: number;
+  debt: number;
 };
 
 export type Disclosure = {

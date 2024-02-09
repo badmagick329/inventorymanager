@@ -8,5 +8,5 @@ export default function NewForm() {
   if (showForm) {
     return <UserFormCard setShowForm={setShowForm} />;
   }
-  <NewFormCover title={'Create New User'} setShowForm={setShowForm} />;
+  return <NewFormCover title={'Create New User'} setShowForm={setShowForm} />;
 }

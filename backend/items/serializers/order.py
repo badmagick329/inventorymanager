@@ -3,7 +3,6 @@ from datetime import datetime
 from django.core.exceptions import ValidationError
 from items.models import ItemLocation, Order
 from rest_framework import serializers
-from users.models import UserAccount
 
 
 class OrderSerializer(serializers.BaseSerializer):
@@ -67,6 +66,15 @@ class OrderSerializer(serializers.BaseSerializer):
         date_repr = (
             instance.date.strftime("%Y-%m-%d") if instance.date else None
         )
+        sales = instance.sales.all()
+        profit_per_item = sum([sale.profit_per_item() for sale in sales])
+        total_profit = sum([sale.profit() for sale in sales])
+        debt = sum([sale.debt for sale in sales])
+        amount_paid = sum([sale.amount_paid() for sale in sales])
+        potential_profit = sum([sale.potential_profit() for sale in sales])
+        vendors = [sale.vendor.name for sale in sales]
+        sold_quantity = sum([sale.quantity for sale in sales])
+
         return {
             "id": instance.id,
             "name": instance.name,
@@ -74,7 +82,14 @@ class OrderSerializer(serializers.BaseSerializer):
             "location": instance.location.name,
             "pricePerItem": instance.price_per_item,
             "quantity": instance.quantity,
+            "soldQuantity": sold_quantity,
             "currentSalePrice": instance.current_sale_price,
+            "profit": total_profit,
+            "profitPerItem": profit_per_item,
+            "debt": debt,
+            "amountPaid": amount_paid,
+            "potentialProfit": potential_profit,
+            "vendors": vendors,
             "created": instance.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "lastModifiedBy": instance.last_modified_by.username,
             "lastModified": instance.last_modified.strftime(
