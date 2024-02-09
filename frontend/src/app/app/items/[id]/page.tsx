@@ -67,29 +67,29 @@ export default function Orders() {
                 if (columnKey === 'amountPaidDue') {
                   const [amountPaid, debt] = text.split(' / ');
                   const paidColor =
-                    parseFloat(amountPaid) > 0 ? 'success-500' : 'foreground';
+                    parseFloat(amountPaid) > 0 ? 'text-success-500' : 'text-foreground';
                   const debtColor =
-                    parseFloat(debt) > 0 ? 'danger-500' : 'foreground';
+                    parseFloat(debt) > 0 ? 'text-danger-500' : 'text-foreground';
                   return (
                     <TableCell>
-                      <span className={`text-${paidColor}`}>{amountPaid}</span>
+                      <span className={paidColor}>{amountPaid}</span>
                       <span> / </span>
-                      <span className={`text-${debtColor}`}>{debt}</span>
+                      <span className={debtColor}>{debt}</span>
                     </TableCell>
                   );
                 }
                 if (columnKey === 'profit') {
                   const profit = parseFloat(text);
-                  let color;
+                  let profitColor;
                   if (profit < 0) {
-                    color = 'danger-500';
+                    profitColor = 'text-danger-500';
                   } else if (profit === 0) {
-                    color = 'foreground';
+                    profitColor = 'text-foreground';
                   } else {
-                    color = 'success-500';
+                    profitColor = 'text-success-500';
                   }
                   return (
-                    <TableCell className={`text-${color}`}>{text}</TableCell>
+                    <TableCell className={profitColor}>{text}</TableCell>
                   );
                 }
                 if (columnKey === 'stockInOut') {
@@ -98,27 +98,27 @@ export default function Orders() {
                   stockIn = parseInt(stockIn);
                   let outColor;
                   if (stockOut > 0 && stockIn > 0) {
-                    outColor = 'primary-500';
+                    outColor = 'text-primary-500';
                   } else if (stockOut > 0 && stockIn === 0) {
-                    outColor = 'success-500';
+                    outColor = 'text-success-500';
                   } else {
-                    outColor = 'foreground';
+                    outColor = 'text-foreground';
                   }
                   let inColor;
                   if (stockIn > 0 && stockOut > 0) {
-                    inColor = 'primary-500';
+                    inColor = 'text-primary-500';
                   } else if (stockIn > 0 && stockOut === 0) {
-                    inColor = 'foreground';
+                    inColor = 'text-foreground';
                   } else {
-                    inColor = 'success-500';
+                    inColor = 'text-success-500';
                   }
                   return (
                     <TableCell className='flex gap-2'>
-                      <span className={`flex gap-2 text-${inColor}`}>
+                      <span className={`flex gap-2 ${inColor}`}>
                         <ShoppingCart size={16} />
                         {stockIn}
                       </span>
-                      <span className={`flex gap-2 text-${outColor}`}>
+                      <span className={`flex gap-2 ${outColor}`}>
                         <ArrowUpIcon size={16} />
                         {stockOut}
                       </span>
