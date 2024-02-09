@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.db import IntegrityError
 
 import pytest
 from django.core.exceptions import ValidationError
@@ -21,6 +22,17 @@ def test_order_creation(order_factory):
     assert order.date == datetime(1970, 1, 1, 0, 0).date()
 
 
+def test_multiple_order_creation_at_same_location(order_factory):
+    order1 = order_factory(
+        name="Test Order", location="Test Location", user="Test User"
+    )
+    order2 = order_factory(
+        name="Test Order2", location=order1.location, user="Test User2"
+    )
+    assert Order.objects.count() == 2
+    assert order1.location == order2.location
+
+
 @pytest.mark.django_db
 def test_order_creation_without_location_fails():
     with pytest.raises(ValidationError):
@@ -33,13 +45,26 @@ def test_order_creation_without_location_fails():
 
 
 def test_order_creation_fails_with_non_unique_name(order_factory):
-    order_factory(
+    order1 = order_factory(
         name="Test Order", location="Test Location", user="Test User"
     )
-    with pytest.raises(ValidationError):
+    with pytest.raises(IntegrityError):
         order_factory(
-            name="Test Order", location="Test Location2", user="Test User2"
+            name="Test Order", location=order1.location, user="Test User2"
         )
+
+
+def test_order_creation_with_same_name_in_different_locations_succeeds(
+    order_factory,
+):
+    order1 = order_factory(
+        name="Test Order", location="Test Location", user="Test User"
+    )
+    order2 = order_factory(
+        name="Test Order", location="Test Location2", user="Test User2"
+    )
+    assert order1.name == order2.name
+    assert order1.location != order2.location
 
 
 def test_price_must_be_positive(order_factory):
