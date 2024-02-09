@@ -7,7 +7,7 @@ from simple_history.models import HistoricalRecords
 
 class ItemLocation(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
     users = models.ManyToManyField(
         "users.UserAccount", related_name="item_locations"
     )
@@ -38,7 +38,7 @@ class ItemLocation(models.Model):
 
 class Vendor(models.Model, LastModifiedByMixin):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
     location = models.ForeignKey(
         "items.ItemLocation", on_delete=models.CASCADE, related_name="vendors"
     )
@@ -90,7 +90,7 @@ class Vendor(models.Model, LastModifiedByMixin):
 
 class Order(models.Model, LastModifiedByMixin):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
     date = models.DateField(blank=True, null=True)
     location = models.ForeignKey(
         "items.ItemLocation", on_delete=models.CASCADE, related_name="orders"
@@ -112,14 +112,8 @@ class Order(models.Model, LastModifiedByMixin):
         ordering = ["id"]
         verbose_name = "Order"
         constraints = [
-            models.UniqueConstraint(
-                Lower("name"),
-                "location_id",
-                "date",
-                "price_per_item",
-                "quantity",
-                name="unique_order_name",
-            ),
+            # NOTE: LOWER(name), location_id, date, price_per_item, and quantity
+            # uniqueness being enforced by manual migration (0014)
             models.CheckConstraint(
                 name="non_empty_order_name",
                 check=~models.Q(name=""),
@@ -232,14 +226,6 @@ class Sale(models.Model, LastModifiedByMixin):
         ordering = ["id"]
         verbose_name = "Sale"
         constraints = [
-            models.UniqueConstraint(
-                "order_id",
-                "vendor_id",
-                "date",
-                "quantity",
-                "price_per_item",
-                name="unique_sale",
-            ),
             models.CheckConstraint(
                 name="positive_sale_quantity",
                 check=models.Q(quantity__gt=0),

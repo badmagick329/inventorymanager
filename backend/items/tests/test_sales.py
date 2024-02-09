@@ -86,3 +86,16 @@ def test_debt_cannot_be_higher_than_potential_revenue(
     with pytest.raises(ValidationError):
         sale.debt = sale.potential_revenue() + 1
         sale.full_clean()
+
+
+def test_multiple_vendors_can_create_sales_on_same_order(
+    sale_factory, order_factory, vendor_factory
+):
+    order = order_factory("Test Order", "Test Item Location", "Test User")
+    vendor1, _ = vendor_factory("Test Vendor 1", order.location)
+    vendor2, _ = vendor_factory("Test Vendor 2", order.location)
+    sale1 = sale_factory(order, vendor1, user=order.last_modified_by)
+    sale2 = sale_factory(order, vendor2, user=order.last_modified_by)
+    assert Sale.objects.count() == 2
+    assert sale1.order == order
+    assert sale2.order == order

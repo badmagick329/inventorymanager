@@ -23,6 +23,7 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 DEBUG = int(os.environ["DEBUG"])
 ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(" ")
 CONTAINERED = os.environ.get("DB_HOST", "") != "localhost"
+ENABLE_LOGGING = int(os.environ.get("ENABLE_LOGGING", 0) == 1)
 
 
 INSTALLED_APPS = [
@@ -103,6 +104,33 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+if ENABLE_LOGGING:
+    LOGGING = {
+        "version": 1,
+        "filters": {
+            "require_debug_true": {
+                "()": "django.utils.log.RequireDebugTrue",
+            }
+        },
+        "handlers": {
+            "console": {
+                "level": "DEBUG",
+                "filters": ["require_debug_true"],
+                "class": "logging.StreamHandler",
+            },
+            "db_log": {
+                "level": "DEBUG",
+                "class": "logging.FileHandler",
+                "filename": "db.log",
+            },
+        },
+        "loggers": {
+            "django.db.backends": {
+                "level": "DEBUG",
+                "handlers": ["db_log"],
+            }
+        },
+    }
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
