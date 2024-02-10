@@ -1,15 +1,13 @@
 from functools import partial
 
-import pytest
 from django.urls import reverse
 
 order_list_url = partial(reverse, "orders")
 order_detail_url = partial(reverse, "order_detail")
 
-from items.models import ItemLocation, Order
 from items.tests.factories import item_location_factory, order_factory
-from rest_framework.test import APIClient
 from users.tests.factories import user_factory
+from rest_framework.test import APIClient
 
 
 def test_user_can_access_order_list(

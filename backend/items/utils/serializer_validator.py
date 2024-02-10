@@ -8,7 +8,7 @@ class SerializerValidator:
     def positive_float(value, field_name, field_label):
         try:
             num = float(value)
-        except ValueError:
+        except (TypeError, ValueError):
             raise serializers.ValidationError(
                 {field_name: f"{field_label} must be a number"}
             )
@@ -22,7 +22,7 @@ class SerializerValidator:
     def positive_int(value, field_name, field_label):
         try:
             num = int(value)
-        except ValueError:
+        except (TypeError, ValueError):
             raise serializers.ValidationError(
                 {field_name: f"{field_label} must be an integer"}
             )

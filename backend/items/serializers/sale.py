@@ -6,11 +6,11 @@ from rest_framework import serializers
 
 class SaleSerializer(serializers.BaseSerializer):
     def create(self, validated_data):
-        self._inject_order()
-        self._inject_vendor()
+        order = self._get_order()
+        vendor = self._get_vendor(order.location)
         sale = Sale(
-            order=validated_data["order"],
-            vendor=validated_data["vendor"],
+            order=order,
+            vendor=vendor,
             date=validated_data["date"],
             quantity=validated_data["quantity"],
             price_per_item=validated_data["pricePerItem"],
@@ -52,30 +52,32 @@ class SaleSerializer(serializers.BaseSerializer):
         data["debt"] = (
             data["pricePerItem"] * data["quantity"] - data["amountPaid"]
         )
+        data["vendorId"] = SV.positive_int(
+            data.get("vendorId"), "vendorId", "Vendor ID"
+        )
+        data["orderId"] = SV.positive_int(
+            data.get("orderId"), "orderId", "Order ID"
+        )
 
         if hasattr(data, "_mutable"):
             data._mutable = False
         return data
 
-    def _inject_order(self):
+    def _get_order(self):
         order_id = self.validated_data.get("orderId")
         order = Order.objects.filter(id=order_id).first()
         if not order:
             raise serializers.ValidationError({"order_id": f"Order not found"})
-        self.validated_data["order"] = order
+        return order
 
-    def _inject_vendor(self):
+    def _get_vendor(self, location):
         vendor_id = self.validated_data.get("vendorId")
-        vendor = (
-            self.validated_data["order"]
-            .location.vendors.filter(id=vendor_id)
-            .first()
-        )
+        vendor = location.vendors.filter(id=vendor_id).first()
         if not vendor:
             raise serializers.ValidationError(
                 {"vendor_id": f"Vendor not found"}
             )
-        self.validated_data["vendor"] = vendor
+        return vendor
 
     def to_representation(self, instance):
         date_repr = (

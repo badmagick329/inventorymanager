@@ -294,9 +294,9 @@ class Sale(models.Model, LastModifiedByMixin):
         return self.potential_revenue() - self.debt
 
     def __str__(self):
-        date_str = self.date.strftime("%Y-%m-%d") if self.date else "None"
+        date_str = self.date.strftime("%Y-%m-%d") if self.date else None
         username = (
-            self.last_modified_by.username if self.last_modified_by else "None"
+            self.last_modified_by.username if self.last_modified_by else None
         )
         return (
             f"Sale<(id={self.id}, order={self.order.name}, "
