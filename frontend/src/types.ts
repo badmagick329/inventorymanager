@@ -54,7 +54,7 @@ export type SaleResponse = {
 
 export type SalePost = {
   vendor: string;
-  date: string;
+  date: string | null;
   quantity: number;
   pricePerItem: number;
   amountPaid: number;

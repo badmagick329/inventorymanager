@@ -17,11 +17,9 @@ export async function DELETE(
   const headers = { Authorization };
   try {
     const response = await axios.delete(`${url}/${params.id}`, { headers });
-    if (response.status === 204) {
-      return new NextResponse(null, {
-        status: 204,
-      });
-    }
+    return new NextResponse(null, {
+      status: 204,
+    });
   } catch (error) {
     return createErrorResponse(error);
   }

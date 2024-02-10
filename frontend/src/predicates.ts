@@ -67,7 +67,7 @@ export function isSalePost(body: any): body is SalePost {
     body &&
     typeof body === 'object' &&
     typeof body.vendor === 'string' &&
-    typeof body.date === 'string' &&
+    (typeof body.date === 'string' || body.date === null) &&
     typeof body.quantity === 'number' &&
     typeof body.pricePerItem === 'number' &&
     typeof body.amountPaid === 'number'

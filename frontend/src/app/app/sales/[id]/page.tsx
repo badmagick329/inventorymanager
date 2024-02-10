@@ -29,11 +29,14 @@ import {
   List,
 } from 'lucide-react';
 import { ICON_SM } from '@/consts';
+import CreateSaleModal from './_componenets/create-sale-modal';
+import { useDeleteSale } from '@/hooks';
 
 export default function Sales() {
   const orderId = usePathname().split('/')[3];
   const router = useRouter();
   const { error, isError, isLoading, data } = useSales(orderId);
+  const deleteSale = useDeleteSale();
   if (isError) {
     console.log(`Received error ${error}`);
     // router.push(APP_LOGIN);
@@ -54,16 +57,17 @@ export default function Sales() {
     { key: 'quantity', label: 'Quantity' },
     { key: 'cost', label: 'Cost' },
     { key: 'salePrice', label: 'Sale Price' },
-    { key: 'amountPaid', label: 'amountPaid' },
+    { key: 'profit', label: 'Profit' },
+    { key: 'amountPaidDue', label: 'Amount Paid / Due' },
     { key: 'actions', label: 'Actions' },
   ];
   const tableData = createTableData(sales);
 
   return (
     <div className='flex w-full flex-col justify-center p-4'>
-      {/* <Spacer y={2} /> */}
-      {/* <CreateOrderModal locationId={locationId} /> */}
-      {/* <Spacer y={4} /> */}
+      <Spacer y={2} />
+      <CreateSaleModal orderId={orderId} />
+      <Spacer y={4} />
       <Table aria-label='Items Table'>
         <TableHeader columns={columns}>
           {(column) => (
@@ -99,11 +103,13 @@ export default function Sales() {
                       <Button size='sm' variant='flat' isIconOnly>
                         <Pencil size={ICON_SM} />
                       </Button>
-                      <Button size='sm' variant='flat' isIconOnly>
+                      <Button
+                        size='sm'
+                        variant='flat'
+                        isIconOnly
+                        onClick={() => deleteSale.mutate(row.id)}
+                      >
                         <Trash size={ICON_SM} />
-                      </Button>
-                      <Button size='sm' variant='flat' isIconOnly>
-                        <List size={ICON_SM} />
                       </Button>
                     </TableCell>
                   );
@@ -121,25 +127,12 @@ export default function Sales() {
 
 function createTableData(sales: SaleResponse[]) {
   return sales.map((sale) => {
-    // { key: 'name', label: 'Name' },
-    // { key: 'vendor', label: 'Vendor' },
-    // { key: 'saleDate', label: 'Sale Date' },
-    // { key: 'quantity', label: 'Quantity' },
-    // { key: 'cost', label: 'Cost' },
-    // { key: 'salePrice', label: 'Sale Price' },
-    // { key: 'amountPaid', label: 'amountPaid' },
-    // { key: 'actions', label: 'Actions' },
     const totalSalePrice = sale.pricePerItem * sale.quantity;
     const amountPaid = totalSalePrice - sale.debt;
     const amountPaidDue = `${formatNumber(amountPaid)} / ${formatNumber(sale.debt)}`;
     const salePriceString = `${formatNumber(totalSalePrice)} [${formatNumber(sale.pricePerItem)} ea.]`;
+    const profit = totalSalePrice - sale.cost;
 
-    // let profitString;
-    // if (profit > 0) {
-    //   profitString = `${formatNumber(profit)} [${formatNumber(profitPerItem)} ea.]`;
-    // } else {
-    //   profitString = formatNumber(profit);
-    // }
     return {
       id: sale.id,
       name: sale.order,
@@ -148,6 +141,7 @@ function createTableData(sales: SaleResponse[]) {
       quantity: sale.quantity,
       cost: `${formatNumber(sale.cost)}`,
       salePrice: salePriceString,
+      profit: `${formatNumber(profit)}`,
       amountPaidDue,
     };
   });
