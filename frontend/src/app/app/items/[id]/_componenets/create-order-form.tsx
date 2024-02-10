@@ -40,7 +40,7 @@ export default function CreateOrderForm({
   function submitForm(data: FormValues) {
     const quantity = parseInt(data.quantity);
     const cost = parseInt(data.cost);
-    const salePrice = data.salePrice ? parseInt(data.salePrice) : null;
+    const salePrice = parseInt(data.salePrice);
     const date = data.date ? data.date : null;
     const order = {
       name: data.name,
