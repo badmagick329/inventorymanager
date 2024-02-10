@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/loaders';
 import { useOrders, useSales } from '@/hooks';
-import { APP_LOGIN } from '@/consts/urls';
+import { APP_LOGIN, APP_SALES } from '@/consts/urls';
 import { usePathname } from 'next/navigation';
 import { isOrderResponseArray } from '@/predicates';
 import { ConnectionError } from '@/components/errors';
@@ -16,10 +16,20 @@ import {
   TableCell,
   getKeyValue,
   Spacer,
+  Selection,
+  Button,
+  Link,
 } from '@nextui-org/react';
 import { formatNumber } from '@/utils';
-import { ShoppingCart, ArrowUpIcon } from 'lucide-react';
-import { ICON_MD } from '@/consts';
+import {
+  ShoppingCart,
+  ArrowUpIcon,
+  Check,
+  Pencil,
+  Trash,
+  List,
+} from 'lucide-react';
+import { ICON_SM } from '@/consts';
 import CreateOrderModal from './_componenets/create-order-modal';
 
 export default function Orders() {
@@ -28,7 +38,7 @@ export default function Orders() {
   const { error, isError, isLoading, data } = useOrders(locationId);
   if (isError) {
     console.log(`Received error ${error}`);
-    // router.push(APP_LOGIN);
+    router.push(APP_LOGIN);
   }
   const orders = data?.data;
   if (isLoading || !orders) {
@@ -48,11 +58,14 @@ export default function Orders() {
     { key: 'profit', label: 'Profit' },
     { key: 'stockInOut', label: 'Stock In / Out' },
     { key: 'vendors', label: 'Vendor(s)' },
+    { key: 'actions', label: 'Actions' },
   ];
   const tableData = createTableData(orders);
 
   return (
     <div className='flex w-full flex-col justify-center p-4'>
+      <Spacer y={2} />
+      <CreateOrderModal locationId={locationId} />
       <Spacer y={4} />
       <Table aria-label='Items Table'>
         <TableHeader columns={columns}>
@@ -69,7 +82,7 @@ export default function Orders() {
                   const [amountPaid, debt] = text.split(' / ');
                   const paidColor =
                     parseFloat(amountPaid) > 0
-                      ? 'text-success-500'
+                      ? 'text-success-600'
                       : 'text-foreground';
                   const debtColor =
                     parseFloat(debt) > 0
@@ -91,7 +104,7 @@ export default function Orders() {
                   } else if (profit === 0) {
                     profitColor = 'text-foreground';
                   } else {
-                    profitColor = 'text-success-500';
+                    profitColor = 'text-success-600';
                   }
                   return <TableCell className={profitColor}>{text}</TableCell>;
                 }
@@ -103,7 +116,7 @@ export default function Orders() {
                   if (stockOut > 0 && stockIn > 0) {
                     outColor = 'text-primary-500';
                   } else if (stockOut > 0 && stockIn === 0) {
-                    outColor = 'text-success-500';
+                    outColor = 'text-success-600';
                   } else {
                     outColor = 'text-foreground';
                   }
@@ -113,7 +126,7 @@ export default function Orders() {
                   } else if (stockIn > 0 && stockOut === 0) {
                     inColor = 'text-foreground';
                   } else {
-                    inColor = 'text-success-500';
+                    inColor = 'text-success-600';
                   }
                   return (
                     <TableCell className='flex gap-2'>
@@ -128,15 +141,34 @@ export default function Orders() {
                     </TableCell>
                   );
                 }
+                if (columnKey === 'actions') {
+                  return (
+                    <TableCell className='flex gap-2'>
+                      <Button size='sm' variant='flat' isIconOnly>
+                        <Pencil size={ICON_SM} />
+                      </Button>
+                      <Button size='sm' variant='flat' isIconOnly>
+                        <Trash size={ICON_SM} />
+                      </Button>
+                      <Button
+                        as={Link}
+                        href={`${APP_SALES}/${row.id}`}
+                        size='sm'
+                        variant='flat'
+                        isIconOnly
+                      >
+                        <List size={ICON_SM} />
+                      </Button>
+                    </TableCell>
+                  );
+                }
+
                 return <TableCell>{getKeyValue(row, columnKey)}</TableCell>;
               }}
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      <div className='flex justify-end'>
-        <CreateOrderModal locationId={locationId} />
-      </div>
     </div>
   );
 }

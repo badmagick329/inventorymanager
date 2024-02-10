@@ -1,4 +1,4 @@
-import { OrderResponse, OrderPost, SaleResponse } from './types';
+import { OrderResponse, OrderPost, SaleResponse, SalePost } from './types';
 
 export function isOrderResponse(body: any): body is OrderResponse {
   return (
@@ -50,10 +50,26 @@ export function isSaleResponse(body: any): body is SaleResponse {
     (body.date === null || typeof body.date === 'string') &&
     typeof body.quantity === 'number' &&
     typeof body.pricePerItem === 'number' &&
-    typeof body.debt === 'number'
+    typeof body.debt === 'number' &&
+    typeof body.cost === 'number' &&
+    typeof body.created === 'string' &&
+    typeof body.lastModifiedBy === 'string' &&
+    typeof body.lastModified === 'string'
   );
 }
 
 export function isSaleResponseArray(body: any): body is SaleResponse[] {
   return Array.isArray(body) && body.every(isSaleResponse);
+}
+
+export function isSalePost(body: any): body is SalePost {
+  return (
+    body &&
+    typeof body === 'object' &&
+    typeof body.vendor === 'string' &&
+    typeof body.date === 'string' &&
+    typeof body.quantity === 'number' &&
+    typeof body.pricePerItem === 'number' &&
+    typeof body.amountPaid === 'number'
+  );
 }

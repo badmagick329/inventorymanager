@@ -79,7 +79,7 @@ def test_user_can_create_sale(
     )
     assert response.status_code == 201, f"Response: {response.json()}"
     sale = response.json()
-    assert sale["item"] == order.name
+    assert sale["order"] == order.name
     assert sale["vendor"] == vendor.name
 
 
@@ -138,7 +138,7 @@ def test_admin_can_create_sale(
     )
     assert response.status_code == 201, f"Response: {response.json()}"
     sale = response.json()
-    assert sale["item"] == order.name
+    assert sale["order"] == order.name
     assert sale["vendor"] == vendor.name
 
 

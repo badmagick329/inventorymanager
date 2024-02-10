@@ -46,6 +46,18 @@ export type SaleResponse = {
   quantity: number;
   pricePerItem: number;
   debt: number;
+  cost: number;
+  created: string;
+  lastModifiedBy: string;
+  lastModified: string;
+};
+
+export type SalePost = {
+  vendor: string;
+  date: string;
+  quantity: number;
+  pricePerItem: number;
+  amountPaid: number;
 };
 
 export type Disclosure = {
