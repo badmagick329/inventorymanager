@@ -41,15 +41,21 @@ export async function POST(
   if (ErrorResponse) {
     return ErrorResponse;
   }
+  console.log(`POST /orders/[id] called with id: ${params.id}`);
   const headers = { Authorization };
   const url = `${BASE_URL}${API_ORDERS}/${params.id}`;
+  console.log(`Posting to URL: ${url}`);
   try {
-    const body = req.json();
+    const body = await req.json();
+    console.log(`Request body: ${JSON.stringify(body)}`);
     if (!isOrderPost(body)) {
       const message = 'Invalid request body';
+      console.log(message);
       return createErrorResponse(new Error(message), message);
     }
-    const response = await axios.post(url, req.json(), { headers });
+    console.log('Request body is valid');
+    const response = await axios.post(url, body, { headers });
+    console.log(`Response: ${JSON.stringify(response.data)}`);
     return new NextResponse(JSON.stringify(response.data), {
       status: 200,
     });

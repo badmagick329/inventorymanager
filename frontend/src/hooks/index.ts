@@ -9,6 +9,7 @@ import useDeleteUser from './useDeleteUser';
 import useCreateUser from './useCreateUser';
 import useOrders from './useOrders';
 import useSales from './useSales';
+import useCreateOrder from './useCreateOrder';
 
 export {
   useLocations,
@@ -22,4 +23,5 @@ export {
   useCreateUser,
   useOrders,
   useSales,
+  useCreateOrder,
 };

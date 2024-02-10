@@ -33,7 +33,7 @@ export function isOrderPost(body: any): body is OrderPost {
     body &&
     typeof body === 'object' &&
     typeof body.name === 'string' &&
-    typeof body.date === 'string' &&
+    (typeof body.date === 'string' || body.date === null) &&
     typeof body.pricePerItem === 'number' &&
     typeof body.quantity === 'number' &&
     typeof body.currentSalePrice === 'number'
