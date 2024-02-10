@@ -31,11 +31,13 @@ import {
 } from 'lucide-react';
 import { ICON_SM } from '@/consts';
 import CreateOrderModal from './_componenets/create-order-modal';
+import { useDeleteOrder } from '@/hooks';
 
 export default function Orders() {
   const locationId = usePathname().split('/')[3];
   const router = useRouter();
   const { error, isError, isLoading, data } = useOrders(locationId);
+  const deleteOrder = useDeleteOrder();
   if (isError) {
     console.log(`Received error ${error}`);
     router.push(APP_LOGIN);
@@ -147,7 +149,12 @@ export default function Orders() {
                       <Button size='sm' variant='flat' isIconOnly>
                         <Pencil size={ICON_SM} />
                       </Button>
-                      <Button size='sm' variant='flat' isIconOnly>
+                      <Button
+                        size='sm'
+                        variant='flat'
+                        isIconOnly
+                        onClick={() => deleteOrder.mutate(row.id)}
+                      >
                         <Trash size={ICON_SM} />
                       </Button>
                       <Button
@@ -182,6 +189,7 @@ function createTableData(orders: OrderResponse[]) {
     const profitPerItem = order.profitPerItem;
     const remainingStock = order.quantity - order.soldQuantity;
     const stockString = `${remainingStock} / ${order.soldQuantity}`;
+    const vendors = Array.from(new Set(order.vendors));
 
     let profitString;
     if (profit > 0) {
@@ -199,7 +207,7 @@ function createTableData(orders: OrderResponse[]) {
       debt: formatNumber(order.debt),
       amountPaidDue,
       stockInOut: stockString,
-      vendors: order.vendors.join(', '),
+      vendors: vendors.join(', '),
     };
   });
 }
