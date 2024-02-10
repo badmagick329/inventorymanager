@@ -20,6 +20,7 @@ import {
 import { formatNumber } from '@/utils';
 import { ShoppingCart, ArrowUpIcon } from 'lucide-react';
 import { ICON_MD } from '@/consts';
+import CreateOrderModal from './_componenets/create-order-modal';
 
 export default function Orders() {
   const locationId = usePathname().split('/')[3];
@@ -67,9 +68,13 @@ export default function Orders() {
                 if (columnKey === 'amountPaidDue') {
                   const [amountPaid, debt] = text.split(' / ');
                   const paidColor =
-                    parseFloat(amountPaid) > 0 ? 'text-success-500' : 'text-foreground';
+                    parseFloat(amountPaid) > 0
+                      ? 'text-success-500'
+                      : 'text-foreground';
                   const debtColor =
-                    parseFloat(debt) > 0 ? 'text-danger-500' : 'text-foreground';
+                    parseFloat(debt) > 0
+                      ? 'text-danger-500'
+                      : 'text-foreground';
                   return (
                     <TableCell>
                       <span className={paidColor}>{amountPaid}</span>
@@ -88,9 +93,7 @@ export default function Orders() {
                   } else {
                     profitColor = 'text-success-500';
                   }
-                  return (
-                    <TableCell className={profitColor}>{text}</TableCell>
-                  );
+                  return <TableCell className={profitColor}>{text}</TableCell>;
                 }
                 if (columnKey === 'stockInOut') {
                   let [stockIn, stockOut] = text.split(' / ');
@@ -131,6 +134,9 @@ export default function Orders() {
           ))}
         </TableBody>
       </Table>
+      <div className='flex justify-end'>
+        <CreateOrderModal locationId={locationId} />
+      </div>
     </div>
   );
 }

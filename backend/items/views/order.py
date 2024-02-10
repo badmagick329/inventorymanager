@@ -67,7 +67,6 @@ class OrderList(APIView):
 
         location = get_object_or_404(ItemLocation, id=location_id)
         if not location.is_visible_to(user):
-            print(f"User {user} does not have access to location {location}")
             return OrderResponses.forbidden_location()
 
         initial_data = {
@@ -76,7 +75,8 @@ class OrderList(APIView):
             "locationId": location_id,
         }
         serializer = OrderSerializer(data=initial_data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            return OrderResponses.bad_request(serializer.errors)
         serializer.save()
         return OrderResponses.created(serializer.data)
 

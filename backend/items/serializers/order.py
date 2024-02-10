@@ -47,7 +47,7 @@ class OrderSerializer(serializers.BaseSerializer):
         if hasattr(data, "_mutable"):
             data._mutable = True
 
-        if "date" in data:
+        if "date" in data and data["date"]:
             data["date"] = data["date"].strip()
             try:
                 data["date"] = datetime.strptime(

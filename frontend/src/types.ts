@@ -32,7 +32,7 @@ export type OrderResponse = {
 
 export type OrderPost = {
   name: string;
-  date: string;
+  date: string | null;
   pricePerItem: number;
   quantity: number;
   currentSalePrice: number;
