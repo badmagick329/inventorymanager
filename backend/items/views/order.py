@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from items.models import ItemLocation, Order
-from items.responses import OrderResponses
+from items.responses import APIResponses
 from items.serializers.order import OrderSerializer
 from rest_framework import permissions
 from rest_framework.request import Request
@@ -18,17 +18,17 @@ class OrderDetail(APIView):
         assert isinstance(user, UserAccount)
         order = get_object_or_404(Order, id=order_id)
         if not order.is_visible_to(user):
-            return OrderResponses.forbidden_order()
+            return APIResponses.forbidden_order()
 
         serializer = OrderSerializer(order)
-        return OrderResponses.ok(serializer.data)
+        return APIResponses.ok(serializer.data)
 
     def patch(self, request: Request, order_id: int):
         user = request.user
         assert isinstance(user, UserAccount)
         order = get_object_or_404(Order, id=order_id)
         if not order.is_visible_to(user):
-            return OrderResponses.forbidden_order()
+            return APIResponses.forbidden_order()
         initial_data = {
             **request.data,
             "user": user,
@@ -36,16 +36,16 @@ class OrderDetail(APIView):
         serializer = OrderSerializer(order, data=initial_data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return OrderResponses.ok(serializer.data)
+        return APIResponses.ok(serializer.data)
 
     def delete(self, request: Request, order_id: int):
         user = request.user
         assert isinstance(user, UserAccount)
         order = get_object_or_404(Order, id=order_id)
         if not order.is_visible_to(user):
-            return OrderResponses.forbidden_order()
+            return APIResponses.forbidden_order()
         order.delete()
-        return OrderResponses.deleted()
+        return APIResponses.deleted()
 
 
 class OrderList(APIView):
@@ -56,10 +56,10 @@ class OrderList(APIView):
         assert isinstance(user, UserAccount)
         location = get_object_or_404(ItemLocation, id=location_id)
         if not location.is_visible_to(user):
-            return OrderResponses.forbidden_location()
+            return APIResponses.forbidden_location()
         orders = OrderList.filter_orders_for(user, location)
         serializer = OrderSerializer(orders, many=True)
-        return OrderResponses.ok(serializer.data)
+        return APIResponses.ok(serializer.data)
 
     def post(self, request: Request, location_id: int):
         user = request.user
@@ -67,7 +67,7 @@ class OrderList(APIView):
 
         location = get_object_or_404(ItemLocation, id=location_id)
         if not location.is_visible_to(user):
-            return OrderResponses.forbidden_location()
+            return APIResponses.forbidden_location()
 
         initial_data = {
             **request.data,
@@ -76,17 +76,9 @@ class OrderList(APIView):
         }
         serializer = OrderSerializer(data=initial_data)
         if not serializer.is_valid():
-            return OrderResponses.bad_request(serializer.errors)
+            return APIResponses.bad_request(serializer.errors)
         serializer.save()
-        return OrderResponses.created(serializer.data)
-
-    @staticmethod
-    def has_access(user: UserAccount, location: ItemLocation):
-        if user.is_admin:
-            return True
-        return ItemLocation.objects.filter(
-            id=location.id, users__in=[user]
-        ).exists()
+        return APIResponses.created(serializer.data)
 
     @staticmethod
     def filter_orders_for(user: UserAccount, location: ItemLocation):
