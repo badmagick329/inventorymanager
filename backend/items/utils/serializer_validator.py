@@ -43,3 +43,11 @@ class SerializerValidator:
             raise serializers.ValidationError(
                 {field_name: "Date must be in the format YYYY-MM-DD"}
             )
+
+    @staticmethod
+    def non_empty_string(value, field_name, field_label):
+        if not value:
+            raise serializers.ValidationError(
+                {field_name: f"{field_label} cannot be empty"}
+            )
+        return value
