@@ -2,11 +2,18 @@ from rest_framework import status
 from rest_framework.response import Response
 
 
-class OrderResponses:
+class APIResponses:
     @staticmethod
-    def not_found():
+    def order_not_found():
         return Response(
             data={"errors": "Order not found"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    @staticmethod
+    def sale_not_found():
+        return Response(
+            data={"errors": "Sale not found"},
             status=status.HTTP_404_NOT_FOUND,
         )
 
