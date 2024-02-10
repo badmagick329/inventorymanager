@@ -6,7 +6,6 @@ import {
   ModalContent,
   ModalFooter,
   Button,
-  useDisclosure,
   Spacer,
   Input,
 } from '@nextui-org/react';
@@ -21,8 +20,10 @@ export type FormValues = {
 
 export default function CreateOrderForm({
   locationId,
+  onClose,
 }: {
   locationId: string;
+  onClose: () => void;
 }) {
   const defaultValues = {
     name: '',
@@ -55,6 +56,7 @@ export default function CreateOrderForm({
     });
     try {
       console.log(response);
+      onClose();
     } catch (error) {
       console.log(error);
     }
@@ -134,10 +136,10 @@ export default function CreateOrderForm({
               />
               <ModalFooter>
                 <Button color='danger' variant='light' onPress={onClose}>
-                  Close
+                  Cancel
                 </Button>
                 <Button type='submit' color='primary'>
-                  Action
+                  Create
                 </Button>
               </ModalFooter>
             </div>

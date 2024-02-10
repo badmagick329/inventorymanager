@@ -86,12 +86,13 @@ class SaleSerializer(serializers.BaseSerializer):
 
         return {
             "id": instance.id,
-            "item": instance.order.name,
+            "order": instance.order.name,
             "vendor": instance.vendor.name,
             "date": date_repr,
             "location": instance.order.location.name,
             "pricePerItem": instance.price_per_item,
             "quantity": instance.quantity,
+            "cost": instance.cost(),
             "debt": instance.debt,
             "created": instance.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "lastModifiedBy": instance.last_modified_by.username,
