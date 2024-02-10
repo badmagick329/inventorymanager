@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from items.models import Order, Sale
+from items.models import Order, Sale, Vendor
 from items.utils.serializer_validator import SerializerValidator as SV
 from rest_framework import serializers
 
@@ -7,7 +7,7 @@ from rest_framework import serializers
 class SaleSerializer(serializers.BaseSerializer):
     def create(self, validated_data):
         order = self._get_order()
-        vendor = self._get_vendor(order.location)
+        vendor = self._get_vendor(order.location, validated_data["user"])
         sale = Sale(
             order=order,
             vendor=vendor,
@@ -29,6 +29,13 @@ class SaleSerializer(serializers.BaseSerializer):
         )
         instance.quantity = validated_data.get("quantity", instance.quantity)
         instance.debt = validated_data.get("debt", instance.debt)
+        vendor_name = validated_data.get("vendor")
+        if vendor_name:
+            instance.vendor = self._get_vendor(
+                instance.order.location, validated_data["user"]
+            )
+        else:
+            raise serializers.ValidationError({"vendor": "Vendor is required"})
         try:
             instance.save(user=validated_data["user"])
         except ValidationError as e:
@@ -52,8 +59,8 @@ class SaleSerializer(serializers.BaseSerializer):
         data["debt"] = (
             data["pricePerItem"] * data["quantity"] - data["amountPaid"]
         )
-        data["vendorId"] = SV.positive_int(
-            data.get("vendorId"), "vendorId", "Vendor ID"
+        data["vendor"] = SV.non_empty_string(
+            data.get("vendor"), "vendor", "Vendor"
         )
         data["orderId"] = SV.positive_int(
             data.get("orderId"), "orderId", "Order ID"
@@ -70,13 +77,12 @@ class SaleSerializer(serializers.BaseSerializer):
             raise serializers.ValidationError({"order_id": f"Order not found"})
         return order
 
-    def _get_vendor(self, location):
-        vendor_id = self.validated_data.get("vendorId")
-        vendor = location.vendors.filter(id=vendor_id).first()
+    def _get_vendor(self, location, user):
+        vendor_name = self.validated_data.get("vendor")
+        vendor = location.vendors.filter(name__in=[vendor_name]).first()
         if not vendor:
-            raise serializers.ValidationError(
-                {"vendor_id": f"Vendor not found"}
-            )
+            vendor = Vendor(name=vendor_name, location=location)
+            vendor.save(user=user)
         return vendor
 
     def to_representation(self, instance):

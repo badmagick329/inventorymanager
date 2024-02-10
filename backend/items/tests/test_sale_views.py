@@ -66,7 +66,7 @@ def test_user_can_create_sale(
     api_client.force_authenticate(user=user)
     data = {
         "orderId": order.id,
-        "vendorId": vendor.id,
+        "vendor": vendor.name,
         "quantity": 10,
         "date": "2021-01-01",
         "pricePerItem": 10,
@@ -97,7 +97,7 @@ def test_user_without_access_cannot_create_sale(
     api_client.force_authenticate(user=user)
     data = {
         "orderId": order.id,
-        "vendorId": vendor.id,
+        "vendor": vendor.name,
         "quantity": 10,
         "date": "2021-01-01",
         "pricePerItem": 10,
@@ -116,16 +116,14 @@ def test_admin_can_create_sale(
     user_factory,
     item_location_factory,
     order_factory,
-    vendor_factory,
 ):
     admin, _ = user_factory(is_admin=True)
     location = item_location_factory()
     order = order_factory(location=location)
-    vendor, _ = vendor_factory(location=location)
     api_client.force_authenticate(user=admin)
     data = {
         "orderId": order.id,
-        "vendorId": vendor.id,
+        "vendor": "Test Vendor",
         "quantity": 10,
         "date": "2021-01-01",
         "pricePerItem": 10,
@@ -139,7 +137,7 @@ def test_admin_can_create_sale(
     assert response.status_code == 201, f"Response: {response.json()}"
     sale = response.json()
     assert sale["order"] == order.name
-    assert sale["vendor"] == vendor.name
+    assert sale["vendor"] == "Test Vendor"
 
 
 def test_user_can_access_sale(
@@ -270,7 +268,7 @@ def test_user_can_update_sale(
         "pricePerItem": 10,
         "amountPaid": 10,
         "orderId": order.id,
-        "vendorId": vendor.id,
+        "vendor": "Some new guy",
     }
     response = api_client.patch(
         sale_detail_url(kwargs={"sale_id": sale.id}),
@@ -281,3 +279,4 @@ def test_user_can_update_sale(
     sale_response = response.json()
     assert sale_response["quantity"] == 5
     assert sale_response["date"] == None
+    assert sale_response["vendor"] == "Some new guy"
