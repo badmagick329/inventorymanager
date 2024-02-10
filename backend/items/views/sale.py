@@ -73,7 +73,6 @@ class SaleList(APIView):
             "orderId": order_id,
         }
         serializer = SaleSerializer(data=initial_data)
-        if not serializer.is_valid():
-            return APIResponses.bad_request(serializer.errors)
+        serializer.is_valid(raise_exception=True)
         serializer.save()
         return APIResponses.created(serializer.data)
