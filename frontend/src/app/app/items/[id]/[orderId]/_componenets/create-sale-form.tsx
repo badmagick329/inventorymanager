@@ -14,9 +14,9 @@ import axios from 'axios';
 export type FormValues = {
   vendor: string;
   date: string;
-  quantity: string;
-  salePrice: string;
-  amountPaid: string;
+  quantity: number;
+  salePrice: number;
+  amountPaid: number;
 };
 
 export default function CreateSaleForm({
@@ -29,22 +29,22 @@ export default function CreateSaleForm({
   const defaultValues = {
     vendor: '',
     date: '',
-    quantity: '',
-    salePrice: '',
-    amountPaid: '',
+    quantity: 1,
+    salePrice: 1,
+    amountPaid: 0,
   };
 
   const { register, handleSubmit, formState, setError } = useForm({
-    defaultValues: defaultValues,
+    defaultValues,
   });
   const createSale = useCreateSale();
 
   async function submitForm(data: FormValues) {
     const date = data.date ? data.date : null;
-    const quantity = parseInt(data.quantity);
-    const salePrice = parseInt(data.salePrice);
+    const quantity = data.quantity;
+    const salePrice = data.salePrice;
     const pricePerItem = salePrice / quantity;
-    const amountPaid = parseInt(data.amountPaid);
+    const amountPaid = data.amountPaid;
     const sale = {
       vendor: data.vendor,
       date,
