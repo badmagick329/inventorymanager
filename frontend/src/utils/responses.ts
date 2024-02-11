@@ -10,10 +10,14 @@ export function createErrorResponse(
   headers?: Record<string, string>
 ) {
   let responseHeaders = {};
+  let data = {};
 
   let axiosError = null;
   if (axios.isAxiosError(error)) {
     axiosError = error as AxiosError;
+    if (axiosError?.response?.data) {
+      data = axiosError.response.data;
+    }
   }
   responseHeaders = {
     status: axiosError?.response?.status ?? 500,
@@ -26,10 +30,14 @@ export function createErrorResponse(
     };
   }
 
-  return new NextResponse(
-    JSON.stringify({ message: errorMessage ?? 'error' }),
-    responseHeaders
-  );
+  let response;
+  if (data) {
+    response = data;
+  } else {
+    response = { message: errorMessage ?? 'error' };
+  }
+
+  return new NextResponse(JSON.stringify(response), responseHeaders);
 }
 
 export function createAuthHeader(): {

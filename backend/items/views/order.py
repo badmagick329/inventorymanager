@@ -4,7 +4,8 @@ from django.shortcuts import get_object_or_404
 from items.models import ItemLocation, Order
 from items.responses import APIResponses
 from items.serializers.order import OrderSerializer
-from rest_framework import permissions
+from items.utils.serializers import stringify_error
+from rest_framework import permissions, serializers
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from users.models import UserAccount
@@ -34,8 +35,11 @@ class OrderDetail(APIView):
             "user": user,
         }
         serializer = OrderSerializer(order, data=initial_data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        try:
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+        except serializers.ValidationError as e:
+            return APIResponses.bad_request(stringify_error(e))
         return APIResponses.ok(serializer.data)
 
     def delete(self, request: Request, order_id: int):
@@ -75,9 +79,11 @@ class OrderList(APIView):
             "locationId": location_id,
         }
         serializer = OrderSerializer(data=initial_data)
-        if not serializer.is_valid():
-            return APIResponses.bad_request(serializer.errors)
-        serializer.save()
+        try:
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+        except serializers.ValidationError as e:
+            return APIResponses.bad_request(stringify_error(e))
         return APIResponses.created(serializer.data)
 
     @staticmethod
