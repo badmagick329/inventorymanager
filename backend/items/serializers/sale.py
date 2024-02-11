@@ -43,32 +43,29 @@ class SaleSerializer(serializers.BaseSerializer):
         return instance
 
     def to_internal_value(self, data):
-        if hasattr(data, "_mutable"):
-            data._mutable = True
-
-        data["date"] = SV.valid_date(data.get("date"), "date")
-        data["pricePerItem"] = SV.positive_float(
+        date = SV.valid_date(data.get("date"), "date")
+        price_per_item = SV.positive_float(
             data.get("pricePerItem"), "pricePerItem", "Price per item"
         )
-        data["quantity"] = SV.positive_int(
+        quantity = SV.positive_int(
             data.get("quantity"), "quantity", "Quantity"
         )
-        data["amountPaid"] = SV.positive_float(
+        amount_paid = SV.positive_float(
             data.get("amountPaid", 0), "amountPaid", "Amount paid"
         )
-        data["debt"] = (
-            data["pricePerItem"] * data["quantity"] - data["amountPaid"]
-        )
-        data["vendor"] = SV.non_empty_string(
-            data.get("vendor"), "vendor", "Vendor"
-        )
-        data["orderId"] = SV.positive_int(
-            data.get("orderId"), "orderId", "Order ID"
-        )
+        debt = data["pricePerItem"] * data["quantity"] - data["amountPaid"]
+        vendor = SV.non_empty_string(data.get("vendor"), "vendor", "Vendor")
+        order_id = SV.positive_int(data.get("orderId"), "orderId", "Order ID")
 
-        if hasattr(data, "_mutable"):
-            data._mutable = False
-        return data
+        return {
+            "date": date,
+            "pricePerItem": price_per_item,
+            "quantity": quantity,
+            "debt": debt,
+            "vendor": vendor,
+            "orderId": order_id,
+            "user": data.get("user"),
+        }
 
     def _get_order(self):
         order_id = self.validated_data.get("orderId")
