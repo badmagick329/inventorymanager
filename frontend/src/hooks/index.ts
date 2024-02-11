@@ -12,6 +12,7 @@ import useSales from './useSales';
 import useCreateOrder from './useCreateOrder';
 import useDeleteOrder from './useDeleteOrder';
 import useDeleteSale from './useDeleteSale';
+import useOrderDetail from './useOrderDetail';
 
 export {
   useLocations,
@@ -28,4 +29,5 @@ export {
   useCreateOrder,
   useDeleteOrder,
   useDeleteSale,
+  useOrderDetail,
 };

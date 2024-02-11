@@ -4,7 +4,7 @@ import { Spinner } from '@/components/loaders';
 import { useSales } from '@/hooks';
 import { APP_LOGIN } from '@/consts/urls';
 import { usePathname } from 'next/navigation';
-import { isSaleResponseArray } from '@/predicates';
+import { isOrderResponse, isSaleResponseArray } from '@/predicates';
 import { ConnectionError } from '@/components/errors';
 import { SaleResponse } from '@/types';
 import {
@@ -23,7 +23,7 @@ import { formatNumber } from '@/utils';
 import { Pencil, Trash } from 'lucide-react';
 import { ICON_SM } from '@/consts';
 import CreateSaleModal from './_componenets/create-sale-modal';
-import { useDeleteSale } from '@/hooks';
+import { useDeleteSale, useOrderDetail } from '@/hooks';
 
 export default function Sales() {
   const locationId = usePathname().split('/')[3];
@@ -31,15 +31,24 @@ export default function Sales() {
   const router = useRouter();
   const { error, isError, isLoading, data } = useSales(orderId);
   const deleteSale = useDeleteSale();
-  if (isError) {
-    console.log(`Received error ${error}`);
+  const {
+    error: orderError,
+    isError: orderIsError,
+    isLoading: orderIsLoading,
+    data: orderData,
+  } = useOrderDetail(locationId, orderId);
+
+  console.log();
+  if (isError || orderIsError) {
+    console.log('Received errors', error, orderError);
     router.push(APP_LOGIN);
   }
   const sales = data?.data;
-  if (isLoading || !sales) {
+  const currentOrder = orderData?.data;
+  if (isLoading || !sales || orderIsLoading || !orderData) {
     return <Spinner />;
   }
-  if (!isSaleResponseArray(sales)) {
+  if (!isSaleResponseArray(sales) || !isOrderResponse(currentOrder)) {
     return <ConnectionError message='Failed to load sales' />;
   }
 
@@ -59,6 +68,21 @@ export default function Sales() {
 
   return (
     <div className='flex w-full flex-col justify-center p-4'>
+      <Spacer y={2} />
+      <div className='flex flex-col gap-2 items-center'>
+        <span className='text-2xl font-semibold'>
+          {currentOrder.name} - Sales
+        </span>
+        <span className='font-semibold'>
+          Purchase Price: {currentOrder.pricePerItem * currentOrder.quantity} [
+          {currentOrder.pricePerItem} ea.]
+        </span>
+        <span className='font-semibold'>
+          Current sale price:{' '}
+          {currentOrder.currentSalePrice * currentOrder.quantity} [
+          {currentOrder.currentSalePrice} ea.]
+        </span>
+      </div>
       <Spacer y={2} />
       <div className='flex justify-center gap-4'>
         <CreateSaleModal orderId={orderId} />
