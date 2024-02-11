@@ -135,9 +135,6 @@ function createTableData(sales: SaleResponse[]) {
     const amountPaid = totalSalePrice - sale.debt;
     const amountPaidDue = [amountPaid, sale.debt];
     const salePriceString = `${formatNumber(totalSalePrice)} [${formatNumber(sale.pricePerItem)} ea.]`;
-    console.log(
-      `${totalSalePrice} - ${sale.cost} = ${totalSalePrice - sale.cost}`
-    );
     const profit = totalSalePrice - sale.cost;
 
     return {

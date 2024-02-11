@@ -61,8 +61,31 @@ export default function CreateSaleForm({
       onClose();
     } catch (error) {
       console.log('ERROR', error);
+      if (axios.isAxiosError(error)) {
+        const errorData = error.response?.data;
+        console.log('errorData', errorData);
+        if (errorData) {
+          for (const [field, message] of Object.entries(errorData)) {
+            // @ts-ignore
+            setError(mapErrorKeyToField(field), { type: 'server', message });
+            return;
+          }
+        }
+      }
       setError('vendor', { type: 'server', message: 'An error occurred' });
     }
+  }
+
+  function mapErrorKeyToField(key: string) {
+    console.log('key', key);
+    const errorMap = new Map([
+      ['vendor', 'vendor'],
+      ['date', 'date'],
+      ['quantity', 'quantity'],
+      ['price_per_item', 'salePrice'],
+      ['debt', 'amountPaid'],
+    ]);
+    return errorMap.get(key) || 'vendor';
   }
 
   return (

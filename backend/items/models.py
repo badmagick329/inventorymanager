@@ -239,7 +239,7 @@ class Sale(models.Model, LastModifiedByMixin):
             models.CheckConstraint(
                 name="positive_sale_debt",
                 check=models.Q(debt__gte=0),
-                violation_error_message="Debt cannot be negative.",
+                violation_error_message="Amount paid cannot be greater than potential revenue for this sale.",
             ),
         ]
 
@@ -253,12 +253,21 @@ class Sale(models.Model, LastModifiedByMixin):
             self.debt = self.price_per_item * self.quantity
         if self.debt > self.potential_revenue():
             raise ValidationError(
-                {"debt": "Debt cannot be greater than potential revenue."}
+                {
+                    "amount_paid": (
+                        f"Amount paid cannot be greater "
+                        f"than {self.potential_revenue()} for this sale."
+                    )
+                }
             )
-        if self.order.current_quantity() < self.quantity:
+        if (current_quantity := self.order.current_quantity()) < self.quantity:
             raise ValidationError(
                 {
-                    "quantity": "Quantity cannot be greater than remaining quantity."
+                    "quantity": (
+                        f"Quantity cannot be greater "
+                        f"than remaining quantity "
+                        f"({current_quantity}) for this order."
+                    )
                 }
             )
         super().full_clean(*args, **kwargs)

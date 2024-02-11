@@ -30,12 +30,7 @@ export function createErrorResponse(
     };
   }
 
-  let response;
-  if (data) {
-    response = data;
-  } else {
-    response = { message: errorMessage ?? 'error' };
-  }
+  const response = data ? data : { message: errorMessage ?? 'error' };
 
   return new NextResponse(JSON.stringify(response), responseHeaders);
 }
