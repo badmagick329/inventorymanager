@@ -48,7 +48,7 @@ export default function CreateOrderForm({
       date,
       quantity,
       pricePerItem: cost / quantity,
-      currentSalePrice: salePrice,
+      currentSalePrice: salePrice / quantity,
     };
     const response = createOrder.mutateAsync({
       locationId,

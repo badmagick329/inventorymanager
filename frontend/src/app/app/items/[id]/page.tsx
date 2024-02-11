@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/loaders';
-import { useOrders, useSales } from '@/hooks';
+import { useOrders } from '@/hooks';
 import { APP_LOGIN, APP_SALES } from '@/consts/urls';
 import { usePathname } from 'next/navigation';
 import { isOrderResponseArray } from '@/predicates';
@@ -16,7 +16,6 @@ import {
   TableCell,
   getKeyValue,
   Spacer,
-  Selection,
   Button,
   Link,
 } from '@nextui-org/react';
@@ -24,7 +23,6 @@ import { formatNumber } from '@/utils';
 import {
   ShoppingCart,
   ArrowUpIcon,
-  Check,
   Pencil,
   Trash,
   List,
@@ -56,10 +54,11 @@ export default function Orders() {
     { key: 'purchaseDate', label: 'Purchase Date' },
     { key: 'quantity', label: 'Quantity' },
     { key: 'cost', label: 'Cost' },
+    { key: 'salePrice', label: 'Sale Price' },
     { key: 'amountPaidDue', label: 'Amount Paid / Due' },
     { key: 'profit', label: 'Profit' },
     { key: 'stockInOut', label: 'Stock In / Out' },
-    { key: 'vendors', label: 'Vendor(s)' },
+    { key: 'vendors', label: 'Sold to' },
     { key: 'actions', label: 'Actions' },
   ];
   const tableData = createTableData(orders);
@@ -81,39 +80,43 @@ export default function Orders() {
               {(columnKey) => {
                 const text = getKeyValue(row, columnKey);
                 if (columnKey === 'amountPaidDue') {
-                  const [amountPaid, debt] = text.split(' / ');
+                  const [amountPaid, debt] = text;
                   const paidColor =
-                    parseFloat(amountPaid) > 0
-                      ? 'text-success-600'
-                      : 'text-foreground';
+                    amountPaid > 0 ? 'text-success-600' : 'text-foreground';
                   const debtColor =
-                    parseFloat(debt) > 0
-                      ? 'text-danger-500'
-                      : 'text-foreground';
+                    debt > 0 ? 'text-danger-500' : 'text-foreground';
                   return (
                     <TableCell>
-                      <span className={paidColor}>{amountPaid}</span>
+                      <span className={paidColor}>
+                        {formatNumber(amountPaid)}
+                      </span>
                       <span> / </span>
-                      <span className={debtColor}>{debt}</span>
+                      <span className={debtColor}>{formatNumber(debt)}</span>
                     </TableCell>
                   );
                 }
                 if (columnKey === 'profit') {
-                  const profit = parseFloat(text);
+                  const [profit, profitPerItem] = text;
+                  const totalCost = row.cost;
                   let profitColor;
-                  if (profit < 0) {
-                    profitColor = 'text-danger-500';
-                  } else if (profit === 0) {
+                  if (profit === 0) {
                     profitColor = 'text-foreground';
+                  } else if (profit < totalCost) {
+                    profitColor =
+                      row.stockInOut[0] === 0
+                        ? 'text-danger-500'
+                        : 'text-primary-500';
                   } else {
                     profitColor = 'text-success-600';
                   }
-                  return <TableCell className={profitColor}>{text}</TableCell>;
+                  return (
+                    <TableCell className={profitColor}>
+                      {formatNumber(profit)} [{formatNumber(profitPerItem)} ea.]
+                    </TableCell>
+                  );
                 }
                 if (columnKey === 'stockInOut') {
-                  let [stockIn, stockOut] = text.split(' / ');
-                  stockOut = parseInt(stockOut);
-                  stockIn = parseInt(stockIn);
+                  const [stockIn, stockOut] = text;
                   let outColor;
                   if (stockOut > 0 && stockIn > 0) {
                     outColor = 'text-primary-500';
@@ -133,11 +136,11 @@ export default function Orders() {
                   return (
                     <TableCell className='flex gap-2'>
                       <span className={`flex gap-2 ${inColor}`}>
-                        <ShoppingCart size={16} />
+                        <ShoppingCart size={ICON_SM} />
                         {stockIn}
                       </span>
                       <span className={`flex gap-2 ${outColor}`}>
-                        <ArrowUpIcon size={16} />
+                        <ArrowUpIcon size={ICON_SM} />
                         {stockOut}
                       </span>
                     </TableCell>
@@ -169,6 +172,14 @@ export default function Orders() {
                     </TableCell>
                   );
                 }
+                if (columnKey === 'cost' || columnKey === 'salePrice') {
+                  return (
+                    <TableCell>
+                      {formatNumber(text)} [{formatNumber(text / row.quantity)}{' '}
+                      ea.]
+                    </TableCell>
+                  );
+                }
 
                 return <TableCell>{getKeyValue(row, columnKey)}</TableCell>;
               }}
@@ -184,30 +195,29 @@ function createTableData(orders: OrderResponse[]) {
   return orders.map((order) => {
     const totalPrice = order.pricePerItem * order.quantity;
     const amountPaid = order.amountPaid;
-    const amountPaidDue = `${formatNumber(amountPaid)} / ${formatNumber(order.debt)}`;
+    const amountPaidDue = [amountPaid, order.debt];
     const profit = order.profit;
     const profitPerItem = order.profitPerItem;
     const remainingStock = order.quantity - order.soldQuantity;
-    const stockString = `${remainingStock} / ${order.soldQuantity}`;
+    const stockInOut = [remainingStock, order.soldQuantity];
     const vendors = Array.from(new Set(order.vendors));
+    const vendorsString =
+      vendors.length > 2
+        ? vendors.slice(0, 2).join(', ') + '...'
+        : vendors.join(', ');
 
-    let profitString;
-    if (profit > 0) {
-      profitString = `${formatNumber(profit)} [${formatNumber(profitPerItem)} ea.]`;
-    } else {
-      profitString = formatNumber(profit);
-    }
+    const profitValues = [profit, profitPerItem];
     return {
       id: order.id,
       name: order.name,
-      cost: `${formatNumber(totalPrice)}`,
       purchaseDate: order.date,
-      profit: profitString,
       quantity: order.quantity,
-      debt: formatNumber(order.debt),
+      cost: totalPrice,
+      salePrice: order.currentSalePrice * order.quantity,
       amountPaidDue,
-      stockInOut: stockString,
-      vendors: vendors.join(', '),
+      profit: profitValues,
+      stockInOut,
+      vendors: vendorsString,
     };
   });
 }
