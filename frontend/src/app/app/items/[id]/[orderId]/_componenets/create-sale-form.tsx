@@ -41,10 +41,10 @@ export default function CreateSaleForm({
 
   async function submitForm(data: FormValues) {
     const date = data.date ? data.date : null;
-    const quantity = data.quantity;
-    const salePrice = data.salePrice;
+    const quantity = Number(data.quantity);
+    const salePrice = Number(data.salePrice);
     const pricePerItem = salePrice / quantity;
-    const amountPaid = data.amountPaid;
+    const amountPaid = Number(data.amountPaid);
     const sale = {
       vendor: data.vendor,
       date,
