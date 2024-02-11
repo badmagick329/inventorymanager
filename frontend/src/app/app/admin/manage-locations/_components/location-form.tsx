@@ -5,9 +5,7 @@ import LocationInput from './location-input';
 import SubmitButton from './submit-new-button';
 import axios from 'axios';
 import CancelButton from './cancel-new-button';
-import { useQueryClient } from '@tanstack/react-query';
-import { Location } from '@/types';
-import { AxiosResponse } from 'axios';
+import { getUsersWithAccessTo } from '@/utils/query-client-reader';
 import { useCreateLocation, useUpdateLocation } from '@/hooks';
 import UsernamesSelect from './usernames-select';
 
@@ -95,24 +93,4 @@ export default function LocationForm({
       </div>
     </form>
   );
-}
-
-function getUsersWithAccessTo(locationId?: number) {
-  if (!locationId) {
-    return [] as string[];
-  }
-  const queryClient = useQueryClient();
-  const locationQuery = queryClient.getQueryData(['locations']) as
-    | AxiosResponse<any, any>
-    | undefined;
-  let selectedNames = [] as string[];
-  if (locationQuery) {
-    const locations = locationQuery.data as Location[];
-    for (const location of locations) {
-      if (location.id === locationId) {
-        return location.users || ([] as string[]);
-      }
-    }
-  }
-  return selectedNames;
 }

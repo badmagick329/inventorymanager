@@ -73,7 +73,7 @@ export default function CreateOrderForm({
       >
         <ModalContent>
           {(onClose) => (
-            <div className='flex flex-col gap-4'>
+            <div className='flex flex-col gap-4 px-4'>
               <Spacer y={2} />
               <span className='text-center text-2xl font-semibold'>
                 Add Item

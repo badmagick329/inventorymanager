@@ -99,10 +99,10 @@ export default function CreateSaleForm({
       >
         <ModalContent>
           {(onClose) => (
-            <div className='flex flex-col gap-4'>
+            <div className='flex flex-col gap-4 px-4'>
               <Spacer y={2} />
               <span className='text-center text-2xl font-semibold'>
-                Add Item
+                Add Sale
               </span>
               <span className='text-danger-500'>
                 {formState.errors.vendor?.message}

@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/loaders';
 import { useOrders } from '@/hooks';
-import { APP_LOGIN, APP_SALES } from '@/consts/urls';
+import { APP_LOGIN, APP_SALES, APP_ITEMS } from '@/consts/urls';
 import { usePathname } from 'next/navigation';
 import { isOrderResponseArray } from '@/predicates';
 import { ConnectionError } from '@/components/errors';
@@ -20,13 +20,7 @@ import {
   Link,
 } from '@nextui-org/react';
 import { formatNumber } from '@/utils';
-import {
-  ShoppingCart,
-  ArrowUpIcon,
-  Pencil,
-  Trash,
-  List,
-} from 'lucide-react';
+import { ShoppingCart, ArrowUpIcon, Pencil, Trash, List } from 'lucide-react';
 import { ICON_SM } from '@/consts';
 import CreateOrderModal from './_componenets/create-order-modal';
 import { useDeleteOrder } from '@/hooks';
@@ -66,7 +60,9 @@ export default function Orders() {
   return (
     <div className='flex w-full flex-col justify-center p-4'>
       <Spacer y={2} />
-      <CreateOrderModal locationId={locationId} />
+      <div className='flex justify-center'>
+        <CreateOrderModal locationId={locationId} />
+      </div>
       <Spacer y={4} />
       <Table aria-label='Items Table'>
         <TableHeader columns={columns}>
@@ -162,7 +158,7 @@ export default function Orders() {
                       </Button>
                       <Button
                         as={Link}
-                        href={`${APP_SALES}/${row.id}`}
+                        href={`${APP_ITEMS}/${locationId}/${row.id}`}
                         size='sm'
                         variant='flat'
                         isIconOnly
