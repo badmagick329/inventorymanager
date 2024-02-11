@@ -17,6 +17,7 @@ import {
   getKeyValue,
   Spacer,
   Button,
+  Link,
 } from '@nextui-org/react';
 import { formatNumber } from '@/utils';
 import { Pencil, Trash } from 'lucide-react';
@@ -25,7 +26,8 @@ import CreateSaleModal from './_componenets/create-sale-modal';
 import { useDeleteSale } from '@/hooks';
 
 export default function Sales() {
-  const orderId = usePathname().split('/')[3];
+  const locationId = usePathname().split('/')[3];
+  const orderId = usePathname().split('/')[4];
   const router = useRouter();
   const { error, isError, isLoading, data } = useSales(orderId);
   const deleteSale = useDeleteSale();
@@ -58,7 +60,18 @@ export default function Sales() {
   return (
     <div className='flex w-full flex-col justify-center p-4'>
       <Spacer y={2} />
-      <CreateSaleModal orderId={orderId} />
+      <div className='flex justify-center gap-4'>
+        <CreateSaleModal orderId={orderId} />
+        <Button
+          as={Link}
+          href={`/app/items/${locationId}`}
+          variant='flat'
+          size='md'
+          color='default'
+        >
+          Back to items
+        </Button>
+      </div>
       <Spacer y={4} />
       <Table aria-label='Items Table'>
         <TableHeader columns={columns}>

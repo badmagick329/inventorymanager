@@ -7,7 +7,7 @@ export default function CreateOrderModal({ locationId }: {locationId: string}) {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   return (
-    <div className='flex w-full justify-start'>
+    <>
       <Button onPress={onOpen}>Add Item</Button>
       <Modal
         className='flex w-full'
@@ -19,6 +19,6 @@ export default function CreateOrderModal({ locationId }: {locationId: string}) {
       >
         <CreateOrderForm locationId={locationId} onClose={onClose} />
       </Modal>
-    </div>
+    </>
   );
 }
