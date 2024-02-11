@@ -16,18 +16,10 @@ import {
   TableCell,
   getKeyValue,
   Spacer,
-  Selection,
   Button,
 } from '@nextui-org/react';
 import { formatNumber } from '@/utils';
-import {
-  ShoppingCart,
-  ArrowUpIcon,
-  Check,
-  Pencil,
-  Trash,
-  List,
-} from 'lucide-react';
+import { Pencil, Trash } from 'lucide-react';
 import { ICON_SM } from '@/consts';
 import CreateSaleModal from './_componenets/create-sale-modal';
 import { useDeleteSale } from '@/hooks';
@@ -39,7 +31,7 @@ export default function Sales() {
   const deleteSale = useDeleteSale();
   if (isError) {
     console.log(`Received error ${error}`);
-    // router.push(APP_LOGIN);
+    router.push(APP_LOGIN);
   }
   const sales = data?.data;
   if (isLoading || !sales) {
@@ -80,21 +72,33 @@ export default function Sales() {
               {(columnKey) => {
                 const text = getKeyValue(row, columnKey);
                 if (columnKey === 'amountPaidDue') {
-                  const [amountPaid, debt] = text.split(' / ');
+                  const [amountPaid, debt] = text;
                   const paidColor =
-                    parseFloat(amountPaid) > 0
-                      ? 'text-success-600'
-                      : 'text-foreground';
+                    amountPaid > 0 ? 'text-success-600' : 'text-foreground';
                   const debtColor =
-                    parseFloat(debt) > 0
-                      ? 'text-danger-500'
-                      : 'text-foreground';
+                    debt > 0 ? 'text-danger-500' : 'text-foreground';
                   return (
                     <TableCell>
-                      <span className={paidColor}>{amountPaid}</span>
+                      <span className={paidColor}>
+                        {formatNumber(amountPaid)}
+                      </span>
                       <span> / </span>
-                      <span className={debtColor}>{debt}</span>
+                      <span className={debtColor}>{formatNumber(debt)}</span>
                     </TableCell>
+                  );
+                }
+                if (columnKey === 'cost') {
+                  return <TableCell>{formatNumber(text)}</TableCell>;
+                }
+                if (columnKey === 'profit') {
+                  const profit = parseFloat(text);
+                  const profitPerItem = formatNumber(profit / row.quantity);
+                  const color =
+                    profit > 0 ? 'text-success-600' : 'text-danger-500';
+                  return (
+                    <TableCell
+                      className={color}
+                    >{`${formatNumber(profit)} [${profitPerItem} ea.]`}</TableCell>
                   );
                 }
                 if (columnKey === 'actions') {
@@ -129,8 +133,11 @@ function createTableData(sales: SaleResponse[]) {
   return sales.map((sale) => {
     const totalSalePrice = sale.pricePerItem * sale.quantity;
     const amountPaid = totalSalePrice - sale.debt;
-    const amountPaidDue = `${formatNumber(amountPaid)} / ${formatNumber(sale.debt)}`;
+    const amountPaidDue = [amountPaid, sale.debt];
     const salePriceString = `${formatNumber(totalSalePrice)} [${formatNumber(sale.pricePerItem)} ea.]`;
+    console.log(
+      `${totalSalePrice} - ${sale.cost} = ${totalSalePrice - sale.cost}`
+    );
     const profit = totalSalePrice - sale.cost;
 
     return {
@@ -139,9 +146,9 @@ function createTableData(sales: SaleResponse[]) {
       vendor: sale.vendor,
       saleDate: sale.date,
       quantity: sale.quantity,
-      cost: `${formatNumber(sale.cost)}`,
+      cost: sale.cost,
       salePrice: salePriceString,
-      profit: `${formatNumber(profit)}`,
+      profit,
       amountPaidDue,
     };
   });

@@ -9,6 +9,7 @@ import {
   Input,
 } from '@nextui-org/react';
 import useCreateSale from '@/hooks/useCreateSale';
+import axios from 'axios';
 
 export type FormValues = {
   vendor: string;
@@ -33,12 +34,12 @@ export default function CreateSaleForm({
     amountPaid: '',
   };
 
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState, setError } = useForm({
     defaultValues: defaultValues,
   });
   const createSale = useCreateSale();
 
-  function submitForm(data: FormValues) {
+  async function submitForm(data: FormValues) {
     const date = data.date ? data.date : null;
     const quantity = parseInt(data.quantity);
     const salePrice = parseInt(data.salePrice);
@@ -51,15 +52,16 @@ export default function CreateSaleForm({
       pricePerItem,
       amountPaid,
     };
-    const response = createSale.mutateAsync({
-      orderId,
-      sale,
-    });
     try {
+      const response = await createSale.mutateAsync({
+        orderId,
+        sale,
+      });
       console.log(response);
       onClose();
     } catch (error) {
-      console.log(error);
+      console.log('ERROR', error);
+      setError('vendor', { type: 'server', message: 'An error occurred' });
     }
   }
 
