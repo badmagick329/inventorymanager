@@ -7,6 +7,7 @@ import {
   Button,
   Spacer,
   Input,
+  Checkbox,
 } from '@nextui-org/react';
 import useCreateSale from '@/hooks/useCreateSale';
 import axios from 'axios';
@@ -16,7 +17,9 @@ export type FormValues = {
   date: string;
   quantity: number;
   salePrice: number;
+  isSalePricePerItem: boolean;
   amountPaid: number;
+  isAmountPaidPerItem: boolean;
 };
 
 export default function CreateSaleForm({
@@ -31,7 +34,9 @@ export default function CreateSaleForm({
     date: '',
     quantity: 1,
     salePrice: 1,
+    isSalePricePerItem: true,
     amountPaid: 0,
+    isAmountPaidPerItem: false,
   };
 
   const { register, handleSubmit, formState, setError } = useForm({
@@ -137,32 +142,45 @@ export default function CreateSaleForm({
                   min: 1,
                 })}
               />
-              <span className='text-danger-500'>
-                {formState.errors.salePrice?.message}
-              </span>
-              <Input
-                type='number'
-                variant='flat'
-                autoComplete='off'
-                label='Sale Price'
-                {...register('salePrice', {
-                  required: 'Sale price is required',
-                  min: 1,
-                })}
-              />
-              <span className='text-danger-500'>
-                {formState.errors.amountPaid?.message}
-              </span>
-              <Input
-                type='number'
-                variant='flat'
-                autoComplete='off'
-                label='Amount Paid'
-                {...register('amountPaid', {
-                  required: 'Amount Paid is required',
-                  min: 0,
-                })}
-              />
+              <div className='flex flex-col gap-2'>
+                <span className='text-danger-500'>
+                  {formState.errors.salePrice?.message}
+                </span>
+                <Input
+                  type='number'
+                  variant='flat'
+                  autoComplete='off'
+                  label='Sale Price'
+                  {...register('salePrice', {
+                    required: 'Sale price is required',
+                    min: 1,
+                  })}
+                />
+                <Checkbox defaultSelected {...register('isSalePricePerItem')}>
+                  per Item
+                </Checkbox>
+              </div>
+              <div className='flex flex-col gap-2'>
+                <span className='text-danger-500'>
+                  {formState.errors.amountPaid?.message}
+                </span>
+                <Input
+                  type='number'
+                  variant='flat'
+                  autoComplete='off'
+                  label='Amount Paid'
+                  {...register('amountPaid', {
+                    required: 'Amount Paid is required',
+                    min: 0,
+                  })}
+                />
+                <Checkbox
+                  defaultSelected={false}
+                  {...register('isAmountPaidPerItem')}
+                >
+                  per Item
+                </Checkbox>
+              </div>
               <ModalFooter>
                 <Button color='danger' variant='light' onPress={onClose}>
                   Cancel
