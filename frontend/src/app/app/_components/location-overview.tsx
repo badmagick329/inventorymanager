@@ -19,15 +19,13 @@ export default function LocationOverview({
   if (!isAdmin || isLoading) {
     return null;
   }
-  if (
-    spendings === undefined ||
-    revenue === undefined ||
-    profit === undefined
-  ) {
+  const missingData =
+    spendings === undefined || revenue === undefined || profit === undefined;
+  if (missingData || spendings === 0) {
     return null;
   }
   return (
-    <div className='flex gap-2 self-center'>
+    <div className='flex gap-4 self-center'>
       <div className='text-danger-500'>
         <ArrowUpIcon size={ICON_SM} />
         <span>{formatNumber(spendings)}</span>
