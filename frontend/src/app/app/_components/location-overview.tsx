@@ -1,35 +1,40 @@
-import { ShoppingCart, ArrowUpIcon, ArrowDownIcon } from 'lucide-react';
+import { ArrowUpIcon, ArrowDownIcon, Banknote } from 'lucide-react';
 import { formatNumber } from '@/utils';
 import { useIsAdmin } from '@/hooks';
+import { ICON_SM } from '@/consts';
 
 type Props = {
-  items: number;
-  purchaseAmount: number;
-  salesAmount: number;
+  spendings?: number;
+  revenue?: number;
+  profit?: number;
+  profitPerItem?: number;
 };
 
 export default function LocationOverview({
-  items,
-  purchaseAmount,
-  salesAmount,
+  spendings,
+  revenue,
+  profit,
 }: Props) {
   const { isAdmin, isLoading } = useIsAdmin();
   if (!isAdmin || isLoading) {
     return null;
   }
+  if (!spendings || !revenue || !profit) {
+    return null;
+  }
   return (
     <div className='flex gap-2 self-center'>
-      <div>
-        <ShoppingCart className='icon-sm' />
-        <span>{formatNumber(items)}</span>
+      <div className='text-danger-500'>
+        <ArrowUpIcon size={ICON_SM} />
+        <span>{formatNumber(spendings)}</span>
       </div>
-      <div className='text-danger'>
-        <ArrowDownIcon className='icon-sm' />
-        <span>{formatNumber(purchaseAmount)}</span>
+      <div className='text-primary-500'>
+        <Banknote size={ICON_SM} />
+        <span>{formatNumber(revenue)}</span>
       </div>
-      <div className='text-success'>
-        <ArrowUpIcon className='icon-sm' />
-        <span>{formatNumber(salesAmount)}</span>
+      <div className='text-success-600'>
+        <ArrowDownIcon size={ICON_SM} />
+        <span>{formatNumber(profit)}</span>
       </div>
     </div>
   );

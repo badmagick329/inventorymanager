@@ -72,8 +72,15 @@ class ItemLocationSerializer(serializers.ModelSerializer):
         return super().to_internal_value(data)
 
     def to_representation(self, instance):
+        orders = instance.orders.all()
+        spendings = ItemLocation.spendings(orders)
+        revenue = ItemLocation.revenue(orders)
+        profit = revenue - spendings
         return {
             "id": instance.id,
             "name": instance.name,
             "users": [user.username for user in instance.users.all()],
+            "spendings": spendings,
+            "revenue": revenue,
+            "profit": profit,
         }

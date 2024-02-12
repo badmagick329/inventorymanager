@@ -2,6 +2,9 @@ export type Location = {
   id: number;
   name: string;
   users?: string[];
+  spendings?: number;
+  revenue?: number;
+  profit?: number;
 };
 
 export type User = {

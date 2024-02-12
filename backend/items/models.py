@@ -19,6 +19,18 @@ class ItemLocation(models.Model):
     def is_visible_to(self, user):
         return user.is_admin or self.users.filter(id=user.id).exists()
 
+    @classmethod
+    def spendings(cls, orders: list["Order"]):
+        return sum([order.total_price for order in orders])
+
+    @classmethod
+    def revenue(cls, orders: list["Order"]):
+        return sum([order.revenue() for order in orders])
+
+    @classmethod
+    def profit(cls, orders: list["Order"]):
+        return sum([order.profit() for order in orders])
+
     class Meta:  # type: ignore
         ordering = ["id"]
         verbose_name = "Location"
@@ -157,7 +169,7 @@ class Order(models.Model, LastModifiedByMixin):
             order_sales = self.sales.filter(vendor=vendor)  # type: ignore
         else:
             order_sales = self.sales.all()  # type: ignore
-        return sum([sale.revenue for sale in order_sales])
+        return sum([sale.revenue() for sale in order_sales])
 
     def profit(self, vendor: Vendor | None = None):
         return self.revenue(vendor) - self.cost(vendor)
@@ -165,10 +177,6 @@ class Order(models.Model, LastModifiedByMixin):
     def profit_percentage(self, vendor: Vendor | None = None):
         cost = self.cost(vendor)
         return (self.revenue(vendor) - cost) / cost * 100
-
-    def profit_per_item(self, vendor: Vendor | None = None):
-        cost = self.cost(vendor)
-        return (self.revenue(vendor) - cost) / self.quantity
 
     def current_quantity(self):
         sold_quantity = sum([sale.quantity for sale in self.sales.all()])  # type: ignore

@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/loaders';
 import { useSales } from '@/hooks';
-import { APP_LOGIN } from '@/consts/urls';
+import { APP_ITEMS, APP_LOGIN } from '@/consts/urls';
 import { usePathname } from 'next/navigation';
 import { isOrderResponse, isSaleResponseArray } from '@/predicates';
 import { ConnectionError } from '@/components/errors';
@@ -69,7 +69,7 @@ export default function Sales() {
   return (
     <div className='flex w-full flex-col justify-center p-4'>
       <Spacer y={2} />
-      <div className='flex flex-col gap-2 items-center'>
+      <div className='flex flex-col items-center gap-2'>
         <span className='text-2xl font-semibold'>
           {currentOrder.name} - Sales
         </span>
@@ -88,7 +88,7 @@ export default function Sales() {
         <CreateSaleModal orderId={orderId} />
         <Button
           as={Link}
-          href={`/app/items/${locationId}`}
+          href={`${APP_ITEMS}/${locationId}`}
           variant='flat'
           size='md'
           color='default'
