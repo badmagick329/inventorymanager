@@ -11,9 +11,13 @@ export default function useDeleteSale() {
     onSettled: () => {
       console.log('settled delete sale');
     },
-    onSuccess: () => {
+    onSuccess: (_, data) => {
       console.log('successfully deleted sale');
+      const { locationId, orderId } = data;
       queryClient.invalidateQueries({ queryKey: ['sales'] });
+      queryClient.invalidateQueries({
+        queryKey: ['orders', locationId, orderId],
+      });
     },
     onError: (error) => {
       console.log(`error during delete sale. ${error}`);
@@ -22,6 +26,14 @@ export default function useDeleteSale() {
   return mutation;
 }
 
-async function deleteSale(saleId: number) {
+async function deleteSale({
+  saleId,
+  locationId,
+  orderId,
+}: {
+  saleId: number;
+  locationId: string;
+  orderId: string;
+}) {
   return await axios.delete(`${NEXT_SALE_DETAIL}/${saleId}`);
 }

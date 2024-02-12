@@ -62,6 +62,8 @@ export default function Sales() {
     { key: 'salePrice', label: 'Sale Price' },
     { key: 'profit', label: 'Profit' },
     { key: 'amountPaidDue', label: 'Amount Paid / Due' },
+    { key: 'lastModifiedBy', label: 'Last Modified By' },
+    { key: 'lastModified', label: 'Last Modified' },
     { key: 'actions', label: 'Actions' },
   ];
   const tableData = createTableData(sales);
@@ -70,9 +72,7 @@ export default function Sales() {
     <div className='flex w-full flex-col justify-center p-4'>
       <Spacer y={2} />
       <div className='flex flex-col items-center gap-2'>
-        <span className='text-2xl font-semibold'>
-          {currentOrder.name} - Sales
-        </span>
+        <span className='text-2xl font-semibold'>{currentOrder.name}</span>
         <span className='font-semibold'>
           Purchase Price: {currentOrder.pricePerItem * currentOrder.quantity} [
           {currentOrder.pricePerItem} ea.]
@@ -82,10 +82,13 @@ export default function Sales() {
           {currentOrder.currentSalePrice * currentOrder.quantity} [
           {currentOrder.currentSalePrice} ea.]
         </span>
+        <span className='font-semibold'>
+          Remaining stock: {currentOrder.quantity - currentOrder.soldQuantity}
+        </span>
       </div>
       <Spacer y={2} />
       <div className='flex justify-center gap-4'>
-        <CreateSaleModal orderId={orderId} />
+        <CreateSaleModal locationId={locationId} orderId={orderId} />
         <Button
           as={Link}
           href={`${APP_ITEMS}/${locationId}`}
@@ -148,7 +151,13 @@ export default function Sales() {
                         size='sm'
                         variant='flat'
                         isIconOnly
-                        onClick={() => deleteSale.mutate(row.id)}
+                        onClick={() =>
+                          deleteSale.mutate({
+                            saleId: row.id,
+                            locationId,
+                            orderId,
+                          })
+                        }
                       >
                         <Trash size={ICON_SM} />
                       </Button>
@@ -173,6 +182,12 @@ function createTableData(sales: SaleResponse[]) {
     const amountPaidDue = [amountPaid, sale.debt];
     const salePriceString = `${formatNumber(totalSalePrice)} [${formatNumber(sale.pricePerItem)} ea.]`;
     const profit = totalSalePrice - sale.cost;
+    const lastModifiedBy = sale.lastModifiedBy;
+    const lastModifiedUTC = new Date(sale.lastModified).getTime();
+    const offset = new Date().getTimezoneOffset();
+    const lastModified = new Date(
+      lastModifiedUTC - offset * 60000
+    ).toLocaleString();
 
     return {
       id: sale.id,
@@ -184,6 +199,8 @@ function createTableData(sales: SaleResponse[]) {
       salePrice: salePriceString,
       profit,
       amountPaidDue,
+      lastModifiedBy,
+      lastModified,
     };
   });
 }

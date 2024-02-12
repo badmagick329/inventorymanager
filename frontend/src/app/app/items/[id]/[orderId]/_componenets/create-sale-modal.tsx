@@ -2,7 +2,13 @@ import React from 'react';
 import { Modal, Button, useDisclosure } from '@nextui-org/react';
 import CreateSaleForm from './create-sale-form';
 
-export default function CreateSaleModal({ orderId }: { orderId: string }) {
+export default function CreateSaleModal({
+  locationId,
+  orderId,
+}: {
+  locationId: string;
+  orderId: string;
+}) {
   const size = '5xl';
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -17,7 +23,11 @@ export default function CreateSaleModal({ orderId }: { orderId: string }) {
         placement='center'
         hideCloseButton
       >
-        <CreateSaleForm orderId={orderId} onClose={onClose} />
+        <CreateSaleForm
+          locationId={locationId}
+          orderId={orderId}
+          onClose={onClose}
+        />
       </Modal>
     </>
   );

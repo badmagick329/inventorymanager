@@ -53,6 +53,8 @@ export default function Orders() {
     { key: 'profit', label: 'Profit' },
     { key: 'stockInOut', label: 'Stock In / Out' },
     { key: 'vendors', label: 'Sold to' },
+    { key: 'lastModifiedBy', label: 'Last Modified By' },
+    { key: 'lastModified', label: 'Last Modified' },
     { key: 'actions', label: 'Actions' },
   ];
   const tableData = createTableData(orders);
@@ -206,6 +208,12 @@ function createTableData(orders: OrderResponse[]) {
       vendors.length > 2
         ? vendors.slice(0, 2).join(', ') + '...'
         : vendors.join(', ');
+    const lastModifiedBy = order.lastModifiedBy;
+    const lastModifiedUTC = new Date(order.lastModified).getTime();
+    const offset = new Date().getTimezoneOffset();
+    const lastModified = new Date(
+      lastModifiedUTC - offset * 60000
+    ).toLocaleString();
 
     const profitValues = [profit, profitPerItem];
     return {
@@ -219,6 +227,8 @@ function createTableData(orders: OrderResponse[]) {
       profit: profitValues,
       stockInOut,
       vendors: vendorsString,
+      lastModifiedBy,
+      lastModified,
     };
   });
 }

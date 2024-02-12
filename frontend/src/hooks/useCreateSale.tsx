@@ -12,9 +12,13 @@ export default function useUpdateLocation() {
     onSettled: () => {
       console.log('settled create sale');
     },
-    onSuccess: () => {
+    onSuccess: (_, data) => {
       console.log('successfully created sale');
+      const { locationId, orderId } = data;
       queryClient.invalidateQueries({ queryKey: ['sales'] });
+      queryClient.invalidateQueries({
+        queryKey: ['orders', locationId, orderId],
+      });
     },
     onError: (error) => {
       console.log(`error during create sale. ${error}`);
@@ -24,9 +28,11 @@ export default function useUpdateLocation() {
 }
 
 async function createSale({
+  locationId,
   orderId,
   sale,
 }: {
+  locationId: string;
   orderId: string;
   sale: SalePost;
 }) {
