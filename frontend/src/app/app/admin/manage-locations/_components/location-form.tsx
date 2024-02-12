@@ -36,7 +36,7 @@ export default function LocationForm({
     location: location || '',
     usernames: (usernames || []) as string[],
   };
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState, setValue } = useForm({
     defaultValues: defaultValues,
   });
   const createLocation = useCreateLocation();
@@ -45,6 +45,7 @@ export default function LocationForm({
 
   async function submitForm(data: FormValues) {
     try {
+      console.log('form data', data);
       let response;
       if (locationId) {
         response = await updateLocation.mutateAsync({
@@ -85,6 +86,7 @@ export default function LocationForm({
           usernames={usernames}
           selectedNames={selectedNames}
           register={register}
+          setValue={setValue}
         />
         <div className='flex gap-4'>
           <CancelButton onCancel={onCancel} />

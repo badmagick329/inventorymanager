@@ -1,21 +1,27 @@
 import { Select, SelectItem } from '@nextui-org/react';
-import React from 'react';
+import { useEffect } from 'react';
 import { FormValues } from './location-form';
-import { FormState, UseFormRegister, UseFormSetValue } from 'react-hook-form';
+import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { User as UserIcon } from 'lucide-react';
 
 type UsernamesSelectProps = {
   usernames: string[];
   selectedNames?: string[];
   register: UseFormRegister<FormValues>;
+  setValue: UseFormSetValue<FormValues>;
 };
 
 export default function UsernamesSelect({
   usernames,
   selectedNames,
   register,
+  setValue,
 }: UsernamesSelectProps) {
   selectedNames = selectedNames || [];
+
+  useEffect(() => {
+    setValue('usernames', selectedNames || []);
+  }, [usernames]);
 
   return (
     <Select
