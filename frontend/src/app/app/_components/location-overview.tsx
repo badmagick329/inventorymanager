@@ -19,7 +19,11 @@ export default function LocationOverview({
   if (!isAdmin || isLoading) {
     return null;
   }
-  if (!spendings || !revenue || !profit) {
+  if (
+    spendings === undefined ||
+    revenue === undefined ||
+    profit === undefined
+  ) {
     return null;
   }
   return (
