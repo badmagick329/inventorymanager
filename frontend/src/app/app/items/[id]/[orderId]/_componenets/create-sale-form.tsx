@@ -11,15 +11,14 @@ import {
 } from '@nextui-org/react';
 import useCreateSale from '@/hooks/useCreateSale';
 import axios from 'axios';
+import { useState } from 'react';
 
 export type FormValues = {
   vendor: string;
   date: string;
   quantity: number;
   salePrice: number;
-  isSalePricePerItem: boolean;
   amountPaid: number;
-  isAmountPaidPerItem: boolean;
 };
 
 export default function CreateSaleForm({
@@ -29,14 +28,14 @@ export default function CreateSaleForm({
   orderId: string;
   onClose: () => void;
 }) {
+  const [isSalePricePerItem, setIsSalePricePerItem] = useState(true);
+  const [isAmountPaidPerItem, setIsAmountPaidPerItem] = useState(false);
   const defaultValues = {
     vendor: '',
     date: '',
     quantity: 1,
     salePrice: 1,
-    isSalePricePerItem: true,
     amountPaid: 0,
-    isAmountPaidPerItem: false,
   };
 
   const { register, handleSubmit, formState, setError } = useForm({
@@ -49,10 +48,8 @@ export default function CreateSaleForm({
     const quantity = Number(data.quantity);
     const salePrice = Number(data.salePrice);
     const vendorName = data.vendor.trim();
-    const pricePerItem = data.isSalePricePerItem
-      ? salePrice
-      : salePrice / quantity;
-    const amountPaid = data.isAmountPaidPerItem
+    const pricePerItem = isSalePricePerItem ? salePrice : salePrice / quantity;
+    const amountPaid = isAmountPaidPerItem
       ? Number(data.amountPaid) * quantity
       : Number(data.amountPaid);
     const sale = {
@@ -157,7 +154,11 @@ export default function CreateSaleForm({
                     min: 1,
                   })}
                 />
-                <Checkbox defaultSelected {...register('isSalePricePerItem')}>
+                <Checkbox
+                  defaultSelected={isSalePricePerItem}
+                  checked={isSalePricePerItem}
+                  onChange={() => setIsSalePricePerItem(!isSalePricePerItem)}
+                >
                   per Item
                 </Checkbox>
               </div>
@@ -176,8 +177,9 @@ export default function CreateSaleForm({
                   })}
                 />
                 <Checkbox
-                  defaultSelected={defaultValues.isAmountPaidPerItem}
-                  {...register('isAmountPaidPerItem')}
+                  defaultSelected={isAmountPaidPerItem}
+                  checked={isAmountPaidPerItem}
+                  onChange={() => setIsAmountPaidPerItem(!isAmountPaidPerItem)}
                 >
                   per Item
                 </Checkbox>

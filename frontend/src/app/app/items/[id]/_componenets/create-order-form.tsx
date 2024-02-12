@@ -1,6 +1,6 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useCreateOrder } from '@/hooks';
+import { useState } from 'react';
 
 import {
   ModalContent,
@@ -17,8 +17,6 @@ export type FormValues = {
   quantity: string;
   cost: string;
   salePrice: string;
-  isCostPerItem: boolean;
-  isSalePricePerItem: boolean;
 };
 
 export default function CreateOrderForm({
@@ -28,14 +26,14 @@ export default function CreateOrderForm({
   locationId: string;
   onClose: () => void;
 }) {
+  const [isCostPerItem, setIsCostPerItem] = useState(true);
+  const [isSalePricePerItem, setIsSalePricePerItem] = useState(true);
   const defaultValues = {
     name: '',
     date: '',
     quantity: '',
     cost: '',
     salePrice: '',
-    isCostPerItem: true,
-    isSalePricePerItem: true,
   };
 
   const { register, handleSubmit, formState } = useForm({
@@ -52,10 +50,8 @@ export default function CreateOrderForm({
       name: data.name,
       date,
       quantity,
-      pricePerItem: data.isCostPerItem ? cost : cost / quantity,
-      currentSalePrice: data.isSalePricePerItem
-        ? salePrice
-        : salePrice / quantity,
+      pricePerItem: isCostPerItem ? cost : cost / quantity,
+      currentSalePrice: isSalePricePerItem ? salePrice : salePrice / quantity,
     };
     const response = createOrder.mutateAsync({
       locationId,
@@ -132,7 +128,11 @@ export default function CreateOrderForm({
                     min: 1,
                   })}
                 />
-                <Checkbox defaultSelected {...register('isCostPerItem')}>
+                <Checkbox
+                  defaultSelected={isCostPerItem}
+                  checked={isCostPerItem}
+                  onChange={() => setIsCostPerItem(!isCostPerItem)}
+                >
                   per item
                 </Checkbox>
               </div>
@@ -150,7 +150,11 @@ export default function CreateOrderForm({
                     min: 1,
                   })}
                 />
-                <Checkbox defaultSelected {...register('isSalePricePerItem')}>
+                <Checkbox
+                  defaultSelected={isSalePricePerItem}
+                  checked={isSalePricePerItem}
+                  onChange={() => setIsSalePricePerItem(!isSalePricePerItem)}
+                >
                   per item
                 </Checkbox>
               </div>
