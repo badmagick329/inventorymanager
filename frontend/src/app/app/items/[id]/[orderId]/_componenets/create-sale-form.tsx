@@ -22,9 +22,11 @@ export type FormValues = {
 };
 
 export default function CreateSaleForm({
+  locationId,
   orderId,
   onClose,
 }: {
+  locationId: string;
   orderId: string;
   onClose: () => void;
 }) {
@@ -61,6 +63,7 @@ export default function CreateSaleForm({
     };
     try {
       const response = await createSale.mutateAsync({
+        locationId,
         orderId,
         sale,
       });
