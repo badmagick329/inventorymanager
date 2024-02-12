@@ -26,15 +26,15 @@ export default function LocationOverview({
   }
   return (
     <div className='flex gap-4 self-center'>
-      <div className='text-danger-500'>
+      <div className='text-foreground'>
         <ArrowUpIcon size={ICON_SM} />
         <span>{formatNumber(spendings)}</span>
       </div>
-      <div className='text-primary-500'>
+      <div className='text-foreground'>
         <Banknote size={ICON_SM} />
         <span>{formatNumber(revenue)}</span>
       </div>
-      <div className='text-success-600'>
+      <div className='text-foreground'>
         <ArrowDownIcon size={ICON_SM} />
         <span>{formatNumber(profit)}</span>
       </div>
