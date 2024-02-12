@@ -1,7 +1,6 @@
 import { Button } from '@nextui-org/react';
 import { FormValues } from './user-form';
 import { FormState } from 'react-hook-form';
-import { Check } from 'lucide-react';
 
 export default function SubmitButton({
   isLoading,
@@ -14,12 +13,10 @@ export default function SubmitButton({
     <Button
       className='p-2'
       type='submit'
-      color='success'
-      variant='light'
+      color='primary'
       isLoading={formState.isSubmitting || isLoading}
-      isIconOnly
     >
-      <Check />
+      Create
     </Button>
   );
 }

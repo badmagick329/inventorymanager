@@ -22,7 +22,6 @@ export default function UsernamesSelect({
       label='Location Access'
       placeholder='Select User(s)'
       selectionMode='multiple'
-      className='max-w-[180px]'
       startContent={<UserIcon />}
       defaultSelectedKeys={selectedNames}
       {...register('usernames')}

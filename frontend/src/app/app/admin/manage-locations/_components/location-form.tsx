@@ -80,7 +80,7 @@ export default function LocationForm({
         register={register}
         formState={formState}
       />
-      <div className='flex w-full items-center justify-between'>
+      <div className='flex w-full flex-col items-center gap-4'>
         <UsernamesSelect
           usernames={usernames}
           selectedNames={selectedNames}
