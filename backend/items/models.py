@@ -66,9 +66,8 @@ class Vendor(models.Model, LastModifiedByMixin):
         ordering = ["id"]
         verbose_name = "Vendor"
         constraints = [
-            models.UniqueConstraint(
-                Lower("name"), "location_id", name="unique_vendor_name"
-            ),
+            # NOTE: LOWER(name), location_id uniqueness being enforced by
+            # manual migration (0021)
             models.CheckConstraint(
                 name="non_empty_vendor_name", check=~models.Q(name="")
             ),

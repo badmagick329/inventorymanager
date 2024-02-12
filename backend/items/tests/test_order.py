@@ -44,7 +44,7 @@ def test_order_creation_without_location_fails():
         )
 
 
-def test_order_creation_fails_with_non_unique_name(order_factory):
+def test_order_creation_fails_with_non_unique_name_in_same_location(order_factory):
     order1 = order_factory(
         name="Test Order", location="Test Location", user="Test User"
     )

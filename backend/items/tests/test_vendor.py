@@ -20,7 +20,23 @@ def test_vendor_creation_with_location(vendor_factory):
 
 
 @pytest.mark.django_db
-def test_vendor_creation_fails_with_non_unique_name(vendor_factory):
+def test_vendor_creation_fails_with_non_unique_name_at_same_location(
+    vendor_factory,
+):
     _, item_location = vendor_factory("Test Vendor", "Test Item Location")
     with pytest.raises(ValidationError):
         Vendor.objects.create(name="test vendor", location=item_location)
+
+
+@pytest.mark.django_db
+def test_vendor_with_same_name_can_be_created_in_different_locations(
+    vendor_factory,
+):
+    vendor_factory("Test Vendor", "Test Item Location")
+    vendor, item_location = vendor_factory(
+        "Test Vendor", "Test Item Location 2"
+    )
+    assert vendor.name == "Test Vendor"
+    assert vendor.location == item_location
+    assert vendor.location.vendors.count() == 1
+    assert vendor in item_location.vendors.all()

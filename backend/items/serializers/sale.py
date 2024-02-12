@@ -76,8 +76,13 @@ class SaleSerializer(serializers.BaseSerializer):
 
     def _get_vendor(self, location, user):
         vendor_name = self.validated_data.get("vendor")
+        print(
+            "Looking for vendor:", vendor_name, "at location:", location.name
+        )
         vendor = location.vendors.filter(name__iexact=vendor_name).first()
+        print("Vendor found:", vendor)
         if not vendor:
+            print("Vendor not found, creating new vendor")
             vendor = Vendor(name=vendor_name, location=location)
             vendor.save(user=user)
         return vendor
