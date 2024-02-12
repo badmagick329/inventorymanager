@@ -45,9 +45,11 @@ export default function CreateSaleForm({
   const createSale = useCreateSale();
 
   async function submitForm(data: FormValues) {
+    console.log('data', data);
     const date = data.date ? data.date : null;
     const quantity = Number(data.quantity);
     const salePrice = Number(data.salePrice);
+    const vendorName = data.vendor.trim();
     const pricePerItem = data.isSalePricePerItem
       ? salePrice
       : salePrice / quantity;
@@ -55,7 +57,7 @@ export default function CreateSaleForm({
       ? Number(data.amountPaid) * quantity
       : Number(data.amountPaid);
     const sale = {
-      vendor: data.vendor,
+      vendor: vendorName,
       date,
       quantity,
       pricePerItem,
@@ -178,10 +180,7 @@ export default function CreateSaleForm({
                     min: 0,
                   })}
                 />
-                <Checkbox
-                  defaultSelected={false}
-                  {...register('isAmountPaidPerItem')}
-                >
+                <Checkbox defaultSelected {...register('isAmountPaidPerItem')}>
                   per Item
                 </Checkbox>
               </div>
