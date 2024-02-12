@@ -24,6 +24,7 @@ export default function LocationOverview({
   if (missingData || spendings === 0) {
     return null;
   }
+  const profitColor = profit < 0 ? 'text-danger-500' : 'text-success-600';
   return (
     <div className='flex gap-4 self-center'>
       <div className='text-foreground'>
@@ -31,11 +32,11 @@ export default function LocationOverview({
         <span>{formatNumber(spendings)}</span>
       </div>
       <div className='text-foreground'>
-        <Banknote size={ICON_SM} />
+        <ArrowDownIcon size={ICON_SM} />
         <span>{formatNumber(revenue)}</span>
       </div>
-      <div className='text-foreground'>
-        <ArrowDownIcon size={ICON_SM} />
+      <div className={profitColor}>
+        <Banknote size={ICON_SM} />
         <span>{formatNumber(profit)}</span>
       </div>
     </div>

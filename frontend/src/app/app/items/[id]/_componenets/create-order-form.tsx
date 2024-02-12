@@ -8,6 +8,7 @@ import {
   Button,
   Spacer,
   Input,
+  Checkbox,
 } from '@nextui-org/react';
 
 export type FormValues = {
@@ -16,6 +17,8 @@ export type FormValues = {
   quantity: string;
   cost: string;
   salePrice: string;
+  isCostPerItem: boolean;
+  isSalePricePerItem: boolean;
 };
 
 export default function CreateOrderForm({
@@ -31,6 +34,8 @@ export default function CreateOrderForm({
     quantity: '',
     cost: '',
     salePrice: '',
+    isCostPerItem: true,
+    isSalePricePerItem: true,
   };
 
   const { register, handleSubmit, formState } = useForm({
@@ -47,8 +52,10 @@ export default function CreateOrderForm({
       name: data.name,
       date,
       quantity,
-      pricePerItem: cost / quantity,
-      currentSalePrice: salePrice / quantity,
+      pricePerItem: data.isCostPerItem ? cost : cost / quantity,
+      currentSalePrice: data.isSalePricePerItem
+        ? salePrice
+        : salePrice / quantity,
     };
     const response = createOrder.mutateAsync({
       locationId,
@@ -111,29 +118,42 @@ export default function CreateOrderForm({
                   min: 1,
                 })}
               />
-              <span className='text-danger-500'>
-                {formState.errors.cost?.message}
-              </span>
-              <Input
-                type='number'
-                variant='flat'
-                autoComplete='off'
-                label='Cost'
-                {...register('cost', { required: 'Cost is required', min: 1 })}
-              />
-              <span className='text-danger-500'>
-                {formState.errors.salePrice?.message}
-              </span>
-              <Input
-                type='number'
-                variant='flat'
-                autoComplete='off'
-                label='Sale Price'
-                {...register('salePrice', {
-                  required: 'Sale price is required',
-                  min: 1,
-                })}
-              />
+              <div className='flex flex-col gap-2'>
+                <span className='text-danger-500'>
+                  {formState.errors.cost?.message}
+                </span>
+                <Input
+                  type='number'
+                  variant='flat'
+                  autoComplete='off'
+                  label='Cost'
+                  {...register('cost', {
+                    required: 'Cost is required',
+                    min: 1,
+                  })}
+                />
+                <Checkbox defaultSelected {...register('isCostPerItem')}>
+                  per item
+                </Checkbox>
+              </div>
+              <div className='flex flex-col gap-2'>
+                <span className='text-danger-500'>
+                  {formState.errors.salePrice?.message}
+                </span>
+                <Input
+                  type='number'
+                  variant='flat'
+                  autoComplete='off'
+                  label='Sale Price'
+                  {...register('salePrice', {
+                    required: 'Sale price is required',
+                    min: 1,
+                  })}
+                />
+                <Checkbox defaultSelected {...register('isSalePricePerItem')}>
+                  per item
+                </Checkbox>
+              </div>
               <ModalFooter>
                 <Button color='danger' variant='light' onPress={onClose}>
                   Cancel
