@@ -102,15 +102,11 @@ export default function Orders() {
                 }
                 if (columnKey === 'profit') {
                   const [profit, profitPerItem] = text;
-                  const totalCost = row.cost;
                   let profitColor;
                   if (profit === 0) {
                     profitColor = 'text-foreground';
-                  } else if (profit < totalCost) {
-                    profitColor =
-                      row.stockInOut[0] === 0
-                        ? 'text-danger-500'
-                        : 'text-primary-500';
+                  } else if (profit < 0) {
+                    profitColor = 'text-danger-500';
                   } else {
                     profitColor = 'text-success-600';
                   }
