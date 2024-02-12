@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/loaders';
 import { useOrders } from '@/hooks';
-import { APP_LOGIN, APP_SALES, APP_ITEMS } from '@/consts/urls';
+import { APP_LOGIN, APP_SALES, APP_ITEMS, APP_LOCATIONS } from '@/consts/urls';
 import { usePathname } from 'next/navigation';
 import { isOrderResponseArray } from '@/predicates';
 import { ConnectionError } from '@/components/errors';
@@ -60,8 +60,17 @@ export default function Orders() {
   return (
     <div className='flex w-full flex-col justify-center p-4'>
       <Spacer y={2} />
-      <div className='flex justify-center'>
+      <div className='flex justify-center gap-4'>
         <CreateOrderModal locationId={locationId} />
+        <Button
+          as={Link}
+          href={APP_LOCATIONS}
+          variant='flat'
+          size='md'
+          color='default'
+        >
+          Back to Locations
+        </Button>
       </div>
       <Spacer y={4} />
       <Table aria-label='Items Table'>

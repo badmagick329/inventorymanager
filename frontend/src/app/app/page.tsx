@@ -7,7 +7,6 @@ import { APP_LOGIN } from '@/consts/urls';
 import LocationOverview from '@/app/app/_components/location-overview';
 import LocationLink from '@/components/location-link';
 import { Location } from '@/types';
-import { useEffect } from 'react';
 
 export default function Locations() {
   const router = useRouter();
@@ -29,9 +28,9 @@ export default function Locations() {
               <LocationLink id={loc.id} name={loc.name} />
               <div className='flex justify-end gap-2 md:gap-4'>
                 <LocationOverview
-                  items={1500}
-                  purchaseAmount={15000}
-                  salesAmount={25000}
+                  spendings={loc.spendings}
+                  revenue={loc.revenue}
+                  profit={loc.profit}
                 />
               </div>
             </div>
