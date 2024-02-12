@@ -45,7 +45,6 @@ export default function CreateSaleForm({
   const createSale = useCreateSale();
 
   async function submitForm(data: FormValues) {
-    console.log('data', data);
     const date = data.date ? data.date : null;
     const quantity = Number(data.quantity);
     const salePrice = Number(data.salePrice);
@@ -68,13 +67,10 @@ export default function CreateSaleForm({
         orderId,
         sale,
       });
-      console.log(response);
       onClose();
     } catch (error) {
-      console.log('ERROR', error);
       if (axios.isAxiosError(error)) {
         const errorData = error.response?.data;
-        console.log('errorData', errorData);
         if (errorData) {
           for (const [field, message] of Object.entries(errorData)) {
             // @ts-ignore
@@ -88,7 +84,6 @@ export default function CreateSaleForm({
   }
 
   function mapErrorKeyToField(key: string) {
-    console.log('key', key);
     const errorMap = new Map([
       ['vendor', 'vendor'],
       ['date', 'date'],
@@ -180,7 +175,10 @@ export default function CreateSaleForm({
                     min: 0,
                   })}
                 />
-                <Checkbox defaultSelected {...register('isAmountPaidPerItem')}>
+                <Checkbox
+                  defaultSelected={defaultValues.isAmountPaidPerItem}
+                  {...register('isAmountPaidPerItem')}
+                >
                   per Item
                 </Checkbox>
               </div>
