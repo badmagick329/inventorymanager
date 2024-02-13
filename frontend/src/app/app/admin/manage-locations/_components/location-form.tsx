@@ -2,12 +2,12 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import React from 'react';
 import LocationInput from './location-input';
-import SubmitButton from './submit-new-button';
 import axios from 'axios';
-import CancelButton from './cancel-new-button';
 import { getUsersWithAccessTo } from '@/utils/query-client-reader';
 import { useCreateLocation, useUpdateLocation } from '@/hooks';
 import UsernamesSelect from './usernames-select';
+import CancelButton from '@/components/cancel-button';
+import CreateButton from '@/components/create-button';
 
 export type FormValues = {
   location: string;
@@ -90,7 +90,7 @@ export default function LocationForm({
         />
         <div className='flex gap-4'>
           <CancelButton onCancel={onCancel} />
-          <SubmitButton formState={formState} />
+          <CreateButton formState={formState} />
         </div>
       </div>
     </form>

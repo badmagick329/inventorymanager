@@ -4,9 +4,9 @@ import {
   Button,
   Modal,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalBody,
+  Spacer,
 } from '@nextui-org/react';
 import { useDeleteUser } from '@/hooks';
 import { Disclosure } from '@/types';
@@ -52,7 +52,7 @@ export default function DeleteModal({ userId, disclosure }: ModalProps) {
                 </Button>
               </div>
             </ModalBody>
-            <ModalFooter></ModalFooter>
+            <Spacer y={2} />
           </>
         )}
       </ModalContent>

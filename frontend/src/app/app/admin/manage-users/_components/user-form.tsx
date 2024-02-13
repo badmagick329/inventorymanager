@@ -1,21 +1,14 @@
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import React from 'react';
-import SubmitButton from './submit-new-button';
-import CancelButton from './cancel-new-button';
 import { Input } from '@nextui-org/react';
-import { useCreateUser } from '@/hooks';
-import axios from 'axios';
-
-export type FormValues = {
-  username: string;
-  password: string;
-  password2: string;
-};
+import CancelButton from '@/components/cancel-button';
+import CreateButton from '@/components/create-button';
+import useSubmitForm from './useSubmitForm';
 
 type FormProps = {
-  onSuccess?: () => void;
-  onCancel?: () => void;
+  onSuccess: () => void;
+  onCancel: () => void;
 };
 
 export default function UserForm({ onSuccess, onCancel }: FormProps) {
@@ -28,33 +21,7 @@ export default function UserForm({ onSuccess, onCancel }: FormProps) {
   const { register, handleSubmit, formState } = useForm({
     defaultValues: defaultValues,
   });
-  const createUser = useCreateUser();
-
-  async function submitForm(data: FormValues) {
-    if (data.password !== data.password2) {
-      setError('Passwords do not match');
-      return;
-    }
-    const payload = {
-      username: data.username,
-      password: data.password,
-    };
-    const response = await createUser.mutateAsync(payload);
-    try {
-      onSuccess && onSuccess();
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const errorResponse = error.response?.data;
-        if (error.response?.status === 400 && errorResponse) {
-          for (const [_, value] of Object.entries(errorResponse)) {
-            setError(`${value}`);
-            return;
-          }
-        }
-      }
-      setError('Something went wrong');
-    }
-  }
+  const submitForm = useSubmitForm(setError, onSuccess);
 
   return (
     <form
@@ -83,10 +50,9 @@ export default function UserForm({ onSuccess, onCancel }: FormProps) {
         autoComplete='off'
         {...register('password2', { required: 'Password cannot be empty' })}
       />
-      {/* TODO: Add loading state */}
       <div className='flex w-full items-center justify-around'>
         <CancelButton onCancel={onCancel} />
-        <SubmitButton formState={formState} isLoading={false} />
+        <CreateButton formState={formState} />
       </div>
     </form>
   );
