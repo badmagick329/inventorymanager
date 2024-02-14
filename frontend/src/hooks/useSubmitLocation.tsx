@@ -6,7 +6,7 @@ export type FormValues = {
   usernames: string[];
 };
 
-export default function useSubmitForm({
+export default function useSubmitLocation({
   onSuccess,
   setError,
 }: {
@@ -18,14 +18,13 @@ export default function useSubmitForm({
 
   async function submitForm(data: FormValues, locationId?: number) {
     try {
-      let response;
       if (locationId) {
-        response = await updateLocation.mutateAsync({
+        await updateLocation.mutateAsync({
           ...data,
           locationId,
         });
       } else {
-        response = await createLocation.mutateAsync(data);
+        await createLocation.mutateAsync(data);
       }
       onSuccess && onSuccess();
     } catch (error) {

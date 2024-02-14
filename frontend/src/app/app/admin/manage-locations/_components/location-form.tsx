@@ -6,7 +6,7 @@ import { getUsersWithAccessTo } from '@/utils/query-client-reader';
 import UsernamesSelect from './usernames-select';
 import CancelButton from '@/components/cancel-button';
 import CreateButton from '@/components/create-button';
-import useSubmitForm from './useSubmitForm';
+import { useSubmitLocation } from '@/hooks';
 
 type FormProps = {
   location: string;
@@ -29,7 +29,7 @@ export default function LocationForm({
     defaultValues,
   });
   const selectedNames = getUsersWithAccessTo(locationId);
-  const submitForm = useSubmitForm({ onSuccess, setError });
+  const submitForm = useSubmitLocation({ onSuccess, setError });
 
   return (
     <form
