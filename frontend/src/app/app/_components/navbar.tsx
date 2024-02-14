@@ -1,10 +1,7 @@
-import { APP_LOCATIONS } from '@/consts/urls';
-import Link from 'next/link';
-import Image from 'next/image';
 import { ThemeSwitcher } from '@/app/app/_components/theme-switcher';
 import LogoutButton from '@/app/app/_components/logout-button';
-import AdminItem from '@/app/app/_components/admin-item';
-import { Button } from '@nextui-org/react';
+import AdminNavItem from '@/app/app/_components/admin-nav-item';
+import LocationsNavItem from './locations-nav-item';
 
 export default function Navbar() {
   return (
@@ -12,22 +9,8 @@ export default function Navbar() {
       <ul className='flex w-full items-center justify-between gap-4'>
         <li>
           <div className='flex items-center gap-2'>
-            <Button
-              className='rounded-md border-foreground-600 p-2'
-              variant='bordered'
-              as={Link}
-              href={APP_LOCATIONS}
-              isIconOnly
-            >
-              <Image
-                width={30}
-                height={30}
-                src='/images/warehouse-sm.png'
-                alt='Warehouse'
-                unoptimized
-              />
-            </Button>
-            <AdminItem />
+            <LocationsNavItem />
+            <AdminNavItem />
           </div>
         </li>
         <li>
