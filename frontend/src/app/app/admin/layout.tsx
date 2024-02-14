@@ -1,5 +1,4 @@
 'use client';
-import Navbar from '@/app/app/_components/navbar';
 import { useIsAdmin, useLogout } from '@/hooks';
 import { APP_LOGIN } from '@/consts/urls';
 import { useRouter } from 'next/navigation';

@@ -2,23 +2,17 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import React from 'react';
 import LocationInput from './location-input';
-import axios from 'axios';
 import { getUsersWithAccessTo } from '@/utils/query-client-reader';
-import { useCreateLocation, useUpdateLocation } from '@/hooks';
 import UsernamesSelect from './usernames-select';
 import CancelButton from '@/components/cancel-button';
 import CreateButton from '@/components/create-button';
-
-export type FormValues = {
-  location: string;
-  usernames: string[];
-};
+import useSubmitForm from './useSubmitForm';
 
 type FormProps = {
-  location?: string;
-  usernames?: string[];
-  onSuccess?: () => void;
-  onCancel?: () => void;
+  location: string;
+  usernames: string[];
+  onSuccess: () => void;
+  onCancel: () => void;
   locationId?: number;
 };
 
@@ -30,45 +24,12 @@ export default function LocationForm({
   locationId,
 }: FormProps) {
   const [error, setError] = useState('');
-  location = location || '';
-  usernames = (usernames || []) as string[];
-  const defaultValues = {
-    location: location || '',
-    usernames: (usernames || []) as string[],
-  };
+  const defaultValues = { location, usernames };
   const { register, handleSubmit, formState, setValue } = useForm({
-    defaultValues: defaultValues,
+    defaultValues,
   });
-  const createLocation = useCreateLocation();
-  const updateLocation = useUpdateLocation();
   const selectedNames = getUsersWithAccessTo(locationId);
-
-  async function submitForm(data: FormValues) {
-    try {
-      console.log('form data', data);
-      let response;
-      if (locationId) {
-        response = await updateLocation.mutateAsync({
-          ...data,
-          locationId,
-        });
-      } else {
-        response = await createLocation.mutateAsync(data);
-      }
-      onSuccess && onSuccess();
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const errorResponse = error.response?.data;
-        if (error.response?.status === 400 && errorResponse) {
-          for (const [_, value] of Object.entries(errorResponse)) {
-            setError(`${value}`);
-            return;
-          }
-        }
-      }
-      setError('Something went wrong');
-    }
-  }
+  const submitForm = useSubmitForm({ onSuccess, setError });
 
   return (
     <form

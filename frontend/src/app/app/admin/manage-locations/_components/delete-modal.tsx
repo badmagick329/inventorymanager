@@ -21,7 +21,7 @@ export default function DeleteModal({ disclosure, locationId }: ModalProps) {
 
   return (
     <Modal
-      className='flex w-full mx-4'
+      className='mx-4 flex w-full'
       isOpen={disclosure.isOpen}
       onOpenChange={disclosure.onOpenChange}
       placement='center'

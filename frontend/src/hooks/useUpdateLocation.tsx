@@ -6,7 +6,6 @@ import { useQueryClient } from '@tanstack/react-query';
 export default function useUpdateLocation() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationKey: ['update-location'],
     mutationFn: updateLocation,
     retry: false,
     onSettled: () => {

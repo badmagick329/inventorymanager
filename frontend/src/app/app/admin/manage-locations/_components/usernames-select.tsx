@@ -1,6 +1,6 @@
 import { Select, SelectItem } from '@nextui-org/react';
 import { useEffect } from 'react';
-import { FormValues } from './location-form';
+import { FormValues } from './useSubmitForm';
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { User as UserIcon } from 'lucide-react';
 
