@@ -9,7 +9,7 @@ import {
   Button,
 } from '@nextui-org/react';
 
-export default function AdminItem() {
+export default function AdminNavItem() {
   const { isAdmin, isLoading } = useIsAdmin();
 
   if (isLoading || !isAdmin) {
