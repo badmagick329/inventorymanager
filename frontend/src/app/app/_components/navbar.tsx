@@ -1,7 +1,7 @@
-import { ThemeSwitcher } from '@/app/app/_components/theme-switcher';
 import LogoutButton from '@/app/app/_components/logout-button';
 import AdminNavItem from '@/app/app/_components/admin-nav-item';
 import LocationsNavItem from './locations-nav-item';
+import ThemeToggler from './theme-toggler';
 
 export default function Navbar() {
   return (
@@ -15,7 +15,7 @@ export default function Navbar() {
         </li>
         <li>
           <div className='flex h-full items-center gap-2'>
-            <ThemeSwitcher />
+            <ThemeToggler />
             <LogoutButton />
           </div>
         </li>
