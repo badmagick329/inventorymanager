@@ -7,7 +7,7 @@ type FormValues = {
   password2: string;
 };
 
-export default function useSubmitForm(
+export default function useSubmitUser(
   setError: (error: string) => void,
   onSuccess: () => void
 ) {

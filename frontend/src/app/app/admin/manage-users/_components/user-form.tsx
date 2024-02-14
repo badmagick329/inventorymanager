@@ -4,7 +4,7 @@ import React from 'react';
 import { Input } from '@nextui-org/react';
 import CancelButton from '@/components/cancel-button';
 import CreateButton from '@/components/create-button';
-import useSubmitForm from './useSubmitForm';
+import { useSubmitUser } from '@/hooks';
 
 type FormProps = {
   onSuccess: () => void;
@@ -21,7 +21,7 @@ export default function UserForm({ onSuccess, onCancel }: FormProps) {
   const { register, handleSubmit, formState } = useForm({
     defaultValues: defaultValues,
   });
-  const submitForm = useSubmitForm(setError, onSuccess);
+  const submitForm = useSubmitUser(setError, onSuccess);
 
   return (
     <form

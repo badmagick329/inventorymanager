@@ -13,6 +13,8 @@ import useCreateOrder from './useCreateOrder';
 import useDeleteOrder from './useDeleteOrder';
 import useDeleteSale from './useDeleteSale';
 import useOrderDetail from './useOrderDetail';
+import useSubmitLocation from './useSubmitLocation';
+import useSubmitUser from './useSubmitUser';
 
 export {
   useLocations,
@@ -30,4 +32,6 @@ export {
   useDeleteOrder,
   useDeleteSale,
   useOrderDetail,
+  useSubmitLocation,
+  useSubmitUser,
 };
