@@ -1,10 +1,6 @@
 import { useCreateLocation, useUpdateLocation } from '@/hooks';
 import axios from 'axios';
-
-export type FormValues = {
-  location: string;
-  usernames: string[];
-};
+import { LocationFormValues } from '@/types';
 
 export default function useSubmitLocation({
   onSuccess,
@@ -16,7 +12,7 @@ export default function useSubmitLocation({
   const createLocation = useCreateLocation();
   const updateLocation = useUpdateLocation();
 
-  async function submitForm(data: FormValues, locationId?: number) {
+  async function submitForm(data: LocationFormValues, locationId?: number) {
     try {
       if (locationId) {
         await updateLocation.mutateAsync({
