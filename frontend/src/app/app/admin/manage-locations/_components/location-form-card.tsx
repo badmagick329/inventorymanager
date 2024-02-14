@@ -7,8 +7,6 @@ import {
   Divider,
 } from '@nextui-org/react';
 
-import { useQueryClient } from '@tanstack/react-query';
-
 type FormCardProps = {
   location: string;
   usernames: string[];
@@ -22,8 +20,6 @@ export default function LocationFormCard({
   setShowForm,
   locationId,
 }: FormCardProps) {
-  const queryClient = useQueryClient();
-
   return (
     <Card className='flex min-w-[280px] max-w-[320px] flex-col rounded-md md:min-w-[480px] md:max-w-[640px]'>
       <CardHeader className='flex w-full justify-center'>
@@ -37,10 +33,7 @@ export default function LocationFormCard({
           <LocationForm
             location={location}
             usernames={usernames}
-            onSuccess={() => {
-              setShowForm(false);
-              queryClient.invalidateQueries({ queryKey: ['locations'] });
-            }}
+            onSuccess={() => setShowForm(false)}
             onCancel={() => setShowForm(false)}
             locationId={locationId}
           />
