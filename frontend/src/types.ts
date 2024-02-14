@@ -72,3 +72,8 @@ export type Disclosure = {
   getButtonProps: (props?: any) => any;
   getDisclosureProps: (props?: any) => any;
 };
+
+export type LocationFormValues = {
+  location: string;
+  usernames: string[];
+};
