@@ -12,7 +12,7 @@ import {
   Button,
 } from '@nextui-org/react';
 
-export function ThemeSwitcher() {
+export default function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
 
