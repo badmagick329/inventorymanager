@@ -1,10 +1,10 @@
 import { Input } from '@nextui-org/react';
-import { FormValues } from '@/app/_components/login-form';
+import { LoginFormValues } from '@/types';
 import { FormState, UseFormRegister } from 'react-hook-form';
 
 type InputProps = {
-  register: UseFormRegister<FormValues>;
-  formState: FormState<FormValues>;
+  register: UseFormRegister<LoginFormValues>;
+  formState: FormState<LoginFormValues>;
 };
 
 export default function UsernameInput({ register, formState }: InputProps) {
