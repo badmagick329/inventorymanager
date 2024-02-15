@@ -77,3 +77,8 @@ export type LocationFormValues = {
   location: string;
   usernames: string[];
 };
+
+export type LoginFormValues = {
+  username: string;
+  password: string;
+};
