@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/loaders';
 import { useOrders } from '@/hooks';
-import { APP_LOGIN, APP_SALES, APP_ITEMS, APP_LOCATIONS } from '@/consts/urls';
+import { APP_LOGIN, APP_ITEMS, APP_LOCATIONS } from '@/consts/urls';
 import { usePathname } from 'next/navigation';
 import { isOrderResponseArray } from '@/predicates';
 import { ConnectionError } from '@/components/errors';
@@ -18,12 +18,14 @@ import {
   Spacer,
   Button,
   Link,
+  Tooltip,
 } from '@nextui-org/react';
 import { formatNumber } from '@/utils';
-import { ShoppingCart, ArrowUpIcon, Pencil, Trash, List } from 'lucide-react';
+import { ShoppingCart, ArrowUpIcon, Trash, List } from 'lucide-react';
 import { ICON_SM } from '@/consts';
 import CreateOrderModal from './_componenets/create-order-modal';
 import { useDeleteOrder } from '@/hooks';
+import EditOrderModal from './_componenets/edit-order-modal';
 
 export default function Orders() {
   const locationId = usePathname().split('/')[3];
@@ -152,9 +154,10 @@ export default function Orders() {
                 if (columnKey === 'actions') {
                   return (
                     <TableCell className='flex gap-2'>
-                      <Button size='sm' variant='flat' isIconOnly>
-                        <Pencil size={ICON_SM} />
-                      </Button>
+                      <EditOrderModal
+                        locationId={locationId}
+                        orderId={row.id.toString()}
+                      />
                       <Button
                         size='sm'
                         variant='flat'

@@ -1,0 +1,39 @@
+import { OrderFormValues } from '@/types';
+import { Control, Controller, FormState } from 'react-hook-form';
+import { UseFormRegister } from 'react-hook-form';
+import { Input } from '@nextui-org/react';
+
+type OrderCostInputProps = {
+  control: Control<OrderFormValues, any>;
+  register: UseFormRegister<OrderFormValues>;
+  formState: FormState<OrderFormValues>;
+};
+
+export default function OrderCostInput({
+  control,
+  register,
+  formState,
+}: OrderCostInputProps) {
+  return (
+    <>
+      <span className='text-danger-500'>{formState.errors.cost?.message}</span>
+      <Controller
+        name='cost'
+        control={control}
+        render={({ field }) => (
+          <Input
+            type='number'
+            variant='flat'
+            autoComplete='off'
+            label='Cost'
+            {...field}
+            {...register('cost', {
+              required: 'Cost is required',
+              min: 1,
+            })}
+          />
+        )}
+      />
+    </>
+  );
+}
