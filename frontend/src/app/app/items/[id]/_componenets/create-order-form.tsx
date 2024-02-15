@@ -2,46 +2,46 @@ import { useForm } from 'react-hook-form';
 import { useCreateOrder } from '@/hooks';
 import { useState } from 'react';
 
-import {
-  ModalContent,
-  ModalFooter,
-  Button,
-  Spacer,
-  Input,
-  Checkbox,
-} from '@nextui-org/react';
-
-export type FormValues = {
-  name: string;
-  date: string;
-  quantity: string;
-  cost: string;
-  salePrice: string;
-};
+import { ModalContent, ModalFooter, Spacer, Checkbox } from '@nextui-org/react';
+import { Spinner } from '@/components/loaders';
+import { OrderFormValues } from '@/types';
+import OrderNameInput from './order-name-input';
+import OrderDateInput from './order-date-input';
+import OrderCostInput from './order-cost-input';
+import OrderQuantityInput from './order-quantity-input';
+import OrderSalePriceInput from './order-sale-price-input';
+import CreateButton from '@/components/create-button';
+import CancelButton from '@/components/cancel-button';
+import useOrderFormDefaults from '@/hooks/useOrderFormDefaults';
 
 export default function CreateOrderForm({
   locationId,
+  orderId,
   onClose,
 }: {
   locationId: string;
+  orderId?: string;
   onClose: () => void;
 }) {
   const [isCostPerItem, setIsCostPerItem] = useState(true);
   const [isSalePricePerItem, setIsSalePricePerItem] = useState(true);
-  const defaultValues = {
-    name: '',
-    date: '',
-    quantity: '',
-    cost: '',
-    salePrice: '',
-  };
 
-  const { register, handleSubmit, formState } = useForm({
-    defaultValues: defaultValues,
+  const fetchDefaults = useOrderFormDefaults({
+    locationId,
+    orderId,
+  });
+
+  const { register, handleSubmit, formState, control } = useForm({
+    // @ts-ignore
+    defaultValues: fetchDefaults.mutateAsync,
   });
   const createOrder = useCreateOrder();
 
-  function submitForm(data: FormValues) {
+  if (formState.isLoading) {
+    return <Spinner />;
+  }
+
+  function submitForm(data: OrderFormValues) {
     const quantity = parseInt(data.quantity);
     const cost = parseInt(data.cost);
     const salePrice = parseInt(data.salePrice);
@@ -81,52 +81,26 @@ export default function CreateOrderForm({
               <span className='text-center text-2xl font-semibold'>
                 Add Item
               </span>
-              <span className='text-danger-500'>
-                {formState.errors.name?.message}
-              </span>
-              <Input
-                type='text'
-                variant='flat'
-                autoComplete='off'
-                label='Name'
-                {...register('name', { required: 'Name is required' })}
+              <OrderNameInput
+                control={control}
+                register={register}
+                formState={formState}
               />
-              <span className='text-danger-500'>
-                {formState.errors.date?.message}
-              </span>
-              <Input
-                type='date'
-                variant='flat'
-                autoComplete='off'
-                placeholder=''
-                {...register('date')}
+              <OrderDateInput
+                control={control}
+                register={register}
+                formState={formState}
               />
-              <span className='text-danger-500'>
-                {formState.errors.quantity?.message}
-              </span>
-              <Input
-                type='number'
-                variant='flat'
-                autoComplete='off'
-                label='Quantity'
-                {...register('quantity', {
-                  required: 'Quantity is required',
-                  min: 1,
-                })}
+              <OrderQuantityInput
+                control={control}
+                register={register}
+                formState={formState}
               />
               <div className='flex flex-col gap-2'>
-                <span className='text-danger-500'>
-                  {formState.errors.cost?.message}
-                </span>
-                <Input
-                  type='number'
-                  variant='flat'
-                  autoComplete='off'
-                  label='Cost'
-                  {...register('cost', {
-                    required: 'Cost is required',
-                    min: 1,
-                  })}
+                <OrderCostInput
+                  control={control}
+                  register={register}
+                  formState={formState}
                 />
                 <Checkbox
                   defaultSelected={isCostPerItem}
@@ -137,18 +111,10 @@ export default function CreateOrderForm({
                 </Checkbox>
               </div>
               <div className='flex flex-col gap-2'>
-                <span className='text-danger-500'>
-                  {formState.errors.salePrice?.message}
-                </span>
-                <Input
-                  type='number'
-                  variant='flat'
-                  autoComplete='off'
-                  label='Sale Price'
-                  {...register('salePrice', {
-                    required: 'Sale price is required',
-                    min: 1,
-                  })}
+                <OrderSalePriceInput
+                  control={control}
+                  register={register}
+                  formState={formState}
                 />
                 <Checkbox
                   defaultSelected={isSalePricePerItem}
@@ -159,12 +125,8 @@ export default function CreateOrderForm({
                 </Checkbox>
               </div>
               <ModalFooter>
-                <Button color='danger' variant='light' onPress={onClose}>
-                  Cancel
-                </Button>
-                <Button type='submit' color='primary'>
-                  Create
-                </Button>
+                <CancelButton onCancel={onClose} />
+                <CreateButton formState={formState} />
               </ModalFooter>
             </div>
           )}

@@ -1,19 +1,24 @@
 import React from 'react';
 import { Modal, Button, useDisclosure } from '@nextui-org/react';
 import CreateOrderForm from './create-order-form';
+import { Pencil } from 'lucide-react';
+import { ICON_SM } from '@/consts';
 
-export default function CreateOrderModal({
+export default function EditOrderModal({
   locationId,
+  orderId,
 }: {
   locationId: string;
-  orderId?: string;
+  orderId: string;
 }) {
   const size = '5xl';
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   return (
     <>
-      <Button onPress={onOpen}>Add Item</Button>
+      <Button onPress={onOpen} size='sm' variant='flat' isIconOnly>
+        <Pencil size={ICON_SM} />
+      </Button>
       <Modal
         className='flex w-full'
         size={size}
@@ -22,7 +27,11 @@ export default function CreateOrderModal({
         placement='center'
         hideCloseButton
       >
-        <CreateOrderForm locationId={locationId} onClose={onClose} />
+        <CreateOrderForm
+          locationId={locationId}
+          orderId={orderId}
+          onClose={onClose}
+        />
       </Modal>
     </>
   );

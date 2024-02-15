@@ -82,3 +82,11 @@ export type LoginFormValues = {
   username: string;
   password: string;
 };
+
+export type OrderFormValues = {
+  name: string;
+  date: string;
+  quantity: string;
+  cost: string;
+  salePrice: string;
+};
