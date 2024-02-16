@@ -1,7 +1,8 @@
 from django.core.exceptions import ValidationError
 from items.models import ItemLocation
 from items.serializers.location import ItemLocationSerializer
-from rest_framework import permissions, status
+from items.utils.serializers import stringify_error
+from rest_framework import permissions, serializers, status
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -68,18 +69,18 @@ class ItemLocationsDetail(APIView):
             item_location, request.data, partial=True
         )
 
-        if serializer.is_valid(raise_exception=True):
-            try:
-                serializer.update(item_location, serializer.validated_data)
-            except ValidationError as e:
-                return Response(
-                    data=str(e),
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+        try:
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+        except serializers.ValidationError as e:
             return Response(
-                data=serializer.data,
-                status=status.HTTP_200_OK,
+                data=stringify_error(e),
+                status=status.HTTP_400_BAD_REQUEST,
             )
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK,
+        )
 
 
 class ItemLocationsList(APIView):
@@ -90,15 +91,16 @@ class ItemLocationsList(APIView):
 
     def post(self, request: Request):
         serializer = ItemLocationSerializer(data=request.data)
-        if not serializer.is_valid(raise_exception=False):
+        try:
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+        except serializers.ValidationError as e:
             return Response(
-                data=serializer.errors,
+                data=stringify_error(e),
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        created = serializer.create(serializer.validated_data)
-        serialized = ItemLocationSerializer(created)
         return Response(
-            data=serialized.data,
+            data=serializer.data,
             status=status.HTTP_201_CREATED,
         )
 

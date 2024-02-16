@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 from items.models import ItemLocation
 from rest_framework import serializers
 from users.models import UserAccount
@@ -14,25 +15,43 @@ class ItemLocationSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "users"]
 
     def create(self, validated_data) -> ItemLocation:
-        item_location = ItemLocation.objects.create(
-            name=validated_data["name"],
-        )
+        try:
+            item_location = ItemLocation.objects.create(
+                name=validated_data["name"],
+            )
+        except IntegrityError as e:
+            # TODO: Write error generator based on integrity errors
+            if "unique_item_location_name" in str(e):
+                error = {"name": ["Location name already in use"]}
+            else:
+                error = {
+                    "name": [
+                        "Error during creation. Please check the input data"
+                    ]
+                }
+            raise serializers.ValidationError(error)
         users = UserAccount.objects.filter(
             username__in=validated_data.get("users", [])
         ).all()
         item_location.users.set(users)
         try:
             item_location.full_clean()
+            item_location.save()
         except ValidationError as e:
             item_location.delete()
             raise serializers.ValidationError(e.message_dict)
-        item_location.save()
+
         return item_location
 
     def update(self, instance, validated_data):
         name = validated_data.get("name", instance.name).strip()
         self.validate_new_name(name, instance.id)
-        return super().update(instance, validated_data)
+        users = validated_data.get("users", instance.users)
+        saved_users = UserAccount.objects.filter(username__in=users)
+        instance.name = name
+        instance.users.set(saved_users)
+        instance.save()
+        return instance
 
     def validate_new_name(self, name, self_id):
         name = name.strip()
@@ -69,7 +88,7 @@ class ItemLocationSerializer(serializers.ModelSerializer):
             data["name"] = data["name"].strip()
         if hasattr(data, "_mutable"):
             data._mutable = False
-        return super().to_internal_value(data)
+        return data
 
     def to_representation(self, instance):
         orders = instance.orders.all()
