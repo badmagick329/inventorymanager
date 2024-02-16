@@ -18,7 +18,6 @@ import {
   Spacer,
   Button,
   Link,
-  Tooltip,
 } from '@nextui-org/react';
 import { formatNumber } from '@/utils';
 import { ShoppingCart, ArrowUpIcon, Trash, List } from 'lucide-react';
@@ -36,7 +35,7 @@ export default function Orders() {
     console.log(`Received error ${error}`);
     router.push(APP_LOGIN);
   }
-  const orders = data?.data;
+  const orders = data;
   if (isLoading || !orders) {
     return <Spinner />;
   }

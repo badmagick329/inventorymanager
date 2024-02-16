@@ -1,4 +1,4 @@
-import { isOrderResponse } from '@/predicates';
+import { isOrderResponse, isOrderResponseArray } from '@/predicates';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { NEXT_ORDER_DETAIL } from '@/consts/urls';
 import axios from 'axios';
@@ -13,10 +13,18 @@ export default function useOrderFormDefaults({
   orderId,
 }: useOrderFormDefaultsProps) {
   const queryClient = useQueryClient();
+  const orders = queryClient.getQueryData(['orders', locationId]);
 
   async function fetchDefaults() {
     if (!orderId) {
       return createOrderDefaultValues();
+    }
+    if (isOrderResponseArray(orders)) {
+      for (const order of orders) {
+        if (order.id.toString() === orderId) {
+          return createOrderDefaultValues(order);
+        }
+      }
     }
     try {
       const response = await axios.get(`${NEXT_ORDER_DETAIL}/${orderId}`);
@@ -43,8 +51,8 @@ export default function useOrderFormDefaults({
   return mutation;
 }
 
-export function createOrderDefaultValues(data?: any) {
-  if (!isOrderResponse(data)) {
+export function createOrderDefaultValues(order?: any) {
+  if (!isOrderResponse(order)) {
     return {
       name: '',
       date: '',
@@ -54,10 +62,10 @@ export function createOrderDefaultValues(data?: any) {
     };
   }
   return {
-    name: data.name,
-    date: data.date || '',
-    quantity: data.quantity.toString(),
-    cost: data.pricePerItem.toString(),
-    salePrice: data.currentSalePrice.toString(),
+    name: order.name,
+    date: order.date || '',
+    quantity: order.quantity.toString(),
+    cost: order.pricePerItem.toString(),
+    salePrice: order.currentSalePrice.toString(),
   };
 }

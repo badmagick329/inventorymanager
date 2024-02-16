@@ -44,7 +44,7 @@ export default function Sales() {
     router.push(APP_LOGIN);
   }
   const sales = data?.data;
-  const currentOrder = orderData?.data;
+  const currentOrder = orderData;
   if (isLoading || !sales || orderIsLoading || !orderData) {
     return <Spinner />;
   }
