@@ -55,6 +55,7 @@ export default function CreateOrderForm({
     };
     const response = createOrder.mutateAsync({
       locationId,
+      orderId,
       order,
     });
     try {
