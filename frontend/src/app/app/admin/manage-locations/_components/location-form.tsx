@@ -34,7 +34,7 @@ export default function LocationForm({
   return (
     <form
       className='flex w-72 flex-col gap-2'
-      onSubmit={handleSubmit((data) => submitForm(data))}
+      onSubmit={handleSubmit((data) => submitForm(data, locationId))}
     >
       {error && <span className='self-center text-danger-500'>{error}</span>}
       <LocationInput
