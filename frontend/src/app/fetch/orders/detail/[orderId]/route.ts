@@ -16,7 +16,10 @@ export async function PATCH(
   }
   const headers = { Authorization };
   try {
-    const response = await axios.patch(`${url}/${params.orderId}`, { headers });
+    const body = await req.json();
+    const response = await axios.patch(`${url}/${params.orderId}`, body, {
+      headers,
+    });
     return new NextResponse(JSON.stringify(response.data), {
       status: 200,
     });
