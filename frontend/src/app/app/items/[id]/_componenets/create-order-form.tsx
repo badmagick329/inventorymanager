@@ -80,7 +80,7 @@ export default function CreateOrderForm({
             <div className='flex flex-col gap-4 px-4'>
               <Spacer y={2} />
               <span className='text-center text-2xl font-semibold'>
-                Add Item
+                {orderId ? 'Edit Item' : 'Add Item'}
               </span>
               <OrderNameInput
                 control={control}
