@@ -39,6 +39,12 @@ export default function Locations() {
             )}
           </div>
         ))}
+        {locations.length === 0 && (
+          <div className='flex items-center justify-center'>
+            No locations found. You may not have permission to view any
+            locations yet.
+          </div>
+        )}
       </>
     );
   }
