@@ -1,11 +1,11 @@
-from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
 from items.models import ItemLocation
+from items.responses import APIResponses
 from items.serializers.location import ItemLocationSerializer
 from items.utils.serializers import stringify_error
-from rest_framework import permissions, serializers, status
+from rest_framework import permissions, serializers
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from users.models import UserAccount
 
@@ -31,40 +31,24 @@ class ItemLocationsDetail(APIView):
     def get(self, request: Request, id: int):
         user = request.user
         assert isinstance(user, UserAccount)
+
         if user.is_admin:
-            item_location = ItemLocation.objects.filter(id=id).first()
+            item_location = get_object_or_404(ItemLocation, id=id)
         else:
-            item_location = ItemLocation.objects.filter(
-                id=id, users__in=[user]
-            ).first()
-        if not item_location:
-            return Response(
-                data={"errors": "Item location not found"},
-                status=status.HTTP_404_NOT_FOUND,
+            item_location = get_object_or_404(
+                ItemLocation, id=id, users__in=[user]
             )
+
         serializer = ItemLocationSerializer(item_location)
-        return Response(
-            data=serializer.data,
-            status=status.HTTP_200_OK,
-        )
+        return APIResponses.ok(serializer.data)
 
     def delete(self, request: Request, id: int):
-        item_location = ItemLocation.objects.filter(id=id).first()
-        if not item_location:
-            return Response(
-                data={"errors": "Item location not found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        item_location = get_object_or_404(ItemLocation, id=id)
         item_location.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return APIResponses.deleted()
 
     def patch(self, request: Request, id: int):
-        item_location = ItemLocation.objects.filter(id=id).first()
-        if not item_location:
-            return Response(
-                data={"errors": "Item location not found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        item_location = get_object_or_404(ItemLocation, id=id)
         serializer = ItemLocationSerializer(
             item_location, request.data, partial=True
         )
@@ -73,14 +57,8 @@ class ItemLocationsDetail(APIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
         except serializers.ValidationError as e:
-            return Response(
-                data=stringify_error(e),
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        return Response(
-            data=serializer.data,
-            status=status.HTTP_200_OK,
-        )
+            return APIResponses.bad_request(stringify_error(e))
+        return APIResponses.ok(serializer.data)
 
 
 class ItemLocationsList(APIView):
@@ -95,14 +73,8 @@ class ItemLocationsList(APIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
         except serializers.ValidationError as e:
-            return Response(
-                data=stringify_error(e),
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        return Response(
-            data=serializer.data,
-            status=status.HTTP_201_CREATED,
-        )
+            return APIResponses.bad_request(stringify_error(e))
+        return APIResponses.ok(serializer.data)
 
     def get(self, request: Request):
         user = request.user
@@ -116,7 +88,4 @@ class ItemLocationsList(APIView):
                 {"id": location.id, "name": location.name}
                 for location in locations
             ]
-        return Response(
-            data=serialized,
-            status=status.HTTP_200_OK,
-        )
+        return APIResponses.ok(serialized)

@@ -4,21 +4,8 @@ from rest_framework.response import Response
 
 class APIResponses:
     @staticmethod
-    def order_not_found():
-        return Response(
-            data={"errors": "Order not found"},
-            status=status.HTTP_404_NOT_FOUND,
-        )
-
-    @staticmethod
-    def sale_not_found():
-        return Response(
-            data={"errors": "Sale not found"},
-            status=status.HTTP_404_NOT_FOUND,
-        )
-
-    @staticmethod
     def forbidden_order():
+        """403"""
         return Response(
             data={"errors": "You do not have access to this order"},
             status=status.HTTP_403_FORBIDDEN,
@@ -26,6 +13,7 @@ class APIResponses:
 
     @staticmethod
     def forbidden_location():
+        """403"""
         return Response(
             data={"errors": "You do not have access to this location"},
             status=status.HTTP_403_FORBIDDEN,
@@ -33,6 +21,7 @@ class APIResponses:
 
     @staticmethod
     def created(data):
+        """201"""
         return Response(
             data=data,
             status=status.HTTP_201_CREATED,
@@ -40,6 +29,7 @@ class APIResponses:
 
     @staticmethod
     def bad_request(errors):
+        """400"""
         return Response(
             data=errors,
             status=status.HTTP_400_BAD_REQUEST,
@@ -47,10 +37,12 @@ class APIResponses:
 
     @staticmethod
     def deleted():
+        """204"""
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @staticmethod
     def ok(data):
+        """200"""
         return Response(
             data=data,
             status=status.HTTP_200_OK,
