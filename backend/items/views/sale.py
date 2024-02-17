@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from items.models import Order, Sale
-from items.responses import APIResponses
+from responses import APIResponses
 from items.serializers.sale import SaleSerializer
 from items.utils.serializers import stringify_error
 from rest_framework import permissions, serializers

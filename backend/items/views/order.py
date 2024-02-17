@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from items.models import ItemLocation, Order
-from items.responses import APIResponses
+from responses import APIResponses
 from items.serializers.order import OrderSerializer
 from items.utils.serializers import stringify_error
 from rest_framework import permissions, serializers
