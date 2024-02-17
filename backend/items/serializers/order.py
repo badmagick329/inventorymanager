@@ -1,7 +1,6 @@
-from datetime import datetime
-
 from django.core.exceptions import ValidationError
 from items.models import ItemLocation, Order
+from items.utils.serializer_validator import SerializerValidator as SV
 from rest_framework import serializers
 
 
@@ -11,7 +10,7 @@ class OrderSerializer(serializers.BaseSerializer):
         location = ItemLocation.objects.filter(id=location_id).first()
         if not location:
             raise serializers.ValidationError(
-                {"location_id": f"Location for this order was not found"}
+                {"location_id": ["Location for this order was not found"]}
             )
         order = Order(
             name=validated_data["name"],
@@ -44,23 +43,30 @@ class OrderSerializer(serializers.BaseSerializer):
         return instance
 
     def to_internal_value(self, data):
-        if hasattr(data, "_mutable"):
-            data._mutable = True
-
-        if "date" in data and data["date"]:
-            data["date"] = data["date"].strip()
-            try:
-                data["date"] = datetime.strptime(
-                    data["date"], "%Y-%m-%d"
-                ).date()
-            except ValueError:
-                raise serializers.ValidationError(
-                    {"date": "Date must be in the format YYYY-MM-DD"}
-                )
-
-        if hasattr(data, "_mutable"):
-            data._mutable = False
-        return data
+        location_id = SV.positive_int(
+            data.get("locationId"), "locationId", "Location ID"
+        )
+        date = SV.valid_date(data.get("date"), "date")
+        name = SV.non_empty_string(data.get("name"), "name", "Name")
+        price_per_item = SV.positive_float(
+            data.get("pricePerItem"), "pricePerItem", "Purchase Price"
+        )
+        quantity = SV.positive_int(
+            data.get("quantity"), "quantity", "Quantity"
+        )
+        current_sale_price = SV.positive_float(
+            data.get("currentSalePrice"), "currentSalePrice", "Sale Price"
+        )
+        user = data.get("user")
+        return {
+            "locationId": location_id,
+            "date": date,
+            "name": name,
+            "pricePerItem": price_per_item,
+            "quantity": quantity,
+            "currentSalePrice": current_sale_price,
+            "user": user,
+        }
 
     def to_representation(self, instance):
         date_repr = (

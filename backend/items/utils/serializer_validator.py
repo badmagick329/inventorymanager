@@ -10,11 +10,11 @@ class SerializerValidator:
             num = float(value)
         except (TypeError, ValueError):
             raise serializers.ValidationError(
-                {field_name: f"{field_label} must be a number"}
+                {field_name: [f"{field_label} must be a number"]}
             )
         if num < 0:
             raise serializers.ValidationError(
-                {field_name: f"{field_label} must be positive"}
+                {field_name: [f"{field_label} must be positive"]}
             )
         return num
 
@@ -24,11 +24,11 @@ class SerializerValidator:
             num = int(value)
         except (TypeError, ValueError):
             raise serializers.ValidationError(
-                {field_name: f"{field_label} must be an integer"}
+                {field_name: [f"{field_label} must be an integer"]}
             )
         if num < 0:
             raise serializers.ValidationError(
-                {field_name: f"{field_label} must be positive"}
+                {field_name: [f"{field_label} must be positive"]}
             )
         return num
 
@@ -41,13 +41,13 @@ class SerializerValidator:
             return datetime.strptime(value, "%Y-%m-%d").date()
         except ValueError:
             raise serializers.ValidationError(
-                {field_name: "Date must be in the format YYYY-MM-DD"}
+                {field_name: ["Date must be in the format YYYY-MM-DD"]}
             )
 
     @staticmethod
     def non_empty_string(value, field_name, field_label):
         if not value:
             raise serializers.ValidationError(
-                {field_name: f"{field_label} cannot be empty"}
+                {field_name: [f"{field_label} cannot be empty"]}
             )
         return value
