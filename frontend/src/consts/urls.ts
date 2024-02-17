@@ -16,7 +16,6 @@ export const APP_SALES = '/app/sales';
 export const APP_ITEMS = '/app/items';
 export const API_LOGIN = '/api/users/auth/login';
 export const API_LOGOUT = '/api/users/auth/logout';
-export const API_IS_AUTHED = '/api/users/auth/is-authed';
 export const API_IS_ADMIN = '/api/users/auth/is-admin';
 export const API_LOCATIONS = '/api/items/locations';
 export const API_USERS = '/api/users';

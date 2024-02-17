@@ -1,3 +1,4 @@
+from django.db.utils import IntegrityError
 from rest_framework import serializers
 
 from .models import UserAccount
@@ -10,11 +11,25 @@ class UserAccountSerializer(serializers.ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data) -> UserAccount:
-        user = UserAccount.objects.create_user(
-            username=validated_data["username"],
-            password=validated_data["password"],
-        )
+        try:
+            user = UserAccount.objects.create_user(
+                username=validated_data["username"],
+                password=validated_data["password"],
+            )
+        except IntegrityError as e:
+            if "users_useraccount_username_key" in str(e):
+                error = {"username": ["Username already in use"]}
+            else:
+                error = {
+                    "name": [
+                        "Error during creation. Please check the input data"
+                    ]
+                }
+            raise serializers.ValidationError(error)
         return user
+
+    def to_internal_value(self, data):
+        return data
 
     def to_representation(self, instance: UserAccount):
         return {

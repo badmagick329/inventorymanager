@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from items.models import ItemLocation
-from items.responses import APIResponses
+from responses import APIResponses
 from items.serializers.location import ItemLocationSerializer
 from items.utils.serializers import stringify_error
 from rest_framework import permissions, serializers
