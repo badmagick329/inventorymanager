@@ -5,7 +5,7 @@ import { useOrders } from '@/hooks';
 import { APP_LOGIN, APP_ITEMS, APP_LOCATIONS } from '@/consts/urls';
 import { usePathname } from 'next/navigation';
 import { isOrderResponseArray } from '@/predicates';
-import { ConnectionError } from '@/components/errors';
+import { ConnectionError, GenericError } from '@/components/errors';
 import { OrderResponse } from '@/types';
 import {
   Table,
@@ -32,9 +32,30 @@ export default function Orders() {
   const { error, isError, isLoading, data } = useOrders(locationId);
   const deleteOrder = useDeleteOrder();
   if (isError) {
-    console.log(`Received error ${error}`);
-    router.push(APP_LOGIN);
+    let message;
+    if (error.message.includes('404')) {
+      message = 'Location not found. It may have been deleted.';
+      return (
+        <GenericError message={message}>
+          <Button
+            as={Link}
+            href={APP_LOCATIONS}
+            variant='flat'
+            size='md'
+            color='default'
+          >
+            Back to Locations
+          </Button>
+        </GenericError>
+      );
+    } else if (error.message.includes('500')) {
+      message = 'Failed to load items. ' + error.message;
+      return <ConnectionError message={message} />;
+    } else {
+      router.push(APP_LOGIN);
+    }
   }
+
   const orders = data;
   if (isLoading || !orders) {
     return <Spinner />;
