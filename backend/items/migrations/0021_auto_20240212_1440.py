@@ -12,6 +12,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             "CREATE UNIQUE INDEX unique_case_insensitive_vendor_name ON items_vendor (LOWER(name), location_id);",
-            "DROP INDEX unique_case_insensitive_name;",
+            "DROP INDEX unique_case_insensitive_vendor_name;",
         ),
     ]
