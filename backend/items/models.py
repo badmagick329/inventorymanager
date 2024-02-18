@@ -124,10 +124,6 @@ class Order(models.Model, LastModifiedByMixin):
         ordering = ["id"]
         verbose_name = "Order"
         constraints = [
-            # TODO: Remove this constraint
-            # LOWER(name), location_id, date, price_per_item, and quantity
-            # uniqueness being enforced by manual migration (0014)
-            # unique_case_insensitive_name
             models.CheckConstraint(
                 name="non_empty_order_name",
                 check=~models.Q(name=""),
