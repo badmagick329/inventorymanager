@@ -30,7 +30,10 @@ export async function tryLogin(
 export async function prefetchLocations(queryClient: QueryClient) {
   await queryClient.prefetchQuery({
     queryKey: ['locations'],
-    queryFn: () => axios.get(NEXT_LOCATIONS),
+    queryFn: async () => {
+      const { data } = await axios.get(NEXT_LOCATIONS);
+      return data;
+    },
   });
 }
 
