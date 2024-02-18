@@ -1,4 +1,27 @@
-import { OrderResponse, OrderPost, SaleResponse, SalePost } from './types';
+import {
+  OrderResponse,
+  OrderPost,
+  SaleResponse,
+  SalePost,
+  Location,
+} from './types';
+
+export function isLocation(body: any): body is Location {
+  return (
+    body &&
+    typeof body === 'object' &&
+    typeof body.id === 'number' &&
+    typeof body.name === 'string' &&
+    (Array.isArray(body.users) || body.users === undefined) &&
+    (typeof body.spendings === 'number' || body.spendings === undefined) &&
+    (typeof body.revenue === 'number' || body.revenue === undefined) &&
+    (typeof body.profit === 'number' || body.profit === undefined)
+  );
+}
+
+export function isLocationArray(body: any): body is Location[] {
+  return Array.isArray(body) && body.every(isLocation);
+}
 
 export function isOrderResponse(body: any): body is OrderResponse {
   return (

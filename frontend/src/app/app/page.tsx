@@ -10,14 +10,13 @@ import { Location } from '@/types';
 
 export default function Locations() {
   const router = useRouter();
-  const { error, isError, isLoading, data } = useLocations();
+  const { error, isError, isLoading, data: locations } = useLocations();
 
   if (isError) {
     console.log(`Received error ${error}`);
     router.push(APP_LOGIN);
   }
 
-  const locations = data?.data;
   if (locations) {
     return (
       <>

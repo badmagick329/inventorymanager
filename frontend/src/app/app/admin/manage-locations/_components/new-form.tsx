@@ -8,7 +8,7 @@ import { ConnectionError } from '@/components/errors';
 
 export default function NewForm() {
   const [showForm, setShowForm] = useState(false);
-  const { isError, isLoading, data } = useUsers();
+  const { isError, isLoading, data: users } = useUsers();
   if (isLoading) {
     return <Spinner />;
   }
@@ -16,7 +16,6 @@ export default function NewForm() {
     return <ConnectionError />;
   }
 
-  const users = data?.data;
   if (!users) {
     <ConnectionError message='No users found' />;
   }
