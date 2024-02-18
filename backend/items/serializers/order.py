@@ -1,7 +1,9 @@
 from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 from items.models import ItemLocation, Order
 from items.utils.serializer_validator import SerializerValidator as SV
 from rest_framework import serializers
+from utils.errors import ErrorHandler, ValidationErrorWithMessage
 
 
 class OrderSerializer(serializers.BaseSerializer):
@@ -9,7 +11,7 @@ class OrderSerializer(serializers.BaseSerializer):
         location_id = validated_data.get("locationId")
         location = ItemLocation.objects.filter(id=location_id).first()
         if not location:
-            raise serializers.ValidationError(
+            raise ValidationErrorWithMessage(
                 {"location_id": ["Location for this order was not found"]}
             )
         order = Order(
@@ -23,7 +25,9 @@ class OrderSerializer(serializers.BaseSerializer):
         try:
             order.save(user=validated_data["user"])
         except ValidationError as e:
-            raise serializers.ValidationError(e.message_dict)
+            raise ValidationErrorWithMessage(e.message_dict)
+        except IntegrityError as e:
+            raise ErrorHandler(e).error
         return order
 
     def update(self, instance, validated_data):
@@ -39,24 +43,18 @@ class OrderSerializer(serializers.BaseSerializer):
         try:
             instance.save(user=validated_data["user"])
         except ValidationError as e:
-            raise serializers.ValidationError(e.message_dict)
+            raise ValidationErrorWithMessage(e.message_dict)
+        except IntegrityError as e:
+            raise ErrorHandler(e).error
         return instance
 
     def to_internal_value(self, data):
-        location_id = SV.positive_int(
-            data.get("locationId"), "locationId", "Location ID"
-        )
-        date = SV.valid_date(data.get("date"), "date")
-        name = SV.non_empty_string(data.get("name"), "name", "Name")
-        price_per_item = SV.positive_float(
-            data.get("pricePerItem"), "pricePerItem", "Purchase Price"
-        )
-        quantity = SV.positive_int(
-            data.get("quantity"), "quantity", "Quantity"
-        )
-        current_sale_price = SV.positive_float(
-            data.get("currentSalePrice"), "currentSalePrice", "Sale Price"
-        )
+        location_id = data.get("locationId")
+        date = data.get("date")
+        name = data.get("name")
+        price_per_item = data.get("pricePerItem")
+        quantity = data.get("quantity")
+        current_sale_price = data.get("currentSalePrice")
         user = data.get("user")
         return {
             "locationId": location_id,

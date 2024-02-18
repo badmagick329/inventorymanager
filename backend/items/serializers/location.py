@@ -1,9 +1,9 @@
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from items.models import ItemLocation
-from items.utils.errors import ErrorHandler, ValidationErrorWithMessage
 from rest_framework import serializers
 from users.models import UserAccount
+from utils.errors import ErrorHandler, ValidationErrorWithMessage
 
 
 class ItemLocationSerializer(serializers.ModelSerializer):
@@ -45,6 +45,8 @@ class ItemLocationSerializer(serializers.ModelSerializer):
             instance.save()
         except IntegrityError as e:
             raise ErrorHandler(e).error
+        except ValidationError as e:
+            raise ValidationErrorWithMessage(e.message_dict)
         return instance
 
     def to_internal_value(self, data):

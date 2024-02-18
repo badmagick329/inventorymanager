@@ -1,7 +1,8 @@
 from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 from items.models import Order, Sale, Vendor
-from items.utils.serializer_validator import SerializerValidator as SV
 from rest_framework import serializers
+from utils.errors import ErrorHandler, ValidationErrorWithMessage
 
 
 class SaleSerializer(serializers.BaseSerializer):
@@ -19,7 +20,9 @@ class SaleSerializer(serializers.BaseSerializer):
         try:
             sale.save(user=validated_data["user"])
         except ValidationError as e:
-            raise serializers.ValidationError(e.message_dict)
+            raise ValidationErrorWithMessage(e.message_dict)
+        except IntegrityError as e:
+            raise ErrorHandler(e).error
         return sale
 
     def update(self, instance, validated_data):
@@ -35,27 +38,25 @@ class SaleSerializer(serializers.BaseSerializer):
                 instance.order.location, validated_data["user"]
             )
         else:
-            raise serializers.ValidationError({"vendor": "Vendor is required"})
+            raise ValidationErrorWithMessage(
+                {"vendor": ["Vendor name cannot be empty"]}
+            )
         try:
             instance.save(user=validated_data["user"])
         except ValidationError as e:
-            raise serializers.ValidationError(e.message_dict)
+            raise ValidationErrorWithMessage(e.message_dict)
+        except IntegrityError as e:
+            raise ErrorHandler(e).error
         return instance
 
     def to_internal_value(self, data):
-        date = SV.valid_date(data.get("date"), "date")
-        price_per_item = SV.positive_float(
-            data.get("pricePerItem"), "pricePerItem", "Price per item"
-        )
-        quantity = SV.positive_int(
-            data.get("quantity"), "quantity", "Quantity"
-        )
-        amount_paid = SV.positive_float(
-            data.get("amountPaid", 0), "amountPaid", "Amount paid"
-        )
-        debt = data["pricePerItem"] * data["quantity"] - data["amountPaid"]
-        vendor = SV.non_empty_string(data.get("vendor"), "vendor", "Vendor")
-        order_id = SV.positive_int(data.get("orderId"), "orderId", "Order ID")
+        date = data.get("date")
+        price_per_item = data.get("pricePerItem")
+        quantity = data.get("quantity")
+        amount_paid = data.get("amountPaid", 0)
+        debt = data["pricePerItem"] * data["quantity"] - amount_paid
+        vendor = data.get("vendor")
+        order_id = data.get("orderId")
 
         return {
             "date": date,
@@ -71,20 +72,20 @@ class SaleSerializer(serializers.BaseSerializer):
         order_id = self.validated_data.get("orderId")
         order = Order.objects.filter(id=order_id).first()
         if not order:
-            raise serializers.ValidationError({"order_id": f"Order not found"})
+            raise ValidationErrorWithMessage(
+                {"order_id": [f"Order with id {order_id} not found"]}
+            )
         return order
 
     def _get_vendor(self, location, user):
         vendor_name = self.validated_data.get("vendor")
-        print(
-            "Looking for vendor:", vendor_name, "at location:", location.name
-        )
         vendor = location.vendors.filter(name__iexact=vendor_name).first()
-        print("Vendor found:", vendor)
         if not vendor:
-            print("Vendor not found, creating new vendor")
             vendor = Vendor(name=vendor_name, location=location)
-            vendor.save(user=user)
+            try:
+                vendor.save(user=user)
+            except IntegrityError as e:
+                raise ErrorHandler(e).error
         return vendor
 
     def to_representation(self, instance):

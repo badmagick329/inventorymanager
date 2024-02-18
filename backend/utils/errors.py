@@ -7,6 +7,27 @@ constraint_to_error_dict = {
     "non_empty_item_location_name": {
         "name": ["Location name cannot be empty"]
     },
+    "non_empty_vendor_name": {"name": ["Vendor name cannot be empty"]},
+    "unique_case_insensitive_vendor_name": {
+        "name": ["Vendor name already in use"]
+    },
+    "non_empty_order_name": {"name": ["Item name cannot be empty"]},
+    "positive_order_price": {
+        "price_per_item": ["Item cost must be greater than 0"]
+    },
+    "positive_order_quantity": {
+        "quantity": ["Quantity must be greater than 0"]
+    },
+    "positive_order_current_sale_price": {
+        "current_sale_price": ["Sale price must be greater than 0"]
+    },
+    "positive_sale_quantity": {
+        "quantity": ["Quantity must be greater than 0"]
+    },
+    "positive_sale_price": {
+        "price_per_item": ["Price must be greater than 0"]
+    },
+    "positive_sale_debt": {"debt": ["Debt must be greater than 0"]},
 }
 
 
