@@ -1,5 +1,6 @@
 from django.db.utils import IntegrityError
 from rest_framework import serializers
+from utils.errors import ErrorHandler
 
 from .models import UserAccount
 
@@ -17,15 +18,7 @@ class UserAccountSerializer(serializers.ModelSerializer):
                 password=validated_data["password"],
             )
         except IntegrityError as e:
-            if "users_useraccount_username_key" in str(e):
-                error = {"username": ["Username already in use"]}
-            else:
-                error = {
-                    "name": [
-                        "Error during creation. Please check the input data"
-                    ]
-                }
-            raise serializers.ValidationError(error)
+            raise ErrorHandler(e).error
         return user
 
     def to_internal_value(self, data):

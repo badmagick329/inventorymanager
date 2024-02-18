@@ -1,13 +1,12 @@
 from django.contrib.auth import login
 from django.shortcuts import get_object_or_404
-from items.utils.serializers import stringify_error
 from knox.views import LoginView as KnoxLoginView
-from utils.responses import APIResponses
-from rest_framework import permissions, serializers, status
+from rest_framework import permissions, status
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from utils.responses import APIResponses
 
 from .models import UserAccount
 from .serializers import UserAccountSerializer
@@ -62,15 +61,6 @@ class UserAccountsList(APIView):
 
     def post(self, request: Request):
         serializer = UserAccountSerializer(data=request.data)
-        try:
-            serializer.is_valid(raise_exception=True)
-            user = serializer.save()
-            return APIResponses.created(
-                {"id": user.id, "username": user.username}
-            )
-        except serializers.ValidationError as e:
-            return APIResponses.bad_request(stringify_error(e))
-        except Exception as e:
-            return APIResponses.bad_request(
-                {"name": ["Something went wrong. " + str(e)]}
-            )
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return APIResponses.created({"id": user.id, "username": user.username})
