@@ -1,7 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from items.models import ItemLocation, Order
-from items.utils.serializer_validator import SerializerValidator as SV
 from rest_framework import serializers
 from utils.errors import ErrorHandler, ValidationErrorWithMessage
 

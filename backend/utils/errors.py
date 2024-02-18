@@ -28,6 +28,9 @@ constraint_to_error_dict = {
         "price_per_item": ["Price must be greater than 0"]
     },
     "positive_sale_debt": {"debt": ["Debt must be greater than 0"]},
+    "users_useraccount_username_key": {
+        "username": ["Username already in use"]
+    },
 }
 
 
