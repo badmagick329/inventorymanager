@@ -31,7 +31,7 @@ export default function LocationCard({
   const disclosure = useDisclosure();
   const deleteLocation = useDeleteLocation();
   const [showForm, setShowForm] = React.useState(false);
-  const { isError, isLoading, data, refetch } = useUsers();
+  const { isError, isLoading, data: fetchedUsers, refetch } = useUsers();
 
   if (isLoading) {
     return <LocationCardSkeleton />;
@@ -46,7 +46,6 @@ export default function LocationCard({
     );
   }
 
-  const fetchedUsers = data?.data;
   if (!fetchedUsers) {
     return (
       <LocationCardError

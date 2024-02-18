@@ -29,7 +29,7 @@ export default function Sales() {
   const locationId = usePathname().split('/')[3];
   const orderId = usePathname().split('/')[4];
   const router = useRouter();
-  const { error, isError, isLoading, data } = useSales(orderId);
+  const { error, isError, isLoading, data: sales } = useSales(orderId);
   const deleteSale = useDeleteSale();
   const {
     error: orderError,
@@ -43,7 +43,6 @@ export default function Sales() {
     console.log('Received errors', error, orderError);
     router.push(APP_LOGIN);
   }
-  const sales = data?.data;
   const currentOrder = orderData;
   if (isLoading || !sales || orderIsLoading || !orderData) {
     return <Spinner />;

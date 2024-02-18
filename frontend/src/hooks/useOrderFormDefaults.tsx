@@ -1,5 +1,6 @@
-import { isOrderResponse, isOrderResponseArray } from '@/predicates';
+import { isOrderResponse } from '@/predicates';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { getOrderByOrderId } from '@/utils/query-client-reader';
 import { NEXT_ORDER_DETAIL } from '@/consts/urls';
 import axios from 'axios';
 
@@ -13,18 +14,14 @@ export default function useOrderFormDefaults({
   orderId,
 }: useOrderFormDefaultsProps) {
   const queryClient = useQueryClient();
-  const orders = queryClient.getQueryData(['orders', locationId]);
 
   async function fetchDefaults() {
     if (!orderId) {
       return createOrderDefaultValues();
     }
-    if (isOrderResponseArray(orders)) {
-      for (const order of orders) {
-        if (order.id.toString() === orderId) {
-          return createOrderDefaultValues(order);
-        }
-      }
+    const order = getOrderByOrderId(locationId, orderId, queryClient);
+    if (order) {
+      return createOrderDefaultValues(order);
     }
     try {
       const response = await axios.get(`${NEXT_ORDER_DETAIL}/${orderId}`);

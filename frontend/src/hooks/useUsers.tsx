@@ -6,7 +6,10 @@ import { SHORT_STALE_TIME } from '@/consts';
 export default function useUsers() {
   const query = useQuery({
     queryKey: ['users'],
-    queryFn: () => axios.get(NEXT_USERS),
+    queryFn: async () => {
+      const { data } = await axios.get(NEXT_USERS);
+      return data;
+    },
     retry: false,
     staleTime: SHORT_STALE_TIME,
     placeholderData: keepPreviousData,

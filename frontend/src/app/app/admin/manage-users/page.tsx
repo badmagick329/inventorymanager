@@ -8,11 +8,10 @@ import { useUsers } from '@/hooks';
 import { ConnectionError } from '@/components/errors';
 
 export default function ManageUsers() {
-  const { isError, isLoading, data } = useUsers();
+  const { isError, isLoading, data: users } = useUsers();
   if (isError) {
     return <ConnectionError />;
   }
-  const users = data?.data;
   if (users) {
     return (
       <div className='flex h-full w-full flex-grow flex-col items-center gap-4 p-4'>

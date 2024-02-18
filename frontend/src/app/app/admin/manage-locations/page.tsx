@@ -8,11 +8,10 @@ import NewForm from './_components/new-form';
 import { ConnectionError } from '@/components/errors';
 
 export default function ManageLocation() {
-  const { isError, isLoading, data } = useLocations();
+  const { isError, isLoading, data: locations } = useLocations();
   if (isError) {
     return <ConnectionError />;
   }
-  const locations = data?.data;
   if (locations) {
     return (
       <div className='flex w-full flex-col items-center gap-4 p-4'>
