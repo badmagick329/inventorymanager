@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from items.models import ItemLocation
+from items.utils.errors import ErrorHandler, ValidationErrorWithMessage
 from rest_framework import serializers
 from users.models import UserAccount
 
@@ -20,16 +21,7 @@ class ItemLocationSerializer(serializers.ModelSerializer):
                 name=validated_data["name"],
             )
         except IntegrityError as e:
-            # TODO: Write error generator based on integrity errors
-            if "unique_item_location_name" in str(e):
-                error = {"name": ["Location name already in use"]}
-            else:
-                error = {
-                    "name": [
-                        "Error during creation. Please check the input data"
-                    ]
-                }
-            raise serializers.ValidationError(error)
+            raise ErrorHandler(e).error
         users = UserAccount.objects.filter(
             username__in=validated_data.get("users", [])
         ).all()
@@ -39,30 +31,21 @@ class ItemLocationSerializer(serializers.ModelSerializer):
             item_location.save()
         except ValidationError as e:
             item_location.delete()
-            raise serializers.ValidationError(e.message_dict)
+            raise ValidationErrorWithMessage(e.message_dict)
 
         return item_location
 
     def update(self, instance, validated_data):
         name = validated_data.get("name", instance.name).strip()
-        self.validate_new_name(name, instance.id)
         users = validated_data.get("users", instance.users)
         saved_users = UserAccount.objects.filter(username__in=users)
         instance.name = name
         instance.users.set(saved_users)
-        instance.save()
+        try:
+            instance.save()
+        except IntegrityError as e:
+            raise ErrorHandler(e).error
         return instance
-
-    def validate_new_name(self, name, self_id):
-        name = name.strip()
-        if not name:
-            raise serializers.ValidationError("Name cannot be empty")
-        saved_instance = ItemLocation.objects.filter(name__iexact=name).first()
-        if saved_instance and saved_instance.id != self_id:
-            raise serializers.ValidationError(
-                {"name": f"ItemLocation with name {name} already exists"}
-            )
-        return name
 
     def to_internal_value(self, data):
         if hasattr(data, "_mutable"):

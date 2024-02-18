@@ -1,9 +1,9 @@
 from django.shortcuts import get_object_or_404
 from items.models import ItemLocation
-from responses import APIResponses
 from items.serializers.location import ItemLocationSerializer
-from items.utils.serializers import stringify_error
-from rest_framework import permissions, serializers
+from items.utils.errors import ValidationErrorWithMessage
+from responses import APIResponses
+from rest_framework import permissions
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
 from rest_framework.views import APIView
@@ -56,8 +56,8 @@ class ItemLocationsDetail(APIView):
         try:
             serializer.is_valid(raise_exception=True)
             serializer.save()
-        except serializers.ValidationError as e:
-            return APIResponses.bad_request(stringify_error(e))
+        except ValidationErrorWithMessage as e:
+            return APIResponses.bad_request(e.message_dict)
         return APIResponses.ok(serializer.data)
 
 
@@ -72,8 +72,8 @@ class ItemLocationsList(APIView):
         try:
             serializer.is_valid(raise_exception=True)
             serializer.save()
-        except serializers.ValidationError as e:
-            return APIResponses.bad_request(stringify_error(e))
+        except ValidationErrorWithMessage as e:
+            return APIResponses.bad_request(e.message_dict)
         return APIResponses.ok(serializer.data)
 
     def get(self, request: Request):
