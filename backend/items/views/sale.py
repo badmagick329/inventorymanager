@@ -1,12 +1,12 @@
 from django.shortcuts import get_object_or_404
 from items.models import Order, Sale
-from responses import APIResponses
 from items.serializers.sale import SaleSerializer
-from items.utils.serializers import stringify_error
-from rest_framework import permissions, serializers
+from rest_framework import permissions
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from users.models import UserAccount
+from utils.errors import ValidationErrorWithMessage
+from utils.responses import APIResponses
 
 
 class SaleDetail(APIView):
@@ -36,8 +36,8 @@ class SaleDetail(APIView):
         try:
             serializer.is_valid(raise_exception=True)
             serializer.save()
-        except serializers.ValidationError as e:
-            return APIResponses.bad_request(stringify_error(e))
+        except ValidationErrorWithMessage as e:
+            raise ValidationErrorWithMessage(e.message_dict)
         return APIResponses.ok(serializer.data)
 
     def delete(self, request: Request, sale_id: int):
@@ -81,6 +81,6 @@ class SaleList(APIView):
         try:
             serializer.is_valid(raise_exception=True)
             serializer.save()
-        except serializers.ValidationError as e:
-            return APIResponses.bad_request(stringify_error(e))
+        except ValidationErrorWithMessage as e:
+            raise ValidationErrorWithMessage(e.message_dict)
         return APIResponses.created(serializer.data)

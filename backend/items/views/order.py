@@ -1,14 +1,12 @@
-from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from items.models import ItemLocation, Order
-from responses import APIResponses
 from items.serializers.order import OrderSerializer
-from items.utils.serializers import stringify_error
-from rest_framework import permissions, serializers
+from rest_framework import permissions
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from users.models import UserAccount
+from utils.responses import APIResponses
 
 
 class OrderDetail(APIView):
@@ -35,11 +33,8 @@ class OrderDetail(APIView):
             "user": user,
         }
         serializer = OrderSerializer(order, data=initial_data, partial=True)
-        try:
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-        except serializers.ValidationError as e:
-            return APIResponses.bad_request(stringify_error(e))
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return APIResponses.ok(serializer.data)
 
     def delete(self, request: Request, order_id: int):
@@ -79,11 +74,8 @@ class OrderList(APIView):
             "locationId": location_id,
         }
         serializer = OrderSerializer(data=initial_data)
-        try:
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-        except serializers.ValidationError as e:
-            return APIResponses.bad_request(stringify_error(e))
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return APIResponses.created(serializer.data)
 
     @staticmethod

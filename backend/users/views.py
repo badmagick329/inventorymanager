@@ -2,7 +2,7 @@ from django.contrib.auth import login
 from django.shortcuts import get_object_or_404
 from items.utils.serializers import stringify_error
 from knox.views import LoginView as KnoxLoginView
-from responses import APIResponses
+from utils.responses import APIResponses
 from rest_framework import permissions, serializers, status
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.request import Request
