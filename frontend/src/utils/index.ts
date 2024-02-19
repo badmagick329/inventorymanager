@@ -1,4 +1,4 @@
-import { OrderResponse } from '@/types';
+import { OrderResponse, SaleResponse } from '@/types';
 
 export function formatNumber(num: number) {
   const abs = Math.abs(num);
@@ -50,6 +50,36 @@ export function createOrdersTableData(orders: OrderResponse[]) {
       profit: profitValues,
       stockInOut,
       vendors: vendorsString,
+      lastModifiedBy,
+      lastModified,
+    };
+  });
+}
+
+export function createSalesTableData(sales: SaleResponse[]) {
+  return sales.map((sale) => {
+    const totalSalePrice = sale.pricePerItem * sale.quantity;
+    const amountPaid = totalSalePrice - sale.debt;
+    const amountPaidDue = [amountPaid, sale.debt];
+    const salePriceString = `${formatNumber(totalSalePrice)} [${formatNumber(sale.pricePerItem)} ea.]`;
+    const profit = totalSalePrice - sale.cost;
+    const lastModifiedBy = sale.lastModifiedBy;
+    const lastModifiedUTC = new Date(sale.lastModified).getTime();
+    const offset = new Date().getTimezoneOffset();
+    const lastModified = new Date(
+      lastModifiedUTC - offset * 60000
+    ).toLocaleString();
+
+    return {
+      id: sale.id,
+      name: sale.order,
+      vendor: sale.vendor,
+      saleDate: sale.date,
+      quantity: sale.quantity,
+      cost: sale.cost,
+      salePrice: salePriceString,
+      profit,
+      amountPaidDue,
       lastModifiedBy,
       lastModified,
     };
