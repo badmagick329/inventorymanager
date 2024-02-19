@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/loaders';
-import useLocations from '@/hooks/useLocations';
+import { useLocations } from '@/hooks';
 import { Divider } from '@nextui-org/react';
 import { APP_LOGIN } from '@/consts/urls';
 import LocationOverview from '@/app/app/_components/location-overview';
@@ -17,6 +17,9 @@ export default function Locations() {
     router.push(APP_LOGIN);
   }
 
+  if (isLoading) {
+    return <Spinner />;
+  }
   if (locations) {
     return (
       <>
@@ -46,9 +49,5 @@ export default function Locations() {
         )}
       </>
     );
-  }
-
-  if (isLoading) {
-    return <Spinner />;
   }
 }

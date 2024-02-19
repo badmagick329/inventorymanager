@@ -4,16 +4,16 @@ import axios from 'axios';
 import { useQueryClient } from '@tanstack/react-query';
 import { SalePost } from '@/types';
 
-export default function useUpdateLocation() {
+export default function useCreateSale() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: createSale,
     retry: false,
     onSettled: () => {
-      console.log('settled create sale');
+      console.log('settled update/create sale');
     },
     onSuccess: (_, data) => {
-      console.log('successfully created sale');
+      console.log('successfully updated/created sale');
       const { locationId, orderId } = data;
       queryClient.invalidateQueries({ queryKey: ['sales'] });
       queryClient.invalidateQueries({
@@ -21,7 +21,7 @@ export default function useUpdateLocation() {
       });
     },
     onError: (error) => {
-      console.log(`error during create sale. ${error}`);
+      console.log(`error during update/create sale. ${error}`);
     },
   });
   return mutation;

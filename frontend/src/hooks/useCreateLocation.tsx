@@ -2,22 +2,24 @@ import { NEXT_LOCATIONS } from '@/consts/urls';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useQueryClient } from '@tanstack/react-query';
+import { isLocation } from '@/predicates';
 
 export default function useCreateLocation() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationKey: ['create-location'],
     mutationFn: createLocation,
     retry: false,
-    onSettled: () => {
-      console.log('settled create location');
-    },
-    onSuccess: () => {
-      console.log('successfully created location');
-      queryClient.invalidateQueries({ queryKey: ['locations'] });
+    onSettled: () => {},
+    onSuccess: (data) => {
+      if (!isLocation(data)) {
+        queryClient.invalidateQueries({ queryKey: ['locations'] });
+        return;
+      }
+      queryClient.setQueryData(['locations', data.id], data);
+      queryClient.invalidateQueries({ queryKey: ['locations'], exact: true });
     },
     onError: (error) => {
-      console.log(`error during create location. ${error}`);
+      console.log(`error during update/create location. ${error}`);
     },
   });
   return mutation;
@@ -26,9 +28,19 @@ export default function useCreateLocation() {
 async function createLocation({
   location,
   usernames,
+  locationId,
 }: {
   location: string;
   usernames: string[];
+  locationId?: number;
 }) {
-  return await axios.post(NEXT_LOCATIONS, { location, usernames });
+  if (locationId) {
+    const { data } = await axios.patch(`${NEXT_LOCATIONS}/${locationId}`, {
+      location,
+      usernames,
+    });
+    return data;
+  }
+  const { data } = await axios.post(NEXT_LOCATIONS, { location, usernames });
+  return data;
 }

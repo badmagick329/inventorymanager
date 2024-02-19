@@ -1,5 +1,5 @@
 import { APP_MANAGE_LOCATIONS, APP_MANAGE_USERS } from '@/consts/urls';
-import useIsAdmin from '@/hooks/useIsAdmin';
+import { useIsAdmin } from '@/hooks';
 import {
   Link,
   Dropdown,
