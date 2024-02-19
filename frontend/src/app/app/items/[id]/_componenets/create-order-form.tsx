@@ -67,9 +67,6 @@ export default function CreateOrderForm({
 
   return (
     <>
-      <span className='text-center text-2xl font-semibold'>
-        Enter Purchase Details
-      </span>
       <form
         className='flex flex-col gap-4 p-4'
         onSubmit={handleSubmit((data) => submitForm(data))}

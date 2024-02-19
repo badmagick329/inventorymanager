@@ -1,3 +1,18 @@
+import { createOrdersTableData } from './utils';
+import { useDeleteOrder } from './hooks';
+
+type ValueOf<T> = T[keyof T];
+export type Error = boolean;
+export type Result<T> =
+  | {
+      error?: Error;
+      value: T;
+    }
+  | {
+      error: Error;
+      value?: T;
+    };
+
 export type Location = {
   id: number;
   name: string;
@@ -90,3 +105,9 @@ export type OrderFormValues = {
   cost: string;
   salePrice: string;
 };
+
+export type OrdersTableRow = ReturnType<typeof createOrdersTableData>[0];
+
+export type DeleteOrder = ReturnType<typeof useDeleteOrder>;
+
+export type OrdersTableRowValue = ValueOf<OrdersTableRow>;

@@ -7,16 +7,24 @@ import { ICON_SM } from '@/consts';
 export default function EditOrderModal({
   locationId,
   orderId,
+  isDisabled,
 }: {
   locationId: string;
   orderId: string;
+  isDisabled: boolean;
 }) {
   const size = '5xl';
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   return (
     <>
-      <Button onPress={onOpen} size='sm' variant='flat' isIconOnly>
+      <Button
+        onPress={onOpen}
+        size='sm'
+        variant='flat'
+        isIconOnly
+        isDisabled={isDisabled}
+      >
         <Pencil size={ICON_SM} />
       </Button>
       <Modal
