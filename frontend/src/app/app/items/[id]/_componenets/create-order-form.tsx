@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { useCreateOrder } from '@/hooks';
+import { useCreateOrder, useOrderFormDefaults } from '@/hooks';
 import { useState } from 'react';
 
 import { ModalContent, ModalFooter, Spacer, Checkbox } from '@nextui-org/react';
@@ -12,7 +12,6 @@ import OrderQuantityInput from './order-quantity-input';
 import OrderSalePriceInput from './order-sale-price-input';
 import CreateButton from '@/components/create-button';
 import CancelButton from '@/components/cancel-button';
-import useOrderFormDefaults from '@/hooks/useOrderFormDefaults';
 
 export default function CreateOrderForm({
   locationId,

@@ -9,7 +9,7 @@ import {
   Input,
   Checkbox,
 } from '@nextui-org/react';
-import useCreateSale from '@/hooks/useCreateSale';
+import { useCreateSale } from '@/hooks';
 import axios from 'axios';
 import { useState } from 'react';
 
@@ -62,11 +62,7 @@ export default function CreateSaleForm({
       amountPaid,
     };
     try {
-      const response = await createSale.mutateAsync({
-        locationId,
-        orderId,
-        sale,
-      });
+      await createSale.mutateAsync({ locationId, orderId, sale });
       onClose();
     } catch (error) {
       if (axios.isAxiosError(error)) {

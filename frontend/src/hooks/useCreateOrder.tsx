@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useQueryClient } from '@tanstack/react-query';
 import { OrderPost } from '@/types';
 
-export default function useUpdateLocation() {
+export default function useCreateOrder() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: createOrder,

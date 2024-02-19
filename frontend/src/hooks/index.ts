@@ -3,7 +3,6 @@ import useIsAdmin from './useIsAdmin';
 import useLogout from './useLogout';
 import useDeleteLocation from './useDeleteLocation';
 import useCreateLocation from './useCreateLocation';
-import useUpdateLocation from './useUpdateLocation';
 import useUsers from './useUsers';
 import useDeleteUser from './useDeleteUser';
 import useCreateUser from './useCreateUser';
@@ -15,6 +14,9 @@ import useDeleteSale from './useDeleteSale';
 import useOrderDetail from './useOrderDetail';
 import useSubmitLocation from './useSubmitLocation';
 import useSubmitUser from './useSubmitUser';
+import useCreateSale from './useCreateSale';
+import useSubmitLoginForm from './useSubmitLoginForm';
+import useOrderFormDefaults from './useOrderFormDefaults';
 
 export {
   useLocations,
@@ -22,7 +24,6 @@ export {
   useLogout,
   useDeleteLocation,
   useCreateLocation,
-  useUpdateLocation,
   useUsers,
   useDeleteUser,
   useCreateUser,
@@ -34,4 +35,7 @@ export {
   useOrderDetail,
   useSubmitLocation,
   useSubmitUser,
+  useCreateSale,
+  useSubmitLoginForm,
+  useOrderFormDefaults,
 };

@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import LoginButton from '@/app/_components/login-button';
 import PasswordInput from '@/app/_components/password-input';
 import UsernameInput from '@/app/_components/username-input';
-import useSubmitLoginForm from '@/hooks/useSubmitLoginForm';
+import { useSubmitLoginForm } from '@/hooks';
 
 export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);

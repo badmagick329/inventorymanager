@@ -1,4 +1,4 @@
-import { useCreateLocation, useUpdateLocation } from '@/hooks';
+import { useCreateLocation } from '@/hooks';
 import axios from 'axios';
 import { LocationFormValues } from '@/types';
 
@@ -10,18 +10,10 @@ export default function useSubmitLocation({
   setError: (error: string) => void;
 }) {
   const createLocation = useCreateLocation();
-  const updateLocation = useUpdateLocation();
 
   async function submitForm(data: LocationFormValues, locationId?: number) {
     try {
-      if (locationId) {
-        await updateLocation.mutateAsync({
-          ...data,
-          locationId,
-        });
-      } else {
-        await createLocation.mutateAsync(data);
-      }
+      await createLocation.mutateAsync({ ...data, locationId });
       onSuccess && onSuccess();
     } catch (error) {
       if (axios.isAxiosError(error)) {
