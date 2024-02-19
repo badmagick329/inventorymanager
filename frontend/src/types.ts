@@ -110,7 +110,7 @@ export type OrdersTableRow = ReturnType<typeof createOrdersTableData>[0];
 
 export type DeleteOrder = ReturnType<typeof useDeleteOrder>;
 
-export type OrdersTableRowValue = ValueOf<OrdersTableRow>;
+export type OrdersTableCellValue = ValueOf<OrdersTableRow>;
 
 export type DeleteSale = ReturnType<typeof useDeleteSale>;
 
