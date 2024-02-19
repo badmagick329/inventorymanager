@@ -7,7 +7,7 @@ export default function LocationsNavItem() {
   return (
     <>
       <Button
-        className='rounded-md border-foreground-600 p-2'
+        className='rounded-md border-foreground-500 p-2'
         variant='bordered'
         as={Link}
         href={APP_LOCATIONS}
