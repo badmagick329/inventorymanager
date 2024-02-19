@@ -13,7 +13,7 @@ import { Disclosure } from '@/types';
 
 type ModalProps = {
   disclosure: Disclosure;
-  locationId?: number;
+  locationId: number;
 };
 
 export default function DeleteModal({ disclosure, locationId }: ModalProps) {

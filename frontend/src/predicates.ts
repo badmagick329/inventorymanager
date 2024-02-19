@@ -4,6 +4,7 @@ import {
   SaleResponse,
   SalePost,
   Location,
+  User,
 } from './types';
 
 export function isLocation(body: any): body is Location {
@@ -21,6 +22,21 @@ export function isLocation(body: any): body is Location {
 
 export function isLocationArray(body: any): body is Location[] {
   return Array.isArray(body) && body.every(isLocation);
+}
+
+export function isUser(body: any): body is User {
+  return (
+    body &&
+    typeof body === 'object' &&
+    typeof body.id === 'number' &&
+    typeof body.username === 'string' &&
+    Array.isArray(body.locations) &&
+    body.locations.every(isLocation)
+  );
+}
+
+export function isUserArray(body: any): body is User[] {
+  return Array.isArray(body) && body.every(isUser);
 }
 
 export function isOrderResponse(body: any): body is OrderResponse {
