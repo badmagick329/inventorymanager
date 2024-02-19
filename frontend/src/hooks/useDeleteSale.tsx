@@ -2,19 +2,29 @@ import { NEXT_SALE_DETAIL } from '@/consts/urls';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useQueryClient } from '@tanstack/react-query';
+import { isSaleResponseArray } from '@/predicates';
 
 export default function useDeleteSale() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: deleteSale,
     retry: false,
-    onSettled: () => {
-      console.log('settled delete sale');
-    },
-    onSuccess: (_, data) => {
-      console.log('successfully deleted sale');
-      const { locationId, orderId } = data;
-      queryClient.invalidateQueries({ queryKey: ['sales'] });
+    onSettled: () => {},
+    onSuccess: (_, mutationVars) => {
+      const { locationId, orderId } = mutationVars;
+      const previousData = queryClient.getQueryData(['sales', orderId]);
+      if (!isSaleResponseArray(previousData)) {
+        queryClient.invalidateQueries({ queryKey: ['sales', orderId] });
+      } else {
+        queryClient.setQueryData(
+          ['sales', orderId],
+          previousData.filter((sale) => sale.id !== mutationVars.saleId)
+        );
+        queryClient.invalidateQueries({
+          queryKey: ['sales', orderId],
+          exact: true,
+        });
+      }
       queryClient.invalidateQueries({
         queryKey: ['orders', locationId, orderId],
       });

@@ -66,6 +66,7 @@ export default function Sales() {
     { key: 'actions', label: 'Actions' },
   ];
   const tableData = createTableData(sales);
+  const remainingStock = currentOrder.quantity - currentOrder.soldQuantity;
 
   return (
     <div className='flex w-full flex-col justify-center p-4'>
@@ -73,21 +74,24 @@ export default function Sales() {
       <div className='flex flex-col items-center gap-2'>
         <span className='text-2xl font-semibold'>{currentOrder.name}</span>
         <span className='font-semibold'>
-          Purchase Price: {currentOrder.pricePerItem * currentOrder.quantity} [
-          {currentOrder.pricePerItem} ea.]
+          Purchase Price:{' '}
+          {formatNumber(currentOrder.pricePerItem * currentOrder.quantity)} [
+          {formatNumber(currentOrder.pricePerItem)} ea.]
         </span>
         <span className='font-semibold'>
           Current sale price:{' '}
-          {currentOrder.currentSalePrice * currentOrder.quantity} [
-          {currentOrder.currentSalePrice} ea.]
+          {formatNumber(currentOrder.currentSalePrice * currentOrder.quantity)}{' '}
+          [{formatNumber(currentOrder.currentSalePrice)} ea.]
         </span>
-        <span className='font-semibold'>
-          Remaining stock: {currentOrder.quantity - currentOrder.soldQuantity}
-        </span>
+        <span className='font-semibold'>Remaining stock: {remainingStock}</span>
       </div>
       <Spacer y={2} />
       <div className='flex justify-center gap-4'>
-        <CreateSaleModal locationId={locationId} orderId={orderId} />
+        <CreateSaleModal
+          locationId={locationId}
+          orderId={orderId}
+          remainingStock={remainingStock}
+        />
         <Button
           as={Link}
           href={`${APP_ITEMS}/${locationId}`}
@@ -95,7 +99,7 @@ export default function Sales() {
           size='md'
           color='default'
         >
-          Back to items
+          Back to Items
         </Button>
       </div>
       <Spacer y={4} />

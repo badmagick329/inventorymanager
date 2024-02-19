@@ -5,16 +5,20 @@ import CreateSaleForm from './create-sale-form';
 export default function CreateSaleModal({
   locationId,
   orderId,
+  remainingStock,
 }: {
   locationId: string;
   orderId: string;
+  remainingStock: number;
 }) {
   const size = '5xl';
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   return (
     <>
-      <Button onPress={onOpen}>Add Item</Button>
+      <Button onPress={onOpen} isDisabled={remainingStock <= 0}>
+        Add Sale
+      </Button>
       <Modal
         className='flex w-full'
         size={size}

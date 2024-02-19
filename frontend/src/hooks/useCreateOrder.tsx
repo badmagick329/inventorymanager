@@ -3,18 +3,25 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useQueryClient } from '@tanstack/react-query';
 import { OrderPost } from '@/types';
+import { isOrderResponse } from '@/predicates';
 
 export default function useCreateOrder() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: createOrder,
     retry: false,
-    onSettled: () => {
-      console.log('settled update/create order');
-    },
-    onSuccess: () => {
-      console.log('successfully updated/created order');
-      queryClient.invalidateQueries({ queryKey: ['orders'] });
+    onSettled: () => {},
+    onSuccess: (data, mutationVars) => {
+      const { locationId } = mutationVars;
+      if (!isOrderResponse(data)) {
+        queryClient.invalidateQueries({ queryKey: ['orders'] });
+        return;
+      }
+      queryClient.setQueryData(['orders', locationId, data.id], data);
+      queryClient.invalidateQueries({
+        queryKey: ['orders', locationId],
+        exact: true,
+      });
     },
     onError: (error) => {
       console.log(`error during update/create order. ${error}`);
@@ -33,11 +40,13 @@ async function createOrder({
   order: OrderPost;
 }) {
   if (orderId) {
-    return await axios.patch(`${NEXT_ORDER_DETAIL}/${orderId}`, {
+    const { data } = await axios.patch(`${NEXT_ORDER_DETAIL}/${orderId}`, {
       ...order,
     });
+    return data;
   }
-  return await axios.post(`${NEXT_ORDERS}/${locationId}`, {
+  const { data } = await axios.post(`${NEXT_ORDERS}/${locationId}`, {
     ...order,
   });
+  return data;
 }
