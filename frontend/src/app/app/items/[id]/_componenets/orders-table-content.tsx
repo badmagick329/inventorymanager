@@ -1,12 +1,12 @@
 'use client';
 import { Key } from 'react';
 import { OrdersTableRowValue } from '@/types';
-import ProfitContent from './profit-content';
-import AmountPaidDueContent from './amount-paid-due-content';
 import StockInOutContent from './stock-in-out-content';
 import ActionsContent from './actions-content';
 import { DeleteOrder } from '@/types';
-import PriceFieldContent from './price-field-content';
+import AmountPaidDueContent from '@/components/amount-paid-due-content';
+import PriceFieldContent from '@/components/price-field-content';
+import ProfitContent from '@/components/profit-content';
 
 type OrdersTableContentProps = {
   columnKey: Key;

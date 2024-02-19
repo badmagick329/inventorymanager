@@ -1,5 +1,5 @@
-import { createOrdersTableData } from './utils';
-import { useDeleteOrder } from './hooks';
+import { createOrdersTableData, createSalesTableData } from './utils';
+import { useDeleteOrder, useDeleteSale } from './hooks';
 
 type ValueOf<T> = T[keyof T];
 export type Error = boolean;
@@ -111,3 +111,9 @@ export type OrdersTableRow = ReturnType<typeof createOrdersTableData>[0];
 export type DeleteOrder = ReturnType<typeof useDeleteOrder>;
 
 export type OrdersTableRowValue = ValueOf<OrdersTableRow>;
+
+export type DeleteSale = ReturnType<typeof useDeleteSale>;
+
+export type SalesTableRow = ReturnType<typeof createSalesTableData>[0];
+
+export type SalesTableCellValue = ValueOf<SalesTableRow>;
