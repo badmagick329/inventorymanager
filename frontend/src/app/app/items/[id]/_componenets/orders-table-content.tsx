@@ -7,6 +7,8 @@ import { DeleteOrder } from '@/types';
 import AmountPaidDueContent from '@/components/amount-paid-due-content';
 import PriceFieldContent from '@/components/price-field-content';
 import ProfitContent from '@/components/profit-content';
+import { Link } from '@nextui-org/react';
+import { APP_ITEMS } from '@/consts/urls';
 
 type OrdersTableContentProps = {
   columnKey: Key;
@@ -25,6 +27,17 @@ export default function OrdersTableContent({
   deleteOrder,
   quantity,
 }: OrdersTableContentProps) {
+  if (columnKey === 'name') {
+    return (
+      <Link
+        color='foreground'
+        href={`${APP_ITEMS}/${locationId}/${rowId}`}
+        className='flex justify-start gap-2 pr-4 font-semibold'
+      >
+        {cellValue}
+      </Link>
+    );
+  }
   if (isProfit(columnKey, cellValue)) {
     const [profit, profitPerItem] = cellValue;
     return <ProfitContent profit={profit} profitPerItem={profitPerItem} />;
@@ -37,7 +50,7 @@ export default function OrdersTableContent({
     const [stockIn, stockOut] = cellValue;
     return <StockInOutContent stockIn={stockIn} stockOut={stockOut} />;
   }
-  if (isActionsField(columnKey)) {
+  if (columnKey === 'actions') {
     return (
       <ActionsContent
         rowId={rowId}
@@ -82,8 +95,4 @@ function isPriceField(
     typeof value === 'number' &&
     (columnKey === 'cost' || columnKey === 'salePrice')
   );
-}
-
-function isActionsField(columnKey: Key): boolean {
-  return columnKey === 'actions';
 }
