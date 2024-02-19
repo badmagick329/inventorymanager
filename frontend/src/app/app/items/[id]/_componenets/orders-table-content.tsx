@@ -1,6 +1,6 @@
 'use client';
 import { Key } from 'react';
-import { OrdersTableRowValue } from '@/types';
+import { OrdersTableCellValue } from '@/types';
 import StockInOutContent from './stock-in-out-content';
 import ActionsContent from './actions-content';
 import { DeleteOrder } from '@/types';
@@ -10,7 +10,7 @@ import ProfitContent from '@/components/profit-content';
 
 type OrdersTableContentProps = {
   columnKey: Key;
-  rowValue: OrdersTableRowValue;
+  cellValue: OrdersTableCellValue;
   rowId: number;
   locationId: string;
   deleteOrder: DeleteOrder;
@@ -19,22 +19,22 @@ type OrdersTableContentProps = {
 
 export default function OrdersTableContent({
   columnKey,
-  rowValue,
+  cellValue,
   rowId,
   locationId,
   deleteOrder,
   quantity,
 }: OrdersTableContentProps) {
-  if (isProfit(columnKey, rowValue)) {
-    const [profit, profitPerItem] = rowValue;
+  if (isProfit(columnKey, cellValue)) {
+    const [profit, profitPerItem] = cellValue;
     return <ProfitContent profit={profit} profitPerItem={profitPerItem} />;
   }
-  if (isAmountPaidDue(columnKey, rowValue)) {
-    const [amountPaid, debt] = rowValue;
+  if (isAmountPaidDue(columnKey, cellValue)) {
+    const [amountPaid, debt] = cellValue;
     return <AmountPaidDueContent amountPaid={amountPaid} debt={debt} />;
   }
-  if (isStockInOut(columnKey, rowValue)) {
-    const [stockIn, stockOut] = rowValue;
+  if (isStockInOut(columnKey, cellValue)) {
+    const [stockIn, stockOut] = cellValue;
     return <StockInOutContent stockIn={stockIn} stockOut={stockOut} />;
   }
   if (isActionsField(columnKey)) {
@@ -46,37 +46,37 @@ export default function OrdersTableContent({
       />
     );
   }
-  if (isPriceField(columnKey, rowValue)) {
-    return <PriceFieldContent value={rowValue} quantity={quantity} />;
+  if (isPriceField(columnKey, cellValue)) {
+    return <PriceFieldContent value={cellValue} quantity={quantity} />;
   }
 
-  return <span>{rowValue}</span>;
+  return <span>{cellValue}</span>;
 }
 
 function isProfit(
   columnKey: Key,
-  value: OrdersTableRowValue
+  value: OrdersTableCellValue
 ): value is [number, number] {
   return Array.isArray(value) && columnKey === 'profit';
 }
 
 function isAmountPaidDue(
   columnKey: Key,
-  value: OrdersTableRowValue
+  value: OrdersTableCellValue
 ): value is [number, number] {
   return Array.isArray(value) && columnKey === 'amountPaidDue';
 }
 
 function isStockInOut(
   columnKey: Key,
-  value: OrdersTableRowValue
+  value: OrdersTableCellValue
 ): value is [number, number] {
   return Array.isArray(value) && columnKey === 'stockInOut';
 }
 
 function isPriceField(
   columnKey: Key,
-  value: OrdersTableRowValue
+  value: OrdersTableCellValue
 ): value is number {
   return (
     typeof value === 'number' &&

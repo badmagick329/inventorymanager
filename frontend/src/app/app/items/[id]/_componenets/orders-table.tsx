@@ -50,12 +50,12 @@ export default function OrdersTable({
         {tableData.map((row) => (
           <TableRow key={row.id}>
             {(columnKey) => {
-              const rowValue = getKeyValue(row, columnKey);
+              const cellValue = getKeyValue(row, columnKey);
               return (
                 <TableCell>
                   <OrdersTableContent
                     columnKey={columnKey}
-                    rowValue={rowValue}
+                    cellValue={cellValue}
                     rowId={row.id}
                     locationId={locationId}
                     deleteOrder={deleteOrder}
