@@ -92,9 +92,6 @@ export default function CreateSaleForm({
 
   return (
     <>
-      <span className='text-center text-2xl font-semibold'>
-        Enter Sale Details
-      </span>
       <form
         className='flex flex-col gap-4 p-4'
         onSubmit={handleSubmit((data) => submitForm(data))}

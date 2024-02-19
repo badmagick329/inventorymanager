@@ -34,11 +34,8 @@ export default function useOrderFormDefaults({
   const mutation = useMutation({
     mutationFn: fetchDefaults,
     retry: false,
-    onSettled: () => {
-      console.log('settled createOrderDefaultValues');
-    },
+    onSettled: () => {},
     onSuccess: (_, data) => {
-      console.log('successfully created order default values');
       queryClient.setQueryData(['orders', locationId, orderId], data);
     },
     onError: (error) => {
