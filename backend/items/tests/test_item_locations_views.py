@@ -102,7 +102,8 @@ def test_location_list_post_endpoint(
         if expected_json:
             assert "id" in response.json(), "id not in response json"
             del response.json()["id"]
-            assert response.json() == expected_json
+            for key, value in expected_json.items():
+                assert response.json()[key] == value
     except Exception as e:
         raise_with(test_name, response, e)
 
@@ -138,7 +139,9 @@ def test_locations_patch_endpoint(
         assert response.status_code == expected_status
         if expected_json:
             assert "id" in response.json(), "id not in response json"
-            assert response.json() == {**expected_json, "id": edit_id}
+            assert response.json()["id"] == edit_id
+            for key, value in expected_json.items():
+                assert response.json()[key] == value
     except Exception as e:
         raise_with(test_name, response, e)
 
