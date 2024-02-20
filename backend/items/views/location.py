@@ -67,7 +67,7 @@ class ItemLocationsList(APIView):
         serializer = ItemLocationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return APIResponses.ok(serializer.data)
+        return APIResponses.created(serializer.data)
 
     def get(self, request: Request):
         user = request.user

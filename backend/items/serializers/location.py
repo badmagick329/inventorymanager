@@ -68,6 +68,10 @@ class ItemLocationSerializer(serializers.ModelSerializer):
                     ]
                 case _:
                     pass
+        else:
+            raise ValidationErrorWithMessage(
+                {"users": "This field is required."}
+            )
 
         if "name" in data:
             data["name"] = data["name"].strip()
