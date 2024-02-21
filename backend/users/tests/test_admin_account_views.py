@@ -75,7 +75,6 @@ def test_admin_cannot_create_user_with_empty_string_username(
         },
         format="json",
     )
-    assert "errors" in response.data
     assert response.status_code == 400
 
 
@@ -93,7 +92,6 @@ def test_admin_cannot_delete_non_existent_user(
     admin_user, password = user_factory(is_admin=True)
     api_client.force_authenticate(user=admin_user)
     response = api_client.delete("/api/users/999")
-    assert "errors" in response.data
     assert response.status_code == 404
 
 

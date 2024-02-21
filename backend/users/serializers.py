@@ -1,6 +1,6 @@
 from django.db.utils import IntegrityError
 from rest_framework import serializers
-from utils.errors import ErrorHandler
+from utils.errors import ErrorHandler, ValidationErrorWithMessage
 
 from .models import UserAccount
 
@@ -19,6 +19,8 @@ class UserAccountSerializer(serializers.ModelSerializer):
             )
         except IntegrityError as e:
             raise ErrorHandler(e).error
+        except ValueError as e:
+            raise ValidationErrorWithMessage(str(e))
         return user
 
     def to_internal_value(self, data):
