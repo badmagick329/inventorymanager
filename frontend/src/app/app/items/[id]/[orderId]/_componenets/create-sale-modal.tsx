@@ -26,6 +26,7 @@ export default function CreateSaleModal({
         onClose={onClose}
         placement='center'
         hideCloseButton
+        isDismissable={false}
       >
         <CreateSaleForm
           locationId={locationId}

@@ -18,14 +18,20 @@ export default function ActionsContent({
 }: ActionsContentProps) {
   return (
     <div className='flex gap-2'>
-      <Button size='sm' variant='flat' isIconOnly>
+      <Button
+        size='sm'
+        variant='flat'
+        isIconOnly
+        isDisabled={deleteSale.isPending}
+      >
         <Pencil size={ICON_SM} />
       </Button>
       <Button
         size='sm'
         variant='flat'
         isIconOnly
-        onClick={() =>
+        isDisabled={deleteSale.isPending}
+        onPress={() =>
           deleteSale.mutate({
             saleId: rowId,
             locationId,

@@ -1,154 +1,101 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, UseFormSetError } from 'react-hook-form';
 
 import {
   ModalContent,
   ModalFooter,
   Button,
   Spacer,
-  Input,
   Checkbox,
 } from '@nextui-org/react';
 import { useCreateSale } from '@/hooks';
 import axios from 'axios';
 import { useState } from 'react';
+import { SaleFormValues } from '@/types';
+import { Spinner } from '@/components/loaders';
+import SaleVendor from './sale-vendor-input';
+import SaleDate from './sale-date-input';
+import SalePrice from './sale-price-input';
+import SaleQuantity from './sale-quantity-input';
+import SaleAmountPaid from './sale-amount-paid-input';
 
-export type FormValues = {
-  vendor: string;
-  date: string;
-  quantity: number;
-  salePrice: number;
-  amountPaid: number;
-};
+type CreateSaleMutation = ReturnType<typeof useCreateSale>['mutateAsync'];
 
 export default function CreateSaleForm({
   locationId,
   orderId,
   onClose,
+  saleId,
 }: {
   locationId: string;
   orderId: string;
   onClose: () => void;
+  saleId?: string;
 }) {
   const [isSalePricePerItem, setIsSalePricePerItem] = useState(true);
   const [isAmountPaidPerItem, setIsAmountPaidPerItem] = useState(false);
   const defaultValues = {
     vendor: '',
     date: '',
-    quantity: 1,
-    salePrice: 1,
-    amountPaid: 0,
+    quantity: '',
+    salePrice: '',
+    amountPaid: '',
   };
 
-  const { register, handleSubmit, formState, setError } = useForm({
+  const { register, handleSubmit, formState, setError, control } = useForm({
+    // ts-ignore
     defaultValues,
   });
   const createSale = useCreateSale();
 
-  async function submitForm(data: FormValues) {
-    const date = data.date ? data.date : null;
-    const quantity = Number(data.quantity);
-    const salePrice = Number(data.salePrice);
-    const vendorName = data.vendor.trim();
-    const pricePerItem = isSalePricePerItem ? salePrice : salePrice / quantity;
-    const amountPaid = isAmountPaidPerItem
-      ? Number(data.amountPaid) * quantity
-      : Number(data.amountPaid);
-    const sale = {
-      vendor: vendorName,
-      date,
-      quantity,
-      pricePerItem,
-      amountPaid,
-    };
-    try {
-      await createSale.mutateAsync({ locationId, orderId, sale });
-      onClose();
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const errorData = error.response?.data;
-        if (errorData) {
-          for (const [field, message] of Object.entries(errorData)) {
-            // @ts-ignore
-            setError(mapErrorKeyToField(field), { type: 'server', message });
-            return;
-          }
-        }
-      }
-      setError('vendor', { type: 'server', message: 'An error occurred' });
-    }
-  }
-
-  function mapErrorKeyToField(key: string) {
-    const errorMap = new Map([
-      ['vendor', 'vendor'],
-      ['date', 'date'],
-      ['quantity', 'quantity'],
-      ['price_per_item', 'salePrice'],
-      ['debt', 'amountPaid'],
-    ]);
-    return errorMap.get(key) || 'vendor';
+  if (formState.isLoading) {
+    return <Spinner />;
   }
 
   return (
     <>
       <form
         className='flex flex-col gap-4 p-4'
-        onSubmit={handleSubmit((data) => submitForm(data))}
+        onSubmit={handleSubmit((data) =>
+          submitForm(
+            data,
+            isSalePricePerItem,
+            isAmountPaidPerItem,
+            locationId,
+            orderId,
+            createSale.mutateAsync,
+            onClose,
+            setError
+          )
+        )}
       >
         <ModalContent>
           {(onClose) => (
             <div className='flex flex-col gap-4 px-4'>
               <Spacer y={2} />
               <span className='text-center text-2xl font-semibold'>
-                Add Sale
+                {orderId ? 'Edit Sale' : 'Add Sale'}
               </span>
-              <span className='text-danger-500'>
-                {formState.errors.vendor?.message}
-              </span>
-              <Input
-                type='text'
-                variant='flat'
-                autoComplete='off'
-                label='Vendor'
-                {...register('vendor', { required: 'Vendor name is required' })}
+              <SaleVendor
+                register={register}
+                formState={formState}
+                control={control}
               />
-              <span className='text-danger-500'>
-                {formState.errors.date?.message}
-              </span>
-              <Input
-                type='date'
-                variant='flat'
-                autoComplete='off'
-                placeholder=''
-                {...register('date')}
+              <SaleDate
+                register={register}
+                formState={formState}
+                control={control}
               />
-              <span className='text-danger-500'>
-                {formState.errors.quantity?.message}
-              </span>
-              <Input
-                type='number'
-                variant='flat'
-                autoComplete='off'
-                label='Quantity'
-                {...register('quantity', {
-                  required: 'Quantity is required',
-                  min: 1,
-                })}
+              <SaleQuantity
+                register={register}
+                formState={formState}
+                control={control}
               />
               <div className='flex flex-col gap-2'>
-                <span className='text-danger-500'>
-                  {formState.errors.salePrice?.message}
-                </span>
-                <Input
-                  type='number'
-                  variant='flat'
-                  autoComplete='off'
-                  label='Sale Price'
-                  {...register('salePrice', {
-                    required: 'Sale price is required',
-                    min: 1,
-                  })}
+                <SalePrice
+                  control={control}
+                  register={register}
+                  formState={formState}
                 />
                 <Checkbox
                   defaultSelected={isSalePricePerItem}
@@ -159,18 +106,10 @@ export default function CreateSaleForm({
                 </Checkbox>
               </div>
               <div className='flex flex-col gap-2'>
-                <span className='text-danger-500'>
-                  {formState.errors.amountPaid?.message}
-                </span>
-                <Input
-                  type='number'
-                  variant='flat'
-                  autoComplete='off'
-                  label='Amount Paid'
-                  {...register('amountPaid', {
-                    required: 'Amount Paid is required',
-                    min: 0,
-                  })}
+                <SaleAmountPaid
+                  register={register}
+                  formState={formState}
+                  control={control}
                 />
                 <Checkbox
                   defaultSelected={isAmountPaidPerItem}
@@ -194,4 +133,58 @@ export default function CreateSaleForm({
       </form>
     </>
   );
+}
+
+async function submitForm(
+  data: SaleFormValues,
+  isSalePricePerItem: boolean,
+  isAmountPaidPerItem: boolean,
+  locationId: string,
+  orderId: string,
+  mutateAsync: CreateSaleMutation,
+  onClose: () => void,
+  setError: UseFormSetError<SaleFormValues>
+) {
+  const date = data.date ? data.date : null;
+  const quantity = Number(data.quantity);
+  const salePrice = Number(data.salePrice);
+  const vendorName = data.vendor.trim();
+  const pricePerItem = isSalePricePerItem ? salePrice : salePrice / quantity;
+  const amountPaid = isAmountPaidPerItem
+    ? Number(data.amountPaid) * quantity
+    : Number(data.amountPaid);
+  const sale = {
+    vendor: vendorName,
+    date,
+    quantity,
+    pricePerItem,
+    amountPaid,
+  };
+  try {
+    await mutateAsync({ locationId, orderId, sale });
+    onClose();
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const errorData = error.response?.data;
+      if (errorData) {
+        for (const [field, message] of Object.entries(errorData)) {
+          // @ts-ignore
+          setError(mapErrorKeyToField(field), { type: 'server', message });
+          return;
+        }
+      }
+    }
+    setError('vendor', { type: 'server', message: 'An error occurred' });
+  }
+}
+
+function mapErrorKeyToField(key: string) {
+  const errorMap = new Map([
+    ['vendor', 'vendor'],
+    ['date', 'date'],
+    ['quantity', 'quantity'],
+    ['price_per_item', 'salePrice'],
+    ['debt', 'amountPaid'],
+  ]);
+  return errorMap.get(key) || 'vendor';
 }

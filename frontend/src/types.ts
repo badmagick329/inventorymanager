@@ -106,6 +106,14 @@ export type OrderFormValues = {
   salePrice: string;
 };
 
+export type SaleFormValues = {
+  vendor: string;
+  date: string;
+  quantity: string;
+  salePrice: string;
+  amountPaid: string;
+};
+
 export type OrdersTableRow = ReturnType<typeof createOrdersTableData>[0];
 
 export type DeleteOrder = ReturnType<typeof useDeleteOrder>;

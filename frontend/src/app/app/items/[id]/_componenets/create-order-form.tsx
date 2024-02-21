@@ -13,6 +13,8 @@ import OrderSalePriceInput from './order-sale-price-input';
 import CreateButton from '@/components/create-button';
 import CancelButton from '@/components/cancel-button';
 
+type CreateOrderMutation = ReturnType<typeof useCreateOrder>['mutateAsync'];
+
 export default function CreateOrderForm({
   locationId,
   orderId,
@@ -40,36 +42,21 @@ export default function CreateOrderForm({
     return <Spinner />;
   }
 
-  function submitForm(data: OrderFormValues) {
-    const quantity = parseInt(data.quantity);
-    const cost = parseInt(data.cost);
-    const salePrice = parseInt(data.salePrice);
-    const date = data.date ? data.date : null;
-    const order = {
-      name: data.name,
-      date,
-      quantity,
-      pricePerItem: isCostPerItem ? cost : cost / quantity,
-      currentSalePrice: isSalePricePerItem ? salePrice : salePrice / quantity,
-    };
-    const response = createOrder.mutateAsync({
-      locationId,
-      orderId,
-      order,
-    });
-    try {
-      console.log(response);
-      onClose();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   return (
     <>
       <form
         className='flex flex-col gap-4 p-4'
-        onSubmit={handleSubmit((data) => submitForm(data))}
+        onSubmit={handleSubmit((data) =>
+          submitForm(
+            data,
+            isCostPerItem,
+            isSalePricePerItem,
+            locationId,
+            createOrder.mutateAsync,
+            onClose,
+            orderId
+          )
+        )}
       >
         <ModalContent>
           {(onClose) => (
@@ -131,4 +118,37 @@ export default function CreateOrderForm({
       </form>
     </>
   );
+}
+
+function submitForm(
+  data: OrderFormValues,
+  isCostPerItem: boolean,
+  isSalePricePerItem: boolean,
+  locationId: string,
+  mutateAsync: CreateOrderMutation,
+  onClose: () => void,
+  orderId?: string
+) {
+  const quantity = parseInt(data.quantity);
+  const cost = parseInt(data.cost);
+  const salePrice = parseInt(data.salePrice);
+  const date = data.date ? data.date : null;
+  const order = {
+    name: data.name,
+    date,
+    quantity,
+    pricePerItem: isCostPerItem ? cost : cost / quantity,
+    currentSalePrice: isSalePricePerItem ? salePrice : salePrice / quantity,
+  };
+  const response = mutateAsync({
+    locationId,
+    orderId,
+    order,
+  });
+  try {
+    console.log(response);
+    onClose();
+  } catch (error) {
+    console.log(error);
+  }
 }
