@@ -35,8 +35,9 @@ export default function useOrderFormDefaults({
     mutationFn: fetchDefaults,
     retry: false,
     onSettled: () => {},
-    onSuccess: (_, data) => {
-      queryClient.setQueryData(['orders', locationId, orderId], data);
+    onSuccess: (data) => {
+      // console.log(`success data`, data);
+      // queryClient.setQueryData(['orders', locationId, orderId], data);
     },
     onError: (error) => {
       console.log(`error during order defaults. ${error}`);

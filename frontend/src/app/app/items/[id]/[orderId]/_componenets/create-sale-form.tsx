@@ -18,6 +18,7 @@ import SaleDate from './sale-date-input';
 import SalePrice from './sale-price-input';
 import SaleQuantity from './sale-quantity-input';
 import SaleAmountPaid from './sale-amount-paid-input';
+import useSaleFormDefaults from '@/hooks/useSaleFormDefaults';
 
 type CreateSaleMutation = ReturnType<typeof useCreateSale>['mutateAsync'];
 
@@ -34,17 +35,15 @@ export default function CreateSaleForm({
 }) {
   const [isSalePricePerItem, setIsSalePricePerItem] = useState(true);
   const [isAmountPaidPerItem, setIsAmountPaidPerItem] = useState(false);
-  const defaultValues = {
-    vendor: '',
-    date: '',
-    quantity: '',
-    salePrice: '',
-    amountPaid: '',
-  };
+
+  const fetchDefaults = useSaleFormDefaults({
+    orderId,
+    saleId,
+  });
 
   const { register, handleSubmit, formState, setError, control } = useForm({
-    // ts-ignore
-    defaultValues,
+    // @ts-ignore
+    defaultValues: fetchDefaults.mutateAsync,
   });
   const createSale = useCreateSale();
 
