@@ -42,3 +42,28 @@ export async function DELETE(
     return createErrorResponse(error);
   }
 }
+
+export async function GET(
+  req: Request,
+  { params }: { params: { saleId: string } }
+) {
+  console.log(
+    `GET /sales/details/[saleId] called with saleId: ${params.saleId}`
+  );
+  const url = `${BASE_URL}${API_SALE_DETAIL}/${params.saleId}`;
+  console.log(`Constructed URL: ${url}`);
+  const { Authorization, ErrorResponse } = createAuthHeader();
+  if (ErrorResponse) {
+    return ErrorResponse;
+  }
+  const headers = { Authorization };
+  try {
+    const response = await axios.get(url, { headers });
+    const data = response.data;
+    return new NextResponse(JSON.stringify(data), {
+      status: 200,
+    });
+  } catch (error) {
+    return createErrorResponse(error);
+  }
+}

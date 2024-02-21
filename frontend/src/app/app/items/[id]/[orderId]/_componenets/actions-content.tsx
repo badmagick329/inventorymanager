@@ -1,7 +1,8 @@
 import { ICON_SM } from '@/consts';
 import { Button } from '@nextui-org/react';
 import { DeleteSale } from '@/types';
-import { Pencil, Trash } from 'lucide-react';
+import { Trash } from 'lucide-react';
+import EditSaleModal from './edit-sale-modal';
 
 type ActionsContentProps = {
   rowId: number;
@@ -18,14 +19,12 @@ export default function ActionsContent({
 }: ActionsContentProps) {
   return (
     <div className='flex gap-2'>
-      <Button
-        size='sm'
-        variant='flat'
-        isIconOnly
+      <EditSaleModal
+        locationId={locationId}
+        orderId={orderId}
+        saleId={rowId.toString()}
         isDisabled={deleteSale.isPending}
-      >
-        <Pencil size={ICON_SM} />
-      </Button>
+      />
       <Button
         size='sm'
         variant='flat'

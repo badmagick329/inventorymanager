@@ -1,4 +1,4 @@
-import { isLocationArray, isOrderResponseArray } from '@/predicates';
+import { isLocationArray, isOrderResponseArray, isSaleResponseArray } from '@/predicates';
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
 
 export async function getOrderById(locationId: number, orderId: number) {
@@ -51,6 +51,23 @@ export function getOrderByOrderId(
   for (const order of orders) {
     if (order.id === orderIdNumber) {
       return order;
+    }
+  }
+}
+
+export function getSaleBySaleId(
+  saleId: string,
+  orderId: string,
+  queryClient: QueryClient
+) {
+  let sales = queryClient.getQueryData(['sales', orderId]);
+  const saleIdNumber = Number(saleId);
+  if (!isSaleResponseArray(sales)) {
+    return null;
+  }
+  for (const sale of sales) {
+    if (sale.id === saleIdNumber) {
+      return sale;
     }
   }
 }
