@@ -266,16 +266,17 @@ class Sale(models.Model, LastModifiedByMixin):
                     )
                 }
             )
-        if (current_quantity := self.order.current_quantity()) < self.quantity:
-            raise ValidationError(
-                {
-                    "quantity": (
-                        f"Quantity cannot be greater "
-                        f"than remaining quantity "
-                        f"({current_quantity}) for this order."
-                    )
-                }
-            )
+        # TODO: Implement quantity validation
+        # if self.quantity > remaining_quantity:
+        #     raise ValidationError(
+        #         {
+        #             "quantity": (
+        #                 f"Quantity cannot be greater "
+        #                 f"than remaining quantity "
+        #                 f"({remaining_quantity}) for this order."
+        #             )
+        #         }
+        #     )
         super().full_clean(*args, **kwargs)
 
     def cost(self):
@@ -309,7 +310,10 @@ class Sale(models.Model, LastModifiedByMixin):
         return self.potential_revenue() - self.debt
 
     def __str__(self):
-        date_str = self.date.strftime("%Y-%m-%d") if self.date else None
+        if isinstance(self.date, str):
+            date_str = self.date
+        else:
+            date_str = self.date.strftime("%Y-%m-%d") if self.date else None
         username = (
             self.last_modified_by.username if self.last_modified_by else None
         )

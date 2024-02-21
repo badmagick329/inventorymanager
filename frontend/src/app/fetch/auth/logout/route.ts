@@ -30,7 +30,6 @@ export async function POST(req: Request) {
         headers,
       }
     );
-    console.log(`logout ${response.status}`);
     return new NextResponse(JSON.stringify({ message: 'success' }), {
       status: 200,
       headers: responseHeaders,
