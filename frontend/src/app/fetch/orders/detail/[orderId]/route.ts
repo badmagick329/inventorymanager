@@ -32,7 +32,6 @@ export async function DELETE(
   req: Request,
   { params }: { params: { orderId: string } }
 ) {
-  console.log('DELETE /orders/details/[orderId] called');
   const url = `${BASE_URL}${API_ORDER_DETAIL}`;
   const { Authorization, ErrorResponse } = createAuthHeader();
   if (ErrorResponse) {
@@ -53,11 +52,7 @@ export async function GET(
   req: Request,
   { params }: { params: { orderId: string } }
 ) {
-  console.log(
-    `GET /orders/details/[orderId] called with orderId: ${params.orderId}`
-  );
   const url = `${BASE_URL}${API_ORDER_DETAIL}/${params.orderId}`;
-  console.log(`Constructed URL: ${url}`);
   const { Authorization, ErrorResponse } = createAuthHeader();
   if (ErrorResponse) {
     return ErrorResponse;

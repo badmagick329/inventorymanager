@@ -62,6 +62,7 @@ export default function CreateSaleForm({
             isAmountPaidPerItem,
             locationId,
             orderId,
+            saleId,
             createSale.mutateAsync,
             onClose,
             setError
@@ -140,6 +141,7 @@ async function submitForm(
   isAmountPaidPerItem: boolean,
   locationId: string,
   orderId: string,
+  saleId: string | undefined,
   mutateAsync: CreateSaleMutation,
   onClose: () => void,
   setError: UseFormSetError<SaleFormValues>
@@ -160,7 +162,7 @@ async function submitForm(
     amountPaid,
   };
   try {
-    await mutateAsync({ locationId, orderId, sale });
+    await mutateAsync({ locationId, orderId, saleId, sale });
     onClose();
   } catch (error) {
     if (axios.isAxiosError(error)) {

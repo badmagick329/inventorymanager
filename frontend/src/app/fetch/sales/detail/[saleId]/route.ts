@@ -16,7 +16,10 @@ export async function PATCH(
   }
   const headers = { Authorization };
   try {
-    const response = await axios.patch(`${url}/${params.saleId}`, { headers });
+    const body = await req.json();
+    const response = await axios.patch(`${url}/${params.saleId}`, body, {
+      headers,
+    });
     return new NextResponse(JSON.stringify(response.data), {
       status: 200,
     });
@@ -47,11 +50,7 @@ export async function GET(
   req: Request,
   { params }: { params: { saleId: string } }
 ) {
-  console.log(
-    `GET /sales/details/[saleId] called with saleId: ${params.saleId}`
-  );
   const url = `${BASE_URL}${API_SALE_DETAIL}/${params.saleId}`;
-  console.log(`Constructed URL: ${url}`);
   const { Authorization, ErrorResponse } = createAuthHeader();
   if (ErrorResponse) {
     return ErrorResponse;
