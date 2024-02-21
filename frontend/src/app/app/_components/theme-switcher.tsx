@@ -35,10 +35,10 @@ export default function ThemeSwitcher() {
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label='Switch Theme Actions'>
-        <DropdownItem key='light' onClick={() => setTheme('light')}>
+        <DropdownItem key='light' onPress={() => setTheme('light')}>
           Light
         </DropdownItem>
-        <DropdownItem key='dark' onClick={() => setTheme('dark')}>
+        <DropdownItem key='dark' onPress={() => setTheme('dark')}>
           Dark
         </DropdownItem>
       </DropdownMenu>

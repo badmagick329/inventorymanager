@@ -21,6 +21,7 @@ export default function CreateOrderModal({
         onClose={onClose}
         placement='center'
         hideCloseButton
+        isDismissable={false}
       >
         <CreateOrderForm locationId={locationId} onClose={onClose} />
       </Modal>

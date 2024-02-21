@@ -18,7 +18,7 @@ export default function NewFormCover({
       <Button
         className='h-full w-full rounded-none'
         variant='light'
-        onClick={() => setShowForm(true)}
+        onPress={() => setShowForm(true)}
       >
         <CardBody className='flex w-full items-center justify-center gap-2 text-default-400'>
           <Plus className='text-success-400' size={ICON_LG} />
