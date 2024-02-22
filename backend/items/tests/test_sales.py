@@ -114,9 +114,10 @@ def test_order_last_modified_is_updated_on_sale_update(
     order.refresh_from_db()
     assert order.last_modified_by == user2
 
+
 def test_order_last_modified_is_updated_on_sale_deletion(
     sale_factory, order_factory, vendor_factory, user_factory
-    ):
+):
     order = order_factory("Test Order", "Test Item Location", "Test User")
     vendor, _ = vendor_factory("Test Vendor", order.location)
     sale = sale_factory(order, vendor, user=order.last_modified_by)
@@ -126,9 +127,10 @@ def test_order_last_modified_is_updated_on_sale_deletion(
     order.refresh_from_db()
     assert order.last_modified_by == user2
 
+
 def test_order_last_modified_is_updated_on_sale_creation(
     sale_factory, order_factory, vendor_factory, user_factory
-    ):
+):
     order = order_factory("Test Order", "Test Item Location", "Test User")
     vendor, _ = vendor_factory("Test Vendor", order.location)
     user2, _ = user_factory("Test User 2")
@@ -136,9 +138,10 @@ def test_order_last_modified_is_updated_on_sale_creation(
     order.refresh_from_db()
     assert order.last_modified_by == user2
 
+
 def test_order_last_modified_is_not_updated_on_failed_sale_update(
     sale_factory, order_factory, vendor_factory, user_factory
-    ):
+):
     order = order_factory("Test Order", "Test Item Location", "Test User")
     vendor, _ = vendor_factory("Test Vendor", order.location)
     sale = sale_factory(order, vendor, user=order.last_modified_by)
@@ -149,3 +152,15 @@ def test_order_last_modified_is_not_updated_on_failed_sale_update(
         sale.save(user=user2)
     order.refresh_from_db()
     assert order.last_modified_by == order.last_modified_by
+
+
+def test_order_current_sale_price_is_updated_on_sale_price_per_item_update(
+    sale_factory, order_factory, vendor_factory, user_factory
+):
+    order = order_factory("Test Order", "Test Item Location", "Test User")
+    vendor, _ = vendor_factory("Test Vendor", order.location)
+    sale = sale_factory(order, vendor, user=order.last_modified_by)
+    sale.price_per_item = order.current_sale_price + 10
+    sale.save(user=order.last_modified_by)
+    order.refresh_from_db()
+    assert order.current_sale_price == sale.price_per_item

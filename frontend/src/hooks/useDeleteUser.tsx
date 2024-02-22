@@ -22,6 +22,7 @@ export default function useDeleteUser() {
     },
     onError: (error) => {
       console.log(`error during delete user. ${error}`);
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
   return mutation;

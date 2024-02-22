@@ -2,33 +2,42 @@ import { isSaleResponse } from '@/predicates';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { getSaleBySaleId } from '@/utils/query-client-reader';
 import { NEXT_SALE_DETAIL } from '@/consts/urls';
+import { getOrderByOrderId } from '@/utils/query-client-reader';
 import axios from 'axios';
+import useOrders from './useOrders';
 
 type useSaleFormDefaultsProps = {
+  locationId: string;
   orderId: string;
   saleId?: string;
 };
 
 export default function useSaleFormDefaults({
+  locationId,
   orderId,
   saleId,
 }: useSaleFormDefaultsProps) {
   const queryClient = useQueryClient();
+  useOrders(locationId);
+  const order = getOrderByOrderId(orderId, locationId, queryClient);
+  let salePrice = '';
+  if (order) {
+    salePrice = order.currentSalePrice.toString();
+  }
 
   async function fetchDefaults() {
-    console.log(`fetchDefaults saleId: ${saleId}`);
     if (!saleId) {
-      return createSaleDefaultValues();
+      return createSaleDefaultValues(salePrice);
     }
     const sale = getSaleBySaleId(saleId, orderId, queryClient);
     if (sale) {
-      return createSaleDefaultValues(sale);
+      return createSaleDefaultValues(salePrice, sale);
     }
     try {
       const response = await axios.get(`${NEXT_SALE_DETAIL}/${saleId}`);
-      return createSaleDefaultValues(response.data);
+      return createSaleDefaultValues(salePrice, response.data);
     } catch (error) {
-      return createSaleDefaultValues();
+      return createSaleDefaultValues(salePrice);
     }
   }
 
@@ -47,13 +56,13 @@ export default function useSaleFormDefaults({
   return mutation;
 }
 
-export function createSaleDefaultValues(sale?: any) {
+export function createSaleDefaultValues(salePrice: string, sale?: any) {
   if (!isSaleResponse(sale)) {
     return {
       vendor: '',
       date: '',
       quantity: '',
-      salePrice: '',
+      salePrice,
       amountPaid: '',
     };
   }

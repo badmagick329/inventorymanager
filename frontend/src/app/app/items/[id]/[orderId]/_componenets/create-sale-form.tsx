@@ -37,6 +37,7 @@ export default function CreateSaleForm({
   const [isAmountPaidPerItem, setIsAmountPaidPerItem] = useState(false);
 
   const fetchDefaults = useSaleFormDefaults({
+    locationId,
     orderId,
     saleId,
   });
