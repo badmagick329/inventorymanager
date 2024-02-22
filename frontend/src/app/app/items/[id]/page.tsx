@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/loaders';
-import { useOrders } from '@/hooks';
+import { useLocations, useOrders } from '@/hooks';
 import { APP_LOGIN, APP_LOCATIONS } from '@/consts/urls';
 import { usePathname } from 'next/navigation';
 import { isOrderResponseArray } from '@/predicates';
@@ -11,11 +11,16 @@ import CreateOrderModal from './_componenets/create-order-modal';
 import { useDeleteOrder } from '@/hooks';
 import OptionalErrorElement from './_componenets/optional-error-element';
 import OrdersTable from './_componenets/orders-table';
+import LocationInformation from './_componenets/location-information';
+import { useState } from 'react';
+import { Location } from '@/types';
 
 export default function Orders() {
   const locationId = usePathname().split('/')[3];
   const router = useRouter();
   const { error, isError, isLoading, data } = useOrders(locationId);
+  const { data: locations } = useLocations();
+  const [detailsHidden, setDetailsHidden] = useState(true);
   const deleteOrder = useDeleteOrder();
   if (isError) {
     const comp = <OptionalErrorElement errorMessage={error.message} />;
@@ -27,6 +32,9 @@ export default function Orders() {
   }
 
   const orders = data;
+  const location = locations?.find(
+    (loc: Location) => loc.id.toString() === locationId
+  );
   if (isLoading || !orders) {
     return <Spinner />;
   }
@@ -37,6 +45,18 @@ export default function Orders() {
   return (
     <div className='flex w-full flex-col justify-center p-4'>
       <Spacer y={2} />
+      <span className='text-2xl font-semibold text-center'>
+        {location?.name}
+      </span>
+      <Spacer y={2} />
+      <div className='flex justify-center gap-4'>
+        <LocationInformation
+          detailsHidden={detailsHidden}
+          orders={orders}
+          location={location}
+        />
+      </div>
+      <Spacer y={4} />
       <div className='flex justify-center gap-4'>
         <CreateOrderModal locationId={locationId} />
         <Button
@@ -47,6 +67,14 @@ export default function Orders() {
           color='default'
         >
           Back to Locations
+        </Button>
+        <Button
+          variant='flat'
+          size='md'
+          color='default'
+          onPress={() => setDetailsHidden(!detailsHidden)}
+        >
+          {detailsHidden ? 'Show More' : 'Hide'}
         </Button>
       </div>
       <Spacer y={4} />
