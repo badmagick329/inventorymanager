@@ -3,6 +3,8 @@ import { Modal, Button, useDisclosure } from '@nextui-org/react';
 import CreateSaleForm from './create-sale-form';
 import { Pencil } from 'lucide-react';
 import { ICON_SM } from '@/consts';
+import { Tooltip } from '@nextui-org/react';
+import { TOOLTIP_DELAY } from '@/consts';
 
 export default function EditSaleModal({
   locationId,
@@ -20,15 +22,17 @@ export default function EditSaleModal({
 
   return (
     <>
-      <Button
-        onPress={onOpen}
-        size='sm'
-        variant='flat'
-        isIconOnly
-        isDisabled={isDisabled}
-      >
-        <Pencil size={ICON_SM} />
-      </Button>
+      <Tooltip content='Edit' color='default' delay={TOOLTIP_DELAY}>
+        <Button
+          onPress={onOpen}
+          size='sm'
+          variant='flat'
+          isIconOnly
+          isDisabled={isDisabled}
+        >
+          <Pencil size={ICON_SM} />
+        </Button>
+      </Tooltip>
       <Modal
         className='flex w-full'
         size={size}

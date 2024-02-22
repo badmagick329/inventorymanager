@@ -5,6 +5,8 @@ import { ICON_SM } from '@/consts';
 import { List, Trash } from 'lucide-react';
 import { Button, Link } from '@nextui-org/react';
 import { APP_ITEMS } from '@/consts/urls';
+import { Tooltip } from '@nextui-org/react';
+import { TOOLTIP_DELAY } from '@/consts';
 
 type ActionsContentProps = {
   rowId: number;
@@ -25,25 +27,29 @@ export default function ActionsContent({
           orderId={rowId.toString()}
           isDisabled={deleteOrder.isPending}
         />
-        <Button
-          size='sm'
-          variant='flat'
-          isIconOnly
-          onPress={() => deleteOrder.mutate(rowId)}
-          isDisabled={deleteOrder.isPending}
-        >
-          <Trash size={ICON_SM} />
-        </Button>
-        <Button
-          as={Link}
-          href={`${APP_ITEMS}/${locationId}/${rowId}`}
-          size='sm'
-          variant='flat'
-          isIconOnly
-          isDisabled={deleteOrder.isPending}
-        >
-          <List size={ICON_SM} />
-        </Button>
+        <Tooltip content='Delete' color='default' delay={TOOLTIP_DELAY}>
+          <Button
+            size='sm'
+            variant='flat'
+            isIconOnly
+            onPress={() => deleteOrder.mutate(rowId)}
+            isDisabled={deleteOrder.isPending}
+          >
+            <Trash size={ICON_SM} />
+          </Button>
+        </Tooltip>
+        <Tooltip content='View Sales' color='default' delay={TOOLTIP_DELAY}>
+          <Button
+            as={Link}
+            href={`${APP_ITEMS}/${locationId}/${rowId}`}
+            size='sm'
+            variant='flat'
+            isIconOnly
+            isDisabled={deleteOrder.isPending}
+          >
+            <List size={ICON_SM} />
+          </Button>
+        </Tooltip>
       </div>
     </>
   );

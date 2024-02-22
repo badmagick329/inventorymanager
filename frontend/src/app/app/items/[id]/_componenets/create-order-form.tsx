@@ -2,7 +2,13 @@ import { useForm } from 'react-hook-form';
 import { useCreateOrder, useOrderFormDefaults } from '@/hooks';
 import { useState } from 'react';
 
-import { ModalContent, ModalFooter, Spacer, Checkbox } from '@nextui-org/react';
+import {
+  ModalContent,
+  ModalFooter,
+  Spacer,
+  Checkbox,
+  Button,
+} from '@nextui-org/react';
 import { Spinner } from '@/components/loaders';
 import { OrderFormValues } from '@/types';
 import OrderNameInput from './order-name-input';
@@ -10,8 +16,6 @@ import OrderDateInput from './order-date-input';
 import OrderCostInput from './order-cost-input';
 import OrderQuantityInput from './order-quantity-input';
 import OrderSalePriceInput from './order-sale-price-input';
-import CreateButton from '@/components/create-button';
-import CancelButton from '@/components/cancel-button';
 
 type CreateOrderMutation = ReturnType<typeof useCreateOrder>['mutateAsync'];
 
@@ -109,8 +113,16 @@ export default function CreateOrderForm({
                 </Checkbox>
               </div>
               <ModalFooter>
-                <CancelButton onCancel={onClose} />
-                <CreateButton formState={formState} />
+                <Button color='danger' variant='light' onPress={onClose}>
+                  Cancel
+                </Button>
+                <Button
+                  type='submit'
+                  color='primary'
+                  isLoading={formState.isSubmitting}
+                >
+                  {orderId ? 'Update' : 'Create'}
+                </Button>
               </ModalFooter>
             </div>
           )}

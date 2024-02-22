@@ -123,8 +123,12 @@ export default function CreateSaleForm({
                 <Button color='danger' variant='light' onPress={onClose}>
                   Cancel
                 </Button>
-                <Button type='submit' color='primary'>
-                  Create
+                <Button
+                  type='submit'
+                  color='primary'
+                  isLoading={formState.isSubmitting}
+                >
+                  {orderId ? 'Update' : 'Create'}
                 </Button>
               </ModalFooter>
             </div>

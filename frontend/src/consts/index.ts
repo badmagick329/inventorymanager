@@ -3,3 +3,4 @@ export const TOKEN_KEY = 'auth-token';
 export const ICON_SM = 16;
 export const ICON_MD = 24;
 export const ICON_LG = 48;
+export const TOOLTIP_DELAY = 500;
