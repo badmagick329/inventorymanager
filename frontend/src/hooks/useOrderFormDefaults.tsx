@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { getOrderByOrderId } from '@/utils/query-client-reader';
 import { NEXT_ORDER_DETAIL } from '@/consts/urls';
 import axios from 'axios';
+import useOrders from './useOrders';
 
 type useOrderFormDefaultsProps = {
   locationId: string;
@@ -14,6 +15,7 @@ export default function useOrderFormDefaults({
   orderId,
 }: useOrderFormDefaultsProps) {
   const queryClient = useQueryClient();
+  useOrders(locationId);
 
   async function fetchDefaults() {
     if (!orderId) {

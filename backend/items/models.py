@@ -1,9 +1,10 @@
+from datetime import datetime
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.functions import Lower
 from items.mixins import LastModifiedByMixin
 from simple_history.models import HistoricalRecords
-from datetime import datetime
 
 
 class ItemLocation(models.Model):
@@ -256,6 +257,7 @@ class Sale(models.Model, LastModifiedByMixin):
         super().save(*args, **kwargs)
         self.order.last_modified = self.last_modified
         self.order.last_modified_by = self.last_modified_by
+        self.order.current_sale_price = self.price_per_item
         self.order.save()
 
     def delete(self, *args, **kwargs):

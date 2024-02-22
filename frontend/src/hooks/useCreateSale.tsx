@@ -23,7 +23,7 @@ export default function useCreateSale() {
         });
       }
       queryClient.invalidateQueries({
-        queryKey: ['orders', locationId, orderId],
+        queryKey: ['orders', locationId],
       });
     },
     onError: (error) => {

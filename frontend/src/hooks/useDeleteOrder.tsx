@@ -24,6 +24,7 @@ export default function useDeleteOrder() {
     },
     onError: (error) => {
       console.log(`error during delete order. ${error}`);
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
     },
   });
   return mutation;

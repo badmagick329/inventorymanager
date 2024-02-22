@@ -11,6 +11,7 @@ export default function useDeleteSale() {
     retry: false,
     onSettled: () => {},
     onSuccess: (_, mutationVars) => {
+      console.log('successfully deleted sale');
       const { locationId, orderId } = mutationVars;
       const previousData = queryClient.getQueryData(['sales', orderId]);
       if (!isSaleResponseArray(previousData)) {
@@ -29,8 +30,13 @@ export default function useDeleteSale() {
         queryKey: ['orders', locationId, orderId],
       });
     },
-    onError: (error) => {
+    onError: (error, mutationVars) => {
       console.log(`error during delete sale. ${error}`);
+      const { locationId, orderId } = mutationVars;
+      queryClient.invalidateQueries({ queryKey: ['sales', orderId] });
+      queryClient.invalidateQueries({
+        queryKey: ['orders', locationId, orderId],
+      });
     },
   });
   return mutation;
