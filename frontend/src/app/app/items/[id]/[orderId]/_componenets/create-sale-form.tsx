@@ -41,7 +41,15 @@ export default function CreateSaleForm({
     saleId,
   });
 
-  const { register, handleSubmit, formState, setError, control } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState,
+    setError,
+    control,
+    setValue,
+    getValues,
+  } = useForm({
     // @ts-ignore
     defaultValues: fetchDefaults.mutateAsync,
   });
@@ -85,6 +93,8 @@ export default function CreateSaleForm({
                 register={register}
                 formState={formState}
                 control={control}
+                setValue={setValue}
+                getValues={getValues}
               />
               <SaleQuantity
                 register={register}
@@ -128,7 +138,7 @@ export default function CreateSaleForm({
                   color='primary'
                   isLoading={formState.isSubmitting}
                 >
-                  {orderId ? 'Update' : 'Create'}
+                  {saleId ? 'Update' : 'Create'}
                 </Button>
               </ModalFooter>
             </div>
