@@ -36,7 +36,7 @@ export default function CreateOrderForm({
     orderId,
   });
 
-  const { register, handleSubmit, formState, control } = useForm({
+  const { register, handleSubmit, formState, control,setValue,getValues } = useForm({
     // @ts-ignore
     defaultValues: fetchDefaults.mutateAsync,
   });
@@ -78,6 +78,8 @@ export default function CreateOrderForm({
                 control={control}
                 register={register}
                 formState={formState}
+                setValue={setValue}
+                getValues={getValues}
               />
               <OrderQuantityInput
                 control={control}
