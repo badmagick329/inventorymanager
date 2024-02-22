@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.functions import Lower
 from items.mixins import LastModifiedByMixin
 from simple_history.models import HistoricalRecords
+from datetime import datetime
 
 
 class ItemLocation(models.Model):
@@ -253,6 +254,16 @@ class Sale(models.Model, LastModifiedByMixin):
         kwargs = super().set_last_modified_by(**kwargs)
         self.full_clean()
         super().save(*args, **kwargs)
+        self.order.last_modified = self.last_modified
+        self.order.last_modified_by = self.last_modified_by
+        self.order.save()
+
+    def delete(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+        self.order.last_modified = datetime.utcnow()
+        self.order.last_modified_by = user
+        self.order.save()
+        return super().delete(*args, **kwargs)
 
     def full_clean(self, *args, **kwargs):
         if self.debt is None:

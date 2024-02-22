@@ -46,7 +46,7 @@ class SaleDetail(APIView):
         sale = get_object_or_404(Sale, id=sale_id)
         if not sale.order.is_visible_to(user):
             return APIResponses.forbidden_order()
-        sale.delete()
+        sale.delete(user=user)
         return APIResponses.deleted()
 
 
