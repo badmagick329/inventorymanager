@@ -99,3 +99,53 @@ def test_multiple_vendors_can_create_sales_on_same_order(
     assert Sale.objects.count() == 2
     assert sale1.order == order
     assert sale2.order == order
+
+
+def test_order_last_modified_is_updated_on_sale_update(
+    sale_factory, order_factory, vendor_factory, user_factory
+):
+    order = order_factory("Test Order", "Test Item Location", "Test User")
+    vendor, _ = vendor_factory("Test Vendor", order.location)
+    sale = sale_factory(order, vendor, user=order.last_modified_by)
+    user2, _ = user_factory("Test User 2")
+    assert sale.last_modified_by == order.last_modified_by
+    sale.debt = 0
+    sale.save(user=user2)
+    order.refresh_from_db()
+    assert order.last_modified_by == user2
+
+def test_order_last_modified_is_updated_on_sale_deletion(
+    sale_factory, order_factory, vendor_factory, user_factory
+    ):
+    order = order_factory("Test Order", "Test Item Location", "Test User")
+    vendor, _ = vendor_factory("Test Vendor", order.location)
+    sale = sale_factory(order, vendor, user=order.last_modified_by)
+    user2, _ = user_factory("Test User 2")
+    assert sale.last_modified_by == order.last_modified_by
+    sale.delete(user=user2)
+    order.refresh_from_db()
+    assert order.last_modified_by == user2
+
+def test_order_last_modified_is_updated_on_sale_creation(
+    sale_factory, order_factory, vendor_factory, user_factory
+    ):
+    order = order_factory("Test Order", "Test Item Location", "Test User")
+    vendor, _ = vendor_factory("Test Vendor", order.location)
+    user2, _ = user_factory("Test User 2")
+    sale = sale_factory(order, vendor, user=user2)
+    order.refresh_from_db()
+    assert order.last_modified_by == user2
+
+def test_order_last_modified_is_not_updated_on_failed_sale_update(
+    sale_factory, order_factory, vendor_factory, user_factory
+    ):
+    order = order_factory("Test Order", "Test Item Location", "Test User")
+    vendor, _ = vendor_factory("Test Vendor", order.location)
+    sale = sale_factory(order, vendor, user=order.last_modified_by)
+    user2, _ = user_factory("Test User 2")
+    assert sale.last_modified_by == order.last_modified_by
+    with pytest.raises(ValidationError):
+        sale.debt = -1
+        sale.save(user=user2)
+    order.refresh_from_db()
+    assert order.last_modified_by == order.last_modified_by
