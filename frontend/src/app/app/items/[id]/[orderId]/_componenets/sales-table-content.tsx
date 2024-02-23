@@ -37,6 +37,12 @@ export default function SalesTableContent({
       <ProfitContent profit={cellValue} profitPerItem={cellValue / quantity} />
     );
   }
+  if (isSalePrice(columnKey, cellValue)) {
+    const [salePrice, salePricePerItem] = cellValue;
+    return (
+      <PriceFieldContent value={salePrice} calculatedValue={salePricePerItem} />
+    );
+  }
   if (columnKey === 'actions') {
     return (
       <ActionsContent
@@ -55,7 +61,12 @@ function isAmountPaidDue(
   columnKey: Key,
   value: SalesTableCellValue
 ): value is [number, number] {
-  return columnKey === 'amountPaidDue' && Array.isArray(value);
+  return (
+    columnKey === 'amountPaidDue' &&
+    Array.isArray(value) &&
+    value.length === 2 &&
+    value.every((v) => typeof v === 'number')
+  );
 }
 
 function isPriceField(
@@ -63,6 +74,18 @@ function isPriceField(
   value: SalesTableCellValue
 ): value is number {
   return columnKey === 'cost' && typeof value === 'number';
+}
+
+function isSalePrice(
+  columnKey: Key,
+  value: SalesTableCellValue
+): value is [number, number] {
+  return (
+    columnKey === 'salePrice' &&
+    Array.isArray(value) &&
+    value.length === 2 &&
+    value.every((v) => typeof v === 'number')
+  );
 }
 
 function isProfit(columnKey: Key, value: SalesTableCellValue): value is number {

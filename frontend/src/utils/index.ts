@@ -65,7 +65,7 @@ export function createSalesTableData(sales: SaleResponse[]) {
     const totalSalePrice = sale.pricePerItem * sale.quantity;
     const amountPaid = totalSalePrice - sale.debt;
     const amountPaidDue = [amountPaid, sale.debt];
-    const salePriceString = `${formatNumber(totalSalePrice)} [${formatNumber(sale.pricePerItem)} ea.]`;
+    const salePriceValues = [totalSalePrice, sale.pricePerItem];
     const profit = totalSalePrice - sale.cost;
     const lastModifiedBy = sale.lastModifiedBy;
     const lastModifiedUTC = new Date(sale.lastModified).getTime();
@@ -81,7 +81,7 @@ export function createSalesTableData(sales: SaleResponse[]) {
       saleDate: sale.date,
       quantity: sale.quantity,
       cost: sale.cost,
-      salePrice: salePriceString,
+      salePrice: salePriceValues,
       profit,
       amountPaidDue,
       lastModifiedBy,

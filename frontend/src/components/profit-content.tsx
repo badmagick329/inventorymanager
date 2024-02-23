@@ -11,20 +11,36 @@ export default function ProfitContent({
   profitPerItem,
 }: ProfitContentProps) {
   return (
-    <>
-      <span className={getProfitColor(profit)}>
-        {formatNumber(profit)} [{formatNumber(profitPerItem)} ea.]
-      </span>
-    </>
+    <div className='flex gap-1 items-start'>
+      <ProfitValue profit={profit} profitPerItem={profitPerItem} />
+      <ProfitPerItemValue profitPerItem={profitPerItem} />
+    </div>
   );
 }
 
-function getProfitColor(profit: number) {
-  if (profit === 0) {
-    return 'text-foreground';
-  } else if (profit < 0) {
+function ProfitValue({ profit, profitPerItem }: ProfitContentProps) {
+  return (
+    <span className={getColor(profit, profitPerItem)}>
+      {formatNumber(profit)}
+    </span>
+  );
+}
+
+function ProfitPerItemValue({ profitPerItem }: { profitPerItem: number }) {
+  if (profitPerItem === 0) {
+    return null;
+  }
+  return (
+    <span className='text-default-500 text-xs'>
+      {formatNumber(profitPerItem)}ea.
+    </span>
+  );
+}
+
+function getColor(profit: number, profitPerItem: number) {
+  if (profit < 0 || profitPerItem < 0) {
     return 'text-danger-500';
   } else {
-    return 'text-success-600';
+    return 'text-foreground';
   }
 }

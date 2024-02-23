@@ -61,6 +61,14 @@ export default function Orders() {
       <div className='flex justify-center gap-4'>
         <CreateOrderModal locationId={locationId} />
         <Button
+          variant='flat'
+          size='md'
+          color='default'
+          onPress={() => setDetailsHidden(!detailsHidden)}
+        >
+          {detailsHidden ? 'Show More' : 'Hide'}
+        </Button>
+        <Button
           as={Link}
           href={APP_LOCATIONS}
           variant='flat'
@@ -68,14 +76,6 @@ export default function Orders() {
           color='default'
         >
           Back to Locations
-        </Button>
-        <Button
-          variant='flat'
-          size='md'
-          color='default'
-          onPress={() => setDetailsHidden(!detailsHidden)}
-        >
-          {detailsHidden ? 'Show More' : 'Hide'}
         </Button>
       </div>
       <Spacer y={4} />
