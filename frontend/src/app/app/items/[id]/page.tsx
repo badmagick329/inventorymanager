@@ -11,11 +11,11 @@ import CreateOrderModal from './_componenets/create-order-modal';
 import { useDeleteOrder } from '@/hooks';
 import OptionalErrorElement from './_componenets/optional-error-element';
 import OrdersTable from './_componenets/orders-table';
-import LocationInformation from './_componenets/location-information';
 import { useState } from 'react';
 import { Location } from '@/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { preFetchVendors } from '@/utils/requests';
+import MoreInformation from './_componenets/more-information';
 
 export default function Orders() {
   const locationId = usePathname().split('/')[3];
@@ -55,7 +55,7 @@ export default function Orders() {
       </span>
       <Spacer y={2} />
       <div className='flex justify-center gap-4'>
-        <LocationInformation
+        <MoreInformation
           detailsHidden={detailsHidden}
           orders={orders}
           location={location}
