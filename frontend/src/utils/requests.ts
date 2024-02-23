@@ -1,4 +1,9 @@
-import { NEXT_LOGIN, NEXT_LOCATIONS, NEXT_ADMIN } from '@/consts/urls';
+import {
+  NEXT_LOGIN,
+  NEXT_LOCATIONS,
+  NEXT_ADMIN,
+  NEXT_VENDORS,
+} from '@/consts/urls';
 import axios from 'axios';
 import { UseFormSetError } from 'react-hook-form';
 import { LoginFormValues } from '@/types';
@@ -41,5 +46,20 @@ export async function prefetchIsAdmin(queryClient: QueryClient) {
   await queryClient.prefetchQuery({
     queryKey: ['isAdmin'],
     queryFn: () => axios.get(NEXT_ADMIN),
+  });
+}
+
+export async function preFetchVendors(
+  queryClient: QueryClient,
+  locationId: string
+) {
+  await queryClient.prefetchQuery({
+    queryKey: ['vendors', locationId],
+    queryFn: async () => {
+      const { data } = await axios.get(
+        `${NEXT_VENDORS}?location_id=${locationId}`
+      );
+      return data;
+    },
   });
 }

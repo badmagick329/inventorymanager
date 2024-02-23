@@ -2,6 +2,7 @@ from django.urls import path
 from items.views.location import ItemLocationsDetail, ItemLocationsList
 from items.views.order import OrderDetail, OrderList
 from items.views.sale import SaleDetail, SaleList
+from items.views.vendor import VendorList
 
 urlpatterns = [
     path("/locations", ItemLocationsList.as_view(), name="locations"),
@@ -21,5 +22,10 @@ urlpatterns = [
         "/sales/detail/<int:sale_id>",
         SaleDetail.as_view(),
         name="sale_detail",
+    ),
+    path(
+        "/vendors/",
+        VendorList.as_view(),
+        name="vendors",
     ),
 ]
