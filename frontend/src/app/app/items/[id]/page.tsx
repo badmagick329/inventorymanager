@@ -55,11 +55,7 @@ export default function Orders() {
       </span>
       <Spacer y={2} />
       <div className='flex justify-center gap-4'>
-        <MoreInformation
-          detailsHidden={detailsHidden}
-          orders={orders}
-          location={location}
-        />
+        <MoreInformation detailsHidden={detailsHidden} location={location} />
       </div>
       <Spacer y={4} />
       <div className='flex justify-center gap-4'>
