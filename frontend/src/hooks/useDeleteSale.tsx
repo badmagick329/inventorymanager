@@ -11,7 +11,6 @@ export default function useDeleteSale() {
     retry: false,
     onSettled: () => {},
     onSuccess: (_, mutationVars) => {
-      console.log('successfully deleted sale');
       const { locationId, orderId } = mutationVars;
       const previousData = queryClient.getQueryData(['sales', orderId]);
       if (!isSaleResponseArray(previousData)) {

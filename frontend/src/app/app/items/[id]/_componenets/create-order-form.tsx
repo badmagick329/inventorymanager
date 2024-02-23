@@ -36,10 +36,11 @@ export default function CreateOrderForm({
     orderId,
   });
 
-  const { register, handleSubmit, formState, control,setValue,getValues } = useForm({
-    // @ts-ignore
-    defaultValues: fetchDefaults.mutateAsync,
-  });
+  const { register, handleSubmit, formState, control, setValue, getValues } =
+    useForm({
+      // @ts-ignore
+      defaultValues: fetchDefaults.mutateAsync,
+    });
   const createOrder = useCreateOrder();
 
   if (formState.isLoading) {
@@ -160,7 +161,6 @@ function submitForm(
     order,
   });
   try {
-    console.log(response);
     onClose();
   } catch (error) {
     console.log(error);

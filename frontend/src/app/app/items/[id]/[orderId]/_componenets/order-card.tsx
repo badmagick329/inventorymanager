@@ -1,6 +1,6 @@
 'use client';
 
-import { formatNumber } from '@/utils';
+import PriceFieldContent from '@/components/price-field-content';
 
 type OrderCardProps = {
   name: string;
@@ -18,17 +18,40 @@ export default function OrderCard({
   remainingStock,
 }: OrderCardProps) {
   return (
-    <div className='flex flex-col items-center gap-2'>
+    <div className='flex w-full flex-col items-center justify-center gap-2'>
       <span className='text-2xl font-semibold'>{name}</span>
-      <span className='font-semibold'>
-        Purchase Price: {formatNumber(pricePerItem * quantity)} [
-        {formatNumber(pricePerItem)} ea.]
-      </span>
-      <span className='font-semibold'>
-        Current sale price: {formatNumber(currentSalePrice * quantity)} [
-        {formatNumber(currentSalePrice)} ea.]
-      </span>
-      <span className='font-semibold'>Remaining stock: {remainingStock}</span>
+      <div className='flex w-full max-w-xs rounded-md bg-neutral-500 py-[1px]'></div>
+      <CardField
+        label='Purchase Price'
+        value={pricePerItem * quantity}
+        perItemValue={pricePerItem}
+      />
+      <CardField
+        label='Sale Price'
+        value={currentSalePrice * quantity}
+        perItemValue={currentSalePrice}
+      />
+      <div className='flex w-full max-w-xs justify-between'>
+        <span className='font-semibold'>Remaining</span>
+        <span>{remainingStock}</span>
+      </div>
+    </div>
+  );
+}
+
+function CardField({
+  label,
+  value,
+  perItemValue,
+}: {
+  label: string;
+  value: number;
+  perItemValue: number;
+}) {
+  return (
+    <div className='flex w-full max-w-xs justify-between'>
+      <span className='font-semibold'>{label}</span>
+      <PriceFieldContent value={value} calculatedValue={perItemValue} />
     </div>
   );
 }

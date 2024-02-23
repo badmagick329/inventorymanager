@@ -15,9 +15,36 @@ export default function AmountPaidDueContent({
   const debtColor = debt > 0 ? 'text-danger-500' : 'text-foreground';
   return (
     <>
-      <span className={amountPaidColor}>{formatNumber(amountPaid)}</span>
-      <span> / </span>
-      <span className={debtColor}>{formatNumber(debt)}</span>
+      <AmountPaid amountPaid={amountPaid} amountPaidColor={amountPaidColor} />
+      <Divider amountPaid={amountPaid} debt={debt} />
+      <Debt debt={debt} debtColor={debtColor} />
     </>
   );
+}
+
+function AmountPaid({
+  amountPaid,
+  amountPaidColor,
+}: {
+  amountPaid: number;
+  amountPaidColor: string;
+}) {
+  if (amountPaid <= 0) {
+    return null;
+  }
+  return <span className={amountPaidColor}>{formatNumber(amountPaid)}</span>;
+}
+
+function Divider({ amountPaid, debt }: { amountPaid: number; debt: number }) {
+  if (amountPaid <= 0 || debt <= 0) {
+    return null;
+  }
+  return <span> / </span>;
+}
+
+function Debt({ debt, debtColor }: { debt: number; debtColor: string }) {
+  if (debt <= 0) {
+    return null;
+  }
+  return <span className={debtColor}>{formatNumber(debt)}</span>;
 }

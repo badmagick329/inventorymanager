@@ -7,7 +7,6 @@ export default function MoreInformation({
   location,
 }: {
   detailsHidden: boolean;
-  orders: OrderResponse[];
   location?: Location;
 }) {
   if (detailsHidden) {

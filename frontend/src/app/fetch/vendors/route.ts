@@ -11,7 +11,6 @@ export async function GET(req: Request) {
   let url = `${BASE_URL}${API_VENDORS}`;
   if (location_id) {
     url = `${BASE_URL}${API_VENDORS}/?location_id=${location_id}`;
-    console.log('url', url);
   }
   const { Authorization, ErrorResponse } = createAuthHeader();
   if (ErrorResponse) {
