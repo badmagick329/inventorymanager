@@ -17,6 +17,7 @@ import useSubmitUser from './useSubmitUser';
 import useCreateSale from './useCreateSale';
 import useSubmitLoginForm from './useSubmitLoginForm';
 import useOrderFormDefaults from './useOrderFormDefaults';
+import useVendors from './useVendors';
 
 export {
   useLocations,
@@ -38,4 +39,5 @@ export {
   useCreateSale,
   useSubmitLoginForm,
   useOrderFormDefaults,
+  useVendors,
 };

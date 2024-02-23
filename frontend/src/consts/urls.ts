@@ -23,3 +23,5 @@ export const API_ORDERS = '/api/items/orders';
 export const API_ORDER_DETAIL = '/api/items/orders/detail';
 export const API_SALES = '/api/items/sales';
 export const API_SALE_DETAIL = '/api/items/sales/detail';
+export const NEXT_VENDORS = '/fetch/vendors';
+export const API_VENDORS = '/api/items/vendors';

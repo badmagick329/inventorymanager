@@ -78,6 +78,13 @@ export type SalePost = {
   amountPaid: number;
 };
 
+export type VendorResponse = {
+  id: number;
+  name: string;
+  location: string;
+  debt: number;
+};
+
 export type Disclosure = {
   isOpen: boolean;
   onOpen: () => void;

@@ -91,6 +91,9 @@ class Vendor(models.Model, LastModifiedByMixin):
         self.full_clean()
         super().save(*args, **kwargs)
 
+    def debt(self):
+        return sum([sale.debt for sale in self.sales.all()]) # type: ignore
+
     def __str__(self):
         username = (
             self.last_modified_by.username if self.last_modified_by else "None"

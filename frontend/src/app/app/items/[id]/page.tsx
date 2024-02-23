@@ -14,6 +14,8 @@ import OrdersTable from './_componenets/orders-table';
 import LocationInformation from './_componenets/location-information';
 import { useState } from 'react';
 import { Location } from '@/types';
+import { useQueryClient } from '@tanstack/react-query';
+import { preFetchVendors } from '@/utils/requests';
 
 export default function Orders() {
   const locationId = usePathname().split('/')[3];
@@ -22,6 +24,8 @@ export default function Orders() {
   const { data: locations } = useLocations();
   const [detailsHidden, setDetailsHidden] = useState(true);
   const deleteOrder = useDeleteOrder();
+  const queryClient = useQueryClient();
+
   if (isError) {
     const comp = <OptionalErrorElement errorMessage={error.message} />;
     if (comp) {
@@ -41,6 +45,7 @@ export default function Orders() {
   if (!isOrderResponseArray(orders)) {
     return <ConnectionError message='Failed to load orders' />;
   }
+  preFetchVendors(queryClient, locationId);
 
   return (
     <div className='flex w-full flex-col justify-center p-4'>

@@ -5,6 +5,7 @@ import {
   SalePost,
   Location,
   User,
+  VendorResponse,
 } from './types';
 
 export function isLocation(body: any): body is Location {
@@ -111,4 +112,19 @@ export function isSalePost(body: any): body is SalePost {
     typeof body.pricePerItem === 'number' &&
     typeof body.amountPaid === 'number'
   );
+}
+
+export function isVendorResponse(body: any): body is VendorResponse {
+  return (
+    body &&
+    typeof body === 'object' &&
+    typeof body.id === 'number' &&
+    typeof body.name === 'string' &&
+    typeof body.location === 'string' &&
+    typeof body.debt === 'number'
+  );
+}
+
+export function isVendorResponseArray(body: any): body is VendorResponse[] {
+  return Array.isArray(body) && body.every(isVendorResponse);
 }
