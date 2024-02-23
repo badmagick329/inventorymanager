@@ -92,7 +92,7 @@ class Vendor(models.Model, LastModifiedByMixin):
         super().save(*args, **kwargs)
 
     def debt(self):
-        return sum([sale.debt for sale in self.sales.all()]) # type: ignore
+        return sum([sale.debt for sale in self.sales.all()])  # type: ignore
 
     def __str__(self):
         username = (
