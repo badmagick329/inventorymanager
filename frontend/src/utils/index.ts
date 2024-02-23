@@ -13,6 +13,10 @@ export function formatNumber(num: number) {
   }
 }
 
+export function formatCurrency(num: number) {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' rs';
+}
+
 export function sleep(delay: number) {
   return new Promise((resolve) => setTimeout(resolve, delay));
 }

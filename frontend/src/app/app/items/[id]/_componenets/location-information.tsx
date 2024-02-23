@@ -1,4 +1,5 @@
 import { Location, OrderResponse } from '@/types';
+import { formatCurrency } from '@/utils';
 
 export default function LocationInformation({
   detailsHidden,
@@ -16,34 +17,23 @@ export default function LocationInformation({
     return acc + order.debt;
   }, 0);
   return (
-    <div className='flex flex-col w-full items-center text-center text-xl max-w-lg'>
-      <LocationSpending location={location} />
-      <div className='flex justify-between w-full'>
-        <span>Total amount due</span>
-        <span>{totalDebt}</span>
-      </div>
+    <div className='flex w-full max-w-lg flex-col items-center divide-y-2 rounded-md bg-neutral-100 p-4 text-center dark:divide-neutral-400 dark:bg-neutral-800'>
+      <CurrencyDisplay text='Total revenue' value={location?.revenue} />
+      <CurrencyDisplay text='Total spent' value={location?.spendings} />
+      <CurrencyDisplay text='Total profit' value={location?.profit} />
+      <CurrencyDisplay text='Total due' value={totalDebt} />
     </div>
   );
 }
 
-function LocationSpending({ location }: { location?: Location }) {
-  if (!location) {
+function CurrencyDisplay({ text, value }: { text: string; value?: number }) {
+  if (value === undefined) {
     return null;
   }
   return (
-    <>
-      <div className='flex justify-between w-full'>
-        <span>Total spent</span>
-        <span>{location?.spendings}</span>
-      </div>
-      <div className='flex justify-between w-full'>
-        <span>Total revenue</span>
-        <span>{location?.revenue}</span>
-      </div>
-      <div className='flex justify-between w-full'>
-        <span>Total profit</span>
-        <span>{location?.profit}</span>
-      </div>
-    </>
+    <div className='flex w-full justify-between py-2'>
+      <span>{text}</span>
+      <span>{formatCurrency(value)}</span>
+    </div>
   );
 }
