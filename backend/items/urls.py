@@ -1,5 +1,9 @@
 from django.urls import path
-from items.views.location import ItemLocationsDetail, ItemLocationsList
+from items.views.location import (
+    ItemLocationsDetail,
+    ItemLocationsHistory,
+    ItemLocationsList,
+)
 from items.views.order import OrderDetail, OrderList
 from items.views.sale import SaleDetail, SaleList
 from items.views.vendor import VendorList
@@ -27,5 +31,10 @@ urlpatterns = [
         "/vendors/",
         VendorList.as_view(),
         name="vendors",
+    ),
+    path(
+        "/locations/history/<int:location_id>",
+        ItemLocationsHistory.as_view(),
+        name="location_history",
     ),
 ]

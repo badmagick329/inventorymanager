@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from items.models import ItemLocation, Order
 from rest_framework import serializers
+from users.models import UserAccount
 from utils.errors import ErrorHandler, ValidationErrorWithMessage
 
 
@@ -96,6 +97,120 @@ class OrderSerializer(serializers.BaseSerializer):
             "created": instance.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "lastModifiedBy": instance.last_modified_by.username,
             "lastModified": instance.last_modified.strftime(
+                "%Y-%m-%d %H:%M:%S"
+            ),
+        }
+
+
+class HistoricalDelta:
+    def __init__(self, new, old):
+        self.new = new
+        self.old = old
+        self.changes = [d for d in new.diff_against(old).changes]
+        self.last_modified = new.instance.last_modified
+
+
+class OrderHistorySerializer:
+    def __init__(self, order: Order):
+        self._history = order.history.all()  # type: ignore
+        self._deltas = list()
+
+        self._first = None
+        self._last = None
+
+        if len(self._history) > 0:
+            self._first = self._history.first()
+        if len(self._history) > 1:
+            self._last = self._history.last()
+
+        for i in range(1, len(self._history)):
+            self._deltas.append(
+                HistoricalDelta(self._history[i], self._history[i - 1])
+            )
+
+    @property
+    def data(self):
+        serialized_deltas = list()
+        for delta in self._deltas:
+            serialized_deltas.append(OrderDeltaSerializer(delta).data)
+        return {
+            "first": (
+                HistoricalOrderSerializer(self._first).data
+                if self._first
+                else None
+            ),
+            "last": (
+                HistoricalOrderSerializer(self._last).data
+                if self._last
+                else None
+            ),
+            "deltas": serialized_deltas,
+        }
+
+
+class OrderDeltaSerializer:
+    field_map = {
+        "price_per_item": "pricePerItem",
+        "last_modified_by": "lastModifiedBy",
+        "current_sale_price": "currentSalePrice",
+        "lastModified": "lastModified",
+    }
+
+    def __init__(self, delta: HistoricalDelta):
+        self.delta = delta
+
+    @property
+    def data(self):
+        serialized_changes = list()
+        for change in self.delta.changes:
+            if change.field == "last_modified_by":
+                old_user = UserAccount.objects.filter(id=change.old).first()
+                new_user = UserAccount.objects.filter(id=change.new).first()
+                old_username = old_user.username if old_user else None
+                new_username = new_user.username if new_user else None
+
+                serialized = {
+                    "field": self.field_map.get(change.field, change.field),
+                    "old": old_username,
+                    "new": new_username,
+                }
+            else:
+                serialized = {
+                    "field": self.field_map.get(change.field, change.field),
+                    "old": change.old,
+                    "new": change.new,
+                }
+            serialized_changes.append(serialized)
+        last_modified = self.delta.last_modified
+        if last_modified:
+            last_modified = last_modified.strftime("%Y-%m-%d %H:%M:%S")
+        return {
+            "changeList": serialized_changes,
+            "lastModified": last_modified,
+        }
+
+
+class HistoricalOrderSerializer:
+    def __init__(self, instance):
+        self.instance = instance
+
+    @property
+    def data(self):
+        date_repr = (
+            self.instance.date.strftime("%Y-%m-%d")
+            if self.instance.date
+            else None
+        )
+
+        return {
+            "id": self.instance.id,
+            "name": self.instance.name,
+            "date": date_repr,
+            "pricePerItem": self.instance.price_per_item,
+            "quantity": self.instance.quantity,
+            "currentSalePrice": self.instance.current_sale_price,
+            "lastModifiedBy": self.instance.last_modified_by.username,
+            "lastModified": self.instance.last_modified.strftime(
                 "%Y-%m-%d %H:%M:%S"
             ),
         }
