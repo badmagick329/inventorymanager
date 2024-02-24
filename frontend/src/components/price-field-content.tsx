@@ -1,5 +1,6 @@
 'use client';
-import { formatNumber } from '@/utils';
+import { formatNumber, formatCurrency } from '@/utils';
+import { Tooltip } from '@nextui-org/react';
 
 type PriceFieldContentProps = {
   value: number;
@@ -14,7 +15,9 @@ export default function PriceFieldContent({
 }: PriceFieldContentProps) {
   return (
     <div className='flex items-start gap-1'>
-      <span>{formatNumber(value)}</span>
+      <Tooltip content={formatCurrency(value)} placement='top'>
+        <span>{formatNumber(value)}</span>
+      </Tooltip>
       <CalculatedValue
         value={value}
         quantity={quantity}
@@ -29,15 +32,18 @@ function CalculatedValue({
   quantity,
   calculatedValue,
 }: PriceFieldContentProps) {
-  console.log('calculated value got: ', value, quantity, calculatedValue);
   if (quantity !== undefined && quantity > 1) {
     if (value === 0) {
       return null;
     }
     return (
-      <span className='text-xs text-default-500'>
-        {formatNumber(value / quantity)}ea.
-      </span>
+      <>
+        <Tooltip content={formatCurrency(value / quantity)} placement='top'>
+          <span className='text-xs text-default-500'>
+            {formatNumber(value / quantity)}ea.
+          </span>
+        </Tooltip>
+      </>
     );
   }
   if (calculatedValue !== undefined) {
@@ -45,9 +51,13 @@ function CalculatedValue({
       return null;
     }
     return (
-      <span className='text-xs text-default-500'>
-        {formatNumber(calculatedValue)}ea.
-      </span>
+      <>
+        <Tooltip content={formatCurrency(calculatedValue)} placement='top'>
+          <span className='text-xs text-default-500'>
+            {formatNumber(calculatedValue)}ea.
+          </span>
+        </Tooltip>
+      </>
     );
   }
 }

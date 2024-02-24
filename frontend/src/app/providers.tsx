@@ -19,7 +19,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           defaultTheme='dark'
           themes={['dark', 'light', 'modern']}
         >
-          <ReactQueryDevtools initialIsOpen={false} />
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
           {children}
         </NextThemesProvider>
       </QueryClientProvider>
