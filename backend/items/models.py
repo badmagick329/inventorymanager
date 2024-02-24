@@ -250,7 +250,7 @@ class Sale(models.Model, LastModifiedByMixin):
             models.CheckConstraint(
                 name="positive_sale_debt",
                 check=models.Q(debt__gte=0),
-                violation_error_message="Amount paid cannot be greater than potential revenue for this sale.",
+                violation_error_message="Amount paid cannot be greater than potential revenue for this sale. Try adjusting the sale price or quantity.",
             ),
         ]
 
