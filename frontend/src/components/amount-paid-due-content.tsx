@@ -1,5 +1,6 @@
 'use client';
-import { formatNumber } from '@/utils';
+import { formatNumber, formatCurrency } from '@/utils';
+import { Tooltip } from '@nextui-org/react';
 
 type AmountPaidDueContentProps = {
   amountPaid: number;
@@ -32,7 +33,13 @@ function AmountPaid({
   if (amountPaid <= 0) {
     return null;
   }
-  return <span className={amountPaidColor}>{formatNumber(amountPaid)}</span>;
+  return (
+    <>
+      <Tooltip content={formatCurrency(amountPaid)} placement='top'>
+        <span className={amountPaidColor}>{formatNumber(amountPaid)}</span>
+      </Tooltip>
+    </>
+  );
 }
 
 function Divider({ amountPaid, debt }: { amountPaid: number; debt: number }) {
@@ -46,5 +53,11 @@ function Debt({ debt, debtColor }: { debt: number; debtColor: string }) {
   if (debt <= 0) {
     return null;
   }
-  return <span className={debtColor}>{formatNumber(debt)}</span>;
+  return (
+    <>
+      <Tooltip content={formatCurrency(debt)} placement='top'>
+        <span className={debtColor}>{formatNumber(debt)}</span>
+      </Tooltip>
+    </>
+  );
 }
