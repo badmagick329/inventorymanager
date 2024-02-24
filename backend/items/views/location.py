@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from items.models import ItemLocation
 from items.serializers.location import ItemLocationSerializer
+from items.serializers.order import OrderHistorySerializer
 from rest_framework import permissions
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
@@ -82,3 +83,18 @@ class ItemLocationsList(APIView):
                 for location in locations
             ]
         return APIResponses.ok(serialized)
+
+
+class ItemLocationsHistory(APIView):
+    permission_classes = (permissions.IsAdminUser,)
+
+    def get(self, request: Request, location_id: int):
+        location = get_object_or_404(ItemLocation, id=location_id)
+
+        orders = location.orders.all().order_by("-id")  # type: ignore
+
+        serialized_orders = list()
+        for order in orders:
+            serialized_orders.append(OrderHistorySerializer(order).data)
+
+        return APIResponses.ok(serialized_orders)

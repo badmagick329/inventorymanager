@@ -132,3 +132,31 @@ export type DeleteSale = ReturnType<typeof useDeleteSale>;
 export type SalesTableRow = ReturnType<typeof createSalesTableData>[0];
 
 export type SalesTableCellValue = ValueOf<SalesTableRow>;
+
+export type OrderHistory = {
+  first: HistoricalOrder;
+  last: HistoricalOrder;
+  deltas: Delta[];
+};
+
+export type Delta = {
+  changeList: ChangeList[];
+  lastModified: string;
+};
+
+export type ChangeList = {
+  field: string;
+  oldValue: number | string;
+  newValue: number | string;
+};
+
+export type HistoricalOrder = {
+  id: number;
+  name: string;
+  date: null;
+  pricePerItem: number;
+  quantity: number;
+  currentSalePrice: number;
+  lastModifiedBy: string;
+  lastModified: string;
+};

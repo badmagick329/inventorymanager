@@ -3,7 +3,7 @@ from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.functions import Lower
-from items.mixins import LastModifiedByMixin
+from items.base_model import ModelWithLastModified
 from simple_history.models import HistoricalRecords
 
 
@@ -50,7 +50,7 @@ class ItemLocation(models.Model):
         ]
 
 
-class Vendor(models.Model, LastModifiedByMixin):
+class Vendor(ModelWithLastModified):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     location = models.ForeignKey(
@@ -75,6 +75,14 @@ class Vendor(models.Model, LastModifiedByMixin):
                 name="non_empty_vendor_name", check=~models.Q(name="")
             ),
         ]
+
+    def is_changed(self) -> bool:
+        if not hasattr(self, "_loaded_values"):
+            return True
+        loaded_fields = ["name", "location_id"]
+        instance_values = [self.name, self.location.id]
+
+        return instance_values != [self._loaded_values[field] for field in loaded_fields]  # type: ignore
 
     def revert_to_history_instance(self, history_instance):
         if history_instance.instance == self:
@@ -105,7 +113,7 @@ class Vendor(models.Model, LastModifiedByMixin):
         )
 
 
-class Order(models.Model, LastModifiedByMixin):
+class Order(ModelWithLastModified):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     date = models.DateField(blank=True, null=True)
@@ -151,11 +159,41 @@ class Order(models.Model, LastModifiedByMixin):
             ),
         ]
 
+    def is_changed(self) -> bool:
+        if not hasattr(self, "_loaded_values"):
+            return True
+        loaded_fields = [
+            "name",
+            "date",
+            "location_id",
+            "price_per_item",
+            "quantity",
+            "current_sale_price",
+            "created_at",
+            "last_modified_by_id",
+            "last_modified",
+        ]
+        instance_values = [
+            self.name,
+            self.date,
+            self.location.id,
+            self.price_per_item,
+            self.quantity,
+            self.current_sale_price,
+            self.created_at,
+            self.last_modified_by.id,
+            self.last_modified,
+        ]
+
+        return instance_values != [self._loaded_values[field] for field in loaded_fields]  # type: ignore
+
     @property
     def total_price(self):
         return self.price_per_item * self.quantity
 
     def save(self, *args, **kwargs):
+        if not self.is_changed():
+            return
         kwargs = super().set_last_modified_by(**kwargs)
         self.full_clean()
         super().save(*args, **kwargs)
@@ -209,7 +247,7 @@ class Order(models.Model, LastModifiedByMixin):
         )
 
 
-class Sale(models.Model, LastModifiedByMixin):
+class Sale(ModelWithLastModified):
     id = models.AutoField(primary_key=True)
     order = models.ForeignKey(
         "items.Order", on_delete=models.CASCADE, related_name="sales"
@@ -254,7 +292,35 @@ class Sale(models.Model, LastModifiedByMixin):
             ),
         ]
 
+    def is_changed(self) -> bool:
+        if not hasattr(self, "_loaded_values"):
+            return True
+        loaded_fields = [
+            "order_id",
+            "vendor_id",
+            "date",
+            "quantity",
+            "price_per_item",
+            "debt",
+            "created_at",
+            "last_modified_by_id",
+        ]
+        instance_values = [
+            self.order.id,
+            self.vendor.id,
+            self.date,
+            self.quantity,
+            self.price_per_item,
+            self.debt,
+            self.created_at,
+            self.last_modified_by.id,
+        ]
+
+        return instance_values != [self._loaded_values[field] for field in loaded_fields]  # type: ignore
+
     def save(self, *args, **kwargs):
+        if not self.is_changed():
+            return
         kwargs = super().set_last_modified_by(**kwargs)
         self.full_clean()
         super().save(*args, **kwargs)
