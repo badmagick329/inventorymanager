@@ -1,5 +1,4 @@
 import { APP_MANAGE_LOCATIONS, APP_MANAGE_USERS } from '@/consts/urls';
-import { useIsAdmin } from '@/hooks';
 import {
   Link,
   Dropdown,
@@ -9,10 +8,11 @@ import {
   Button,
 } from '@nextui-org/react';
 
-export default function AdminNavItem() {
-  const { isAdmin, isLoading } = useIsAdmin();
+import { useAdminStatus } from '@/app/context/adminProvider';
 
-  if (isLoading || !isAdmin) {
+export default function AdminNavItem() {
+  const isAdmin = useAdminStatus();
+  if (!isAdmin) {
     return null;
   }
 

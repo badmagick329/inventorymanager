@@ -1,6 +1,6 @@
 import { ArrowUpIcon, ArrowDownIcon, Banknote } from 'lucide-react';
 import { formatNumber } from '@/utils';
-import { useIsAdmin } from '@/hooks';
+import { useAdminStatus } from '@/app/context/adminProvider';
 import { ICON_SM } from '@/consts';
 
 type Props = {
@@ -15,8 +15,8 @@ export default function LocationOverview({
   revenue,
   profit,
 }: Props) {
-  const { isAdmin, isLoading } = useIsAdmin();
-  if (!isAdmin || isLoading) {
+  const isAdmin = useAdminStatus();
+  if (!isAdmin) {
     return null;
   }
   const missingData =

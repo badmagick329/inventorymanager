@@ -1,5 +1,6 @@
 'use client';
 import Navbar from '@/app/app/_components/navbar';
+import { AdminProvider } from '../context/adminProvider';
 
 export default function AppLayout({
   children,
@@ -8,8 +9,10 @@ export default function AppLayout({
 }>) {
   return (
     <div className='foreground flex w-full flex-col items-center'>
-      <Navbar />
-      {children}
+      <AdminProvider>
+        <Navbar />
+        {children}
+      </AdminProvider>
     </div>
   );
 }

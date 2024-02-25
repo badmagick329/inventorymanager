@@ -1,7 +1,8 @@
 'use client';
-import { useIsAdmin, useLogout } from '@/hooks';
+import { useLogout } from '@/hooks';
 import { APP_LOGIN } from '@/consts/urls';
 import { useRouter } from 'next/navigation';
+import { useAdminStatus } from '@/app/context/adminProvider';
 
 export default function AdminLayout({
   children,
@@ -9,10 +10,10 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   const router = useRouter();
-  const { isAdmin, isLoading } = useIsAdmin();
   const logout = useLogout();
+  const isAdmin = useAdminStatus();
 
-  if (isLoading) {
+  if (isAdmin === null) {
     return null;
   }
   if (!isAdmin) {
