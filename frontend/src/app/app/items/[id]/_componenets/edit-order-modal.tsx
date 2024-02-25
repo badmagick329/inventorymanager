@@ -4,7 +4,7 @@ import CreateOrderForm from './create-order-form';
 import { Pencil } from 'lucide-react';
 import { ICON_SM } from '@/consts';
 import { Tooltip } from '@nextui-org/react';
-import { TOOLTIP_DELAY } from '@/consts';
+import { DELAY_500 } from '@/consts';
 
 export default function EditOrderModal({
   locationId,
@@ -20,7 +20,7 @@ export default function EditOrderModal({
 
   return (
     <>
-      <Tooltip content='Edit' color='default' delay={TOOLTIP_DELAY}>
+      <Tooltip content='Edit' color='default' delay={DELAY_500}>
         <Button
           onPress={onOpen}
           size='sm'

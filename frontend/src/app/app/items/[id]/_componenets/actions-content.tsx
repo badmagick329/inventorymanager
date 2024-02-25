@@ -6,7 +6,7 @@ import { List, Trash } from 'lucide-react';
 import { Button, Link } from '@nextui-org/react';
 import { APP_ITEMS } from '@/consts/urls';
 import { Tooltip } from '@nextui-org/react';
-import { TOOLTIP_DELAY } from '@/consts';
+import { DELAY_500 } from '@/consts';
 
 type ActionsContentProps = {
   rowId: number;
@@ -27,7 +27,7 @@ export default function ActionsContent({
           orderId={rowId.toString()}
           isDisabled={deleteOrder.isPending}
         />
-        <Tooltip content='Delete' color='default' delay={TOOLTIP_DELAY}>
+        <Tooltip content='Delete' color='default' delay={DELAY_500}>
           <Button
             size='sm'
             variant='flat'
@@ -38,7 +38,7 @@ export default function ActionsContent({
             <Trash size={ICON_SM} />
           </Button>
         </Tooltip>
-        <Tooltip content='View Sales' color='default' delay={TOOLTIP_DELAY}>
+        <Tooltip content='View Sales' color='default' delay={DELAY_500}>
           <Button
             as={Link}
             href={`${APP_ITEMS}/${locationId}/${rowId}`}
