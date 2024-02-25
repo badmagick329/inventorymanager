@@ -1,20 +1,25 @@
-import { ArrowUpIcon, ArrowDownIcon, Banknote } from 'lucide-react';
-import { formatNumber } from '@/utils';
+import { formatCurrency, formatNumber } from '@/utils';
 import { useAdminStatus } from '@/app/context/adminProvider';
-import { ICON_SM } from '@/consts';
+import { Button, Tooltip } from '@nextui-org/react';
+import { ScrollText } from 'lucide-react';
+import { DELAY_500, ICON_MD } from '@/consts';
+import { APP_LOCATION_HISTORY } from '@/consts/urls';
+import Link from 'next/link';
 
-type Props = {
+type LocationOverviewProps = {
   spendings?: number;
   revenue?: number;
   profit?: number;
   profitPerItem?: number;
+  locationId: number;
 };
 
 export default function LocationOverview({
   spendings,
   revenue,
   profit,
-}: Props) {
+  locationId,
+}: LocationOverviewProps) {
   const isAdmin = useAdminStatus();
   if (!isAdmin) {
     return null;
@@ -24,21 +29,33 @@ export default function LocationOverview({
   if (missingData || spendings === 0) {
     return null;
   }
-  const profitColor = profit < 0 ? 'text-danger-500' : 'text-success-600';
   return (
     <div className='flex gap-4 self-center'>
-      <div className='text-foreground'>
-        <ArrowUpIcon size={ICON_SM} />
-        <span>{formatNumber(spendings)}</span>
-      </div>
-      <div className='text-foreground'>
-        <ArrowDownIcon size={ICON_SM} />
-        <span>{formatNumber(revenue)}</span>
-      </div>
-      <div className={profitColor}>
-        <Banknote size={ICON_SM} />
-        <span>{formatNumber(profit)}</span>
-      </div>
+      <CurrencyField label={'Spending'} amount={spendings} />
+      <CurrencyField label={'Revenue'} amount={revenue} />
+      <CurrencyField label={'Profit'} amount={profit} />
+      <Button
+        as={Link}
+        href={`${APP_LOCATION_HISTORY}/${locationId}`}
+        variant='bordered'
+        color='default'
+        isIconOnly
+      >
+        <Tooltip content={'Logs'} delay={DELAY_500}>
+          <ScrollText size={ICON_MD} />
+        </Tooltip>
+      </Button>
     </div>
+  );
+}
+
+function CurrencyField({ label, amount }: { label: string; amount: number }) {
+  return (
+    <Tooltip content={formatCurrency(amount)}>
+      <div className='flex flex-col text-foreground items-center'>
+        <span className='text-xs'>{label}</span>
+        <span>{formatNumber(amount)}</span>
+      </div>
+    </Tooltip>
   );
 }
