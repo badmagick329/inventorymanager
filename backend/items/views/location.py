@@ -1,7 +1,10 @@
 from django.shortcuts import get_object_or_404
-from items.models import ItemLocation
+from items.models import ItemLocation, Sale
 from items.serializers.location import ItemLocationSerializer
-from items.serializers.order import OrderHistorySerializer
+from items.serializers.order import (
+    OrderHistorySerializer,
+    SaleHistorySerializer,
+)
 from rest_framework import permissions
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
@@ -95,6 +98,14 @@ class ItemLocationsHistory(APIView):
 
         serialized_orders = list()
         for order in orders:
-            serialized_orders.append(OrderHistorySerializer(order).data)
+            serialized_order = OrderHistorySerializer(order).data
+
+            sales = Sale.objects.filter(order=order)
+            serialized_sales = list()
+            for sale in sales:
+                serialized_sales.append(SaleHistorySerializer(sale).data)
+
+            serialized_order["sales"] = serialized_sales
+            serialized_orders.append(serialized_order)
 
         return APIResponses.ok(serialized_orders)
