@@ -1,5 +1,4 @@
 import useLocations from './useLocations';
-import useIsAdmin from './useIsAdmin';
 import useLogout from './useLogout';
 import useDeleteLocation from './useDeleteLocation';
 import useCreateLocation from './useCreateLocation';
@@ -22,7 +21,6 @@ import useLocationHistory from './useLocationHistory';
 
 export {
   useLocations,
-  useIsAdmin,
   useLogout,
   useDeleteLocation,
   useCreateLocation,

@@ -42,13 +42,6 @@ export async function prefetchLocations(queryClient: QueryClient) {
   });
 }
 
-export async function prefetchIsAdmin(queryClient: QueryClient) {
-  await queryClient.prefetchQuery({
-    queryKey: ['isAdmin'],
-    queryFn: () => axios.get(NEXT_ADMIN),
-  });
-}
-
 export async function preFetchVendors(
   queryClient: QueryClient,
   locationId: string
