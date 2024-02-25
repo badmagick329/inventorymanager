@@ -4,7 +4,7 @@ import CreateSaleForm from './create-sale-form';
 import { Pencil } from 'lucide-react';
 import { ICON_SM } from '@/consts';
 import { Tooltip } from '@nextui-org/react';
-import { TOOLTIP_DELAY } from '@/consts';
+import { DELAY_500 } from '@/consts';
 
 export default function EditSaleModal({
   locationId,
@@ -22,7 +22,7 @@ export default function EditSaleModal({
 
   return (
     <>
-      <Tooltip content='Edit' color='default' delay={TOOLTIP_DELAY}>
+      <Tooltip content='Edit' color='default' delay={DELAY_500}>
         <Button
           onPress={onOpen}
           size='sm'
