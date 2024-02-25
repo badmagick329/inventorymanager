@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
-from items.models import ItemLocation, Order
+from items.models import ItemLocation, Order, Sale, Vendor
 from rest_framework import serializers
 from users.models import UserAccount
 from utils.errors import ErrorHandler, ValidationErrorWithMessage
@@ -164,10 +164,8 @@ class OrderDeltaSerializer:
         serialized_changes = list()
         for change in self.delta.changes:
             if change.field == "last_modified_by":
-                old_user = UserAccount.objects.filter(id=change.old).first()
-                new_user = UserAccount.objects.filter(id=change.new).first()
-                old_username = old_user.username if old_user else None
-                new_username = new_user.username if new_user else None
+                old_username = username_or_none(change.old)
+                new_username = username_or_none(change.new)
 
                 serialized = {
                     "field": self.field_map.get(change.field, change.field),
@@ -214,3 +212,123 @@ class HistoricalOrderSerializer:
                 "%Y-%m-%d %H:%M:%S"
             ),
         }
+
+
+class SaleHistorySerializer:
+    def __init__(self, sale: Sale):
+        self._history = sale.history.all()  # type: ignore
+        self._deltas = list()
+
+        self._first = None
+        self._last = None
+
+        if len(self._history) > 0:
+            self._first = self._history.first()
+        if len(self._history) > 1:
+            self._last = self._history.last()
+
+        for i in range(1, len(self._history)):
+            self._deltas.append(
+                HistoricalDelta(self._history[i], self._history[i - 1])
+            )
+
+    @property
+    def data(self):
+        serialized_deltas = list()
+        for delta in self._deltas:
+            serialized_deltas.append(SaleDeltaSerializer(delta).data)
+        return {
+            "first": (
+                HistoricalSaleSerializer(self._first).data
+                if self._first
+                else None
+            ),
+            "last": (
+                HistoricalSaleSerializer(self._last).data
+                if self._last
+                else None
+            ),
+            "deltas": serialized_deltas,
+        }
+
+
+class SaleDeltaSerializer:
+    field_map = {
+        "price_per_item": "pricePerItem",
+        "last_modified_by": "lastModifiedBy",
+        "lastModified": "lastModified",
+    }
+
+    def __init__(self, delta: HistoricalDelta):
+        self.delta = delta
+
+    @property
+    def data(self):
+        serialized_changes = list()
+        for change in self.delta.changes:
+            if change.field == "last_modified_by":
+                old_username = username_or_none(change.old)
+                new_username = username_or_none(change.new)
+
+                serialized = {
+                    "field": self.field_map.get(change.field, change.field),
+                    "old": old_username,
+                    "new": new_username,
+                }
+            elif change.field == "vendor":
+                old_vendor = vendor_or_none(change.old)
+                new_vendor = vendor_or_none(change.new)
+                serialized = {
+                    "field": self.field_map.get(change.field, change.field),
+                    "old": old_vendor,
+                    "new": new_vendor,
+                }
+            else:
+                serialized = {
+                    "field": self.field_map.get(change.field, change.field),
+                    "old": change.old,
+                    "new": change.new,
+                }
+            serialized_changes.append(serialized)
+        last_modified = self.delta.last_modified
+        if last_modified:
+            last_modified = last_modified.strftime("%Y-%m-%d %H:%M:%S")
+        return {
+            "changeList": serialized_changes,
+            "lastModified": last_modified,
+        }
+
+
+class HistoricalSaleSerializer:
+    def __init__(self, instance):
+        self.instance = instance
+
+    @property
+    def data(self):
+        date_repr = (
+            self.instance.date.strftime("%Y-%m-%d")
+            if self.instance.date
+            else None
+        )
+
+        return {
+            "id": self.instance.id,
+            "date": date_repr,
+            "pricePerItem": self.instance.price_per_item,
+            "quantity": self.instance.quantity,
+            "vendor": self.instance.vendor.name,
+            "lastModifiedBy": self.instance.last_modified_by.username,
+            "lastModified": self.instance.last_modified.strftime(
+                "%Y-%m-%d %H:%M:%S"
+            ),
+        }
+
+
+def username_or_none(id):
+    user = UserAccount.objects.filter(id=id).first()
+    return user.username if user else None
+
+
+def vendor_or_none(id):
+    vendor = Vendor.objects.filter(id=id).first()
+    return vendor.name if vendor else None
