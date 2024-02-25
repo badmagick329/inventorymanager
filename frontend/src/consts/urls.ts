@@ -14,6 +14,7 @@ export const APP_LOGIN = '/';
 export const APP_ADMIN = '/app/admin';
 export const APP_MANAGE_LOCATIONS = '/app/admin/manage-locations';
 export const APP_MANAGE_USERS = '/app/admin/manage-users';
+export const APP_LOCATION_HISTORY = '/app/admin/location-history';
 export const APP_SALES = '/app/sales';
 export const APP_ITEMS = '/app/items';
 export const API_LOGIN = '/api/users/auth/login';

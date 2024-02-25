@@ -33,6 +33,7 @@ export default function Locations() {
                   spendings={loc.spendings}
                   revenue={loc.revenue}
                   profit={loc.profit}
+                  locationId={loc.id}
                 />
               </div>
             </div>
