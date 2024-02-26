@@ -12,9 +12,6 @@ export default function SaleHistoryAccordian({
 }: {
   saleHistory: SaleHistory;
 }) {
-  if (saleHistory.deltas.length === 0) {
-    return null;
-  }
   saleHistory.deltas = injectDeltasWithUser(
     saleHistory.deltas,
     saleHistory.first.lastModifiedBy || ''

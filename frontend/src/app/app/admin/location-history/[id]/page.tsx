@@ -54,7 +54,6 @@ export default function LocationHistory() {
         <div key={index} className='flex flex-col p-4'>
           <div className='flex flex-col rounded-md border-1 border-default-400'>
             <OrderHistoryAccordian orderHistory={order} />
-            {index < orderHistories.length - 1 && <PaddedDivider />}
           </div>
         </div>
       ))}

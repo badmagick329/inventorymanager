@@ -40,8 +40,12 @@ export default function OrderHistoryAccordian({
           <OrderChangeCards
             first={orderHistory.first}
             last={orderHistory.last}
+            numberOfSales={orderHistory.sales.length}
           />
-          <DeltasList deltas={orderHistory.deltas} message='in this order' />
+          <DeltasList
+            deltas={orderHistory.deltas}
+            message='made to this order'
+          />
         </div>
         <div className='flex flex-col py-4'>
           <SaleHistories saleHistories={orderHistory.sales} />

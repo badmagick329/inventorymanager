@@ -6,9 +6,11 @@ import { MoveRight } from 'lucide-react';
 export default function OrderChangeCards({
   first,
   last,
+  numberOfSales,
 }: {
   first: HistoricalOrder;
   last: HistoricalOrder | null;
+  numberOfSales: number;
 }) {
   return (
     <div className='flex w-full flex-wrap gap-2 px-2'>
@@ -23,7 +25,7 @@ export default function OrderChangeCards({
       )}
       <div className='flex flex-col items-center gap-2'>
         <span>Latest</span>
-        <OrderHistoryCard order={first} />
+        <OrderHistoryCard order={first} numberOfSales={numberOfSales} />
       </div>
     </div>
   );
