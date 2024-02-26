@@ -135,45 +135,48 @@ export type SalesTableCellValue = ValueOf<SalesTableRow>;
 
 export type OrderHistory = {
   first: HistoricalOrder;
-  last: HistoricalOrder;
-  deltas: Delta[];
+  last: HistoricalOrder | null;
+  deltas: Delta[] | [];
   sales: SaleHistory[];
 };
 
 export type Delta = {
-  changeList: ChangeList[];
+  changes: Change[] | [];
   lastModified: string;
+  lastModifiedBy?: string;
 };
 
-export type ChangeList = {
+export type Change = {
   field: string;
-  oldValue: number | string;
-  newValue: number | string;
+  oldValue: number | string | null;
+  newValue: number | string | null;
 };
 
 export type HistoricalOrder = {
   id: number;
   name: string;
-  date: null;
+  date: null | string;
   pricePerItem: number;
   quantity: number;
+  created: string;
   currentSalePrice: number;
   lastModifiedBy: string;
   lastModified: string;
 };
 
 export type SaleHistory = {
-  first: HistoricalSale;
-  last: HistoricalSale;
-  deltas: Delta[];
+  first: HistoricalSale | null;
+  last: HistoricalSale | null;
+  deltas: Delta[] | [];
 };
 
 export type HistoricalSale = {
   id: number;
-  date: null;
+  date: null | string;
   pricePerItem: number;
   quantity: number;
   vendor: string;
+  created: string;
   lastModifiedBy: string;
   lastModified: string;
 };

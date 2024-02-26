@@ -1,6 +1,6 @@
 'use client';
 import Navbar from '@/app/app/_components/navbar';
-import { AdminProvider } from '../context/adminProvider';
+import { AdminProvider } from '../context/admin-provider';
 
 export default function AppLayout({
   children,

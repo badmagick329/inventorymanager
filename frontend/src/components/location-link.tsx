@@ -1,4 +1,6 @@
 import { Link } from '@nextui-org/react';
+import { APP_ITEMS } from '@/consts/urls';
+import { Button } from '@nextui-org/react';
 
 type LocationLinkProps = {
   id: number | undefined;
@@ -12,10 +14,14 @@ export default function LocationLink({ id, name }: LocationLinkProps) {
     </>;
   }
   return (
-    <Link href={`/app/items/${id}`}>
-      <span className='justify-center self-center p-2 text-primary-500 hover:cursor-pointer hover:text-primary-200 md:text-xl'>
-        {name}
-      </span>
-    </Link>
+    <Button
+      as={Link}
+      href={`${APP_ITEMS}/${id}`}
+      variant='light'
+      color='primary'
+      className='text-xl font-semibold'
+    >
+      {name}
+    </Button>
   );
 }

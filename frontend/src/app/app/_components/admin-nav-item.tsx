@@ -8,7 +8,7 @@ import {
   Button,
 } from '@nextui-org/react';
 
-import { useAdminStatus } from '@/app/context/adminProvider';
+import { useAdminStatus } from '@/app/context/admin-provider';
 
 export default function AdminNavItem() {
   const isAdmin = useAdminStatus();
