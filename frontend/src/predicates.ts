@@ -213,7 +213,7 @@ export function isOrderHistory(body: any): body is OrderHistory {
     body &&
     typeof body === 'object' &&
     isHistoricalOrder(body.first) &&
-    (body === null || isHistoricalOrder(body.last)) &&
+    (body.last === null || isHistoricalOrder(body.last)) &&
     isDeltaArray(body.deltas) &&
     isSaleHistoryArray(body.sales)
   );
