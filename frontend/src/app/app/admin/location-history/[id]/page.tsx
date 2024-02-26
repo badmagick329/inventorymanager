@@ -6,13 +6,15 @@ import { useLocationHistory } from '@/hooks';
 import { usePathname } from 'next/navigation';
 import { isOrderHistoryArray } from '@/predicates';
 import OrderHistoryAccordian from './_components/order-history-accordian';
-import { Button, Link } from '@nextui-org/react';
+import { Button, Input, Link } from '@nextui-org/react';
 import { APP_LOCATIONS } from '@/consts/urls';
-import PaddedDivider from '@/components/padded-divider';
+import { useState } from 'react';
 
 export default function LocationHistory() {
   const pathname = usePathname();
   const locationId = pathname.split('/').pop();
+  const [searchValue, setSearchValue] = useState('');
+
   if (!locationId) {
     return <ConnectionError message={'Invalid URL'} />;
   }
@@ -50,12 +52,24 @@ export default function LocationHistory() {
           Back to Locations
         </Button>
       </div>
+      <div className='flex w-full justify-center'>
+        <Input
+          className='max-w-[540px]'
+          type='search'
+          placeholder='Search by item name'
+          size='sm'
+          fullWidth
+          onChange={(e) => {
+            setSearchValue(e.target.value);
+          }}
+        />
+      </div>
       {orderHistories.map((order, index) => (
-        <div key={index} className='flex flex-col p-4'>
-          <div className='flex flex-col rounded-md border-1 border-default-400'>
-            <OrderHistoryAccordian orderHistory={order} />
-          </div>
-        </div>
+        <OrderHistoryAccordian
+          key={index}
+          orderHistory={order}
+          searchValue={searchValue}
+        />
       ))}
     </div>
   );
