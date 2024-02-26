@@ -2,7 +2,7 @@
 import { useLogout } from '@/hooks';
 import { APP_LOGIN } from '@/consts/urls';
 import { useRouter } from 'next/navigation';
-import { useAdminStatus } from '@/app/context/adminProvider';
+import { useAdminStatus } from '@/app/context/admin-provider';
 
 export default function AdminLayout({
   children,

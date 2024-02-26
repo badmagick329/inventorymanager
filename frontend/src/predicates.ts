@@ -6,6 +6,12 @@ import {
   Location,
   User,
   VendorResponse,
+  OrderHistory,
+  Delta,
+  Change,
+  HistoricalOrder,
+  HistoricalSale,
+  SaleHistory,
 } from './types';
 
 export function isLocation(body: any): body is Location {
@@ -127,4 +133,95 @@ export function isVendorResponse(body: any): body is VendorResponse {
 
 export function isVendorResponseArray(body: any): body is VendorResponse[] {
   return Array.isArray(body) && body.every(isVendorResponse);
+}
+
+export function isChange(body: any): body is Change {
+  return (
+    body &&
+    typeof body === 'object' &&
+    typeof body.field === 'string' &&
+    (typeof body.oldValue === 'string' ||
+      typeof body.oldValue === 'number' ||
+      body.oldValue === null) &&
+    (typeof body.newValue === 'string' ||
+      typeof body.newValue === 'number' ||
+      body.newValue === null)
+  );
+}
+
+export function isChangeArray(body: any): body is Change[] {
+  return Array.isArray(body) && body.every(isChange);
+}
+
+export function isDelta(body: any): body is Delta {
+  return (
+    body &&
+    typeof body === 'object' &&
+    isChangeArray(body.changes) &&
+    typeof body.lastModified === 'string'
+  );
+}
+
+export function isDeltaArray(body: any): body is Delta[] {
+  return Array.isArray(body) && body.every(isDelta);
+}
+
+export function isHistoricalOrder(body: any): body is HistoricalOrder {
+  return (
+    body &&
+    typeof body === 'object' &&
+    typeof body.id === 'number' &&
+    typeof body.name === 'string' &&
+    (body.date === null || typeof body.date === 'string') &&
+    typeof body.pricePerItem === 'number' &&
+    typeof body.quantity === 'number' &&
+    typeof body.currentSalePrice === 'number' &&
+    typeof body.created === 'string' &&
+    typeof body.lastModifiedBy === 'string' &&
+    typeof body.lastModified === 'string'
+  );
+}
+
+export function isHistoricalSale(body: any): body is HistoricalSale {
+  return (
+    body &&
+    typeof body === 'object' &&
+    typeof body.id === 'number' &&
+    (body.date === null || typeof body.date === 'string') &&
+    typeof body.pricePerItem === 'number' &&
+    typeof body.quantity === 'number' &&
+    typeof body.vendor === 'string' &&
+    typeof body.created === 'string' &&
+    typeof body.lastModifiedBy === 'string' &&
+    typeof body.lastModified === 'string'
+  );
+}
+
+export function isSaleHistory(body: any): body is SaleHistory {
+  return (
+    body &&
+    typeof body === 'object' &&
+    (body.first === null || isHistoricalSale(body.first)) &&
+    (body.last === null || isHistoricalSale(body.last)) &&
+    isDeltaArray(body.deltas)
+  );
+}
+
+export function isOrderHistory(body: any): body is OrderHistory {
+  return (
+    body &&
+    typeof body === 'object' &&
+    isHistoricalOrder(body.first) &&
+    (body === null || isHistoricalOrder(body.last)) &&
+    isDeltaArray(body.deltas) &&
+    isSaleHistoryArray(body.sales)
+  );
+}
+
+export function isOrderHistoryArray(body: any): body is OrderHistory[] {
+  return Array.isArray(body) && body.every(isOrderHistory);
+}
+
+export function isSaleHistoryArray(body: any): body is SaleHistory[] {
+  return Array.isArray(body) && body.every(isSaleHistory);
 }

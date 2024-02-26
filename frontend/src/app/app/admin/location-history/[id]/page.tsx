@@ -4,6 +4,8 @@ import React from 'react';
 import { ConnectionError } from '@/components/errors';
 import { useLocationHistory } from '@/hooks';
 import { usePathname } from 'next/navigation';
+import { isOrderHistoryArray } from '@/predicates';
+import OrderHistoryAccordian from './_components/order-history-accordian';
 
 export default function LocationHistory() {
   const pathname = usePathname();
@@ -18,6 +20,23 @@ export default function LocationHistory() {
   if (isLoading) {
     return <Spinner />;
   }
-  console.log(data);
-  return <span>{JSON.stringify(data, null, 2)}</span>;
+  if (!isOrderHistoryArray(data)) {
+    return (
+      <ConnectionError
+        message={
+          'There may be an error in the data returned. Please contact the admin'
+        }
+      />
+    );
+  }
+
+  return (
+    <div className='flex w-full flex-col gap-4'>
+      {data.map((order, index) => (
+        <div key={index}>
+          <OrderHistoryAccordian orderHistory={order} />
+        </div>
+      ))}
+    </div>
+  );
 }

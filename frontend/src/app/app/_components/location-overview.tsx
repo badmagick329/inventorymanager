@@ -1,5 +1,5 @@
 import { formatCurrency, formatNumber } from '@/utils';
-import { useAdminStatus } from '@/app/context/adminProvider';
+import { useAdminStatus } from '@/app/context/admin-provider';
 import { Button, Tooltip } from '@nextui-org/react';
 import { ScrollText } from 'lucide-react';
 import { DELAY_500, ICON_MD } from '@/consts';

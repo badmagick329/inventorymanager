@@ -103,11 +103,14 @@ class OrderSerializer(serializers.BaseSerializer):
 
 
 class HistoricalDelta:
-    def __init__(self, new, old):
-        self.new = new
+    def __init__(self, old, new):
         self.old = old
+        self.new = new
         self.changes = [d for d in new.diff_against(old).changes]
         self.last_modified = new.instance.last_modified
+
+    def __str__(self):
+        return f"{len(self.changes)} changes as of {self.last_modified}"
 
 
 class OrderHistorySerializer:
@@ -169,21 +172,21 @@ class OrderDeltaSerializer:
 
                 serialized = {
                     "field": self.field_map.get(change.field, change.field),
-                    "old": old_username,
-                    "new": new_username,
+                    "oldValue": old_username,
+                    "newValue": new_username,
                 }
             else:
                 serialized = {
                     "field": self.field_map.get(change.field, change.field),
-                    "old": change.old,
-                    "new": change.new,
+                    "oldValue": change.old,
+                    "newValue": change.new,
                 }
             serialized_changes.append(serialized)
         last_modified = self.delta.last_modified
         if last_modified:
             last_modified = last_modified.strftime("%Y-%m-%d %H:%M:%S")
         return {
-            "changeList": serialized_changes,
+            "changes": serialized_changes,
             "lastModified": last_modified,
         }
 
@@ -207,6 +210,7 @@ class HistoricalOrderSerializer:
             "pricePerItem": self.instance.price_per_item,
             "quantity": self.instance.quantity,
             "currentSalePrice": self.instance.current_sale_price,
+            "created": self.instance.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "lastModifiedBy": self.instance.last_modified_by.username,
             "lastModified": self.instance.last_modified.strftime(
                 "%Y-%m-%d %H:%M:%S"
@@ -272,29 +276,29 @@ class SaleDeltaSerializer:
 
                 serialized = {
                     "field": self.field_map.get(change.field, change.field),
-                    "old": old_username,
-                    "new": new_username,
+                    "oldValue": old_username,
+                    "newValue": new_username,
                 }
             elif change.field == "vendor":
                 old_vendor = vendor_or_none(change.old)
                 new_vendor = vendor_or_none(change.new)
                 serialized = {
                     "field": self.field_map.get(change.field, change.field),
-                    "old": old_vendor,
-                    "new": new_vendor,
+                    "oldValue": old_vendor,
+                    "newValue": new_vendor,
                 }
             else:
                 serialized = {
                     "field": self.field_map.get(change.field, change.field),
-                    "old": change.old,
-                    "new": change.new,
+                    "oldValue": change.old,
+                    "newValue": change.new,
                 }
             serialized_changes.append(serialized)
         last_modified = self.delta.last_modified
         if last_modified:
             last_modified = last_modified.strftime("%Y-%m-%d %H:%M:%S")
         return {
-            "changeList": serialized_changes,
+            "changes": serialized_changes,
             "lastModified": last_modified,
         }
 
@@ -317,6 +321,7 @@ class HistoricalSaleSerializer:
             "pricePerItem": self.instance.price_per_item,
             "quantity": self.instance.quantity,
             "vendor": self.instance.vendor.name,
+            "created": self.instance.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "lastModifiedBy": self.instance.last_modified_by.username,
             "lastModified": self.instance.last_modified.strftime(
                 "%Y-%m-%d %H:%M:%S"
