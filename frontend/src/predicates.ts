@@ -201,7 +201,7 @@ export function isSaleHistory(body: any): body is SaleHistory {
   return (
     body &&
     typeof body === 'object' &&
-    (body.first === null || isHistoricalSale(body.first)) &&
+    isHistoricalSale(body.first) &&
     (body.last === null || isHistoricalSale(body.last)) &&
     isDeltaArray(body.deltas)
   );
