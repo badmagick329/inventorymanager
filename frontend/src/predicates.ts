@@ -191,6 +191,7 @@ export function isHistoricalSale(body: any): body is HistoricalSale {
     typeof body.pricePerItem === 'number' &&
     typeof body.quantity === 'number' &&
     typeof body.vendor === 'string' &&
+    typeof body.amountPaid === 'number' &&
     typeof body.created === 'string' &&
     typeof body.lastModifiedBy === 'string' &&
     typeof body.lastModified === 'string'

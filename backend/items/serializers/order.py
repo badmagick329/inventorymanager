@@ -314,6 +314,7 @@ class HistoricalSaleSerializer:
             if self.instance.date
             else None
         )
+        amount_paid = self.instance.instance.amount_paid()
 
         return {
             "id": self.instance.id,
@@ -321,6 +322,7 @@ class HistoricalSaleSerializer:
             "pricePerItem": self.instance.price_per_item,
             "quantity": self.instance.quantity,
             "vendor": self.instance.vendor.name,
+            "amountPaid": amount_paid,
             "created": self.instance.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "lastModifiedBy": self.instance.last_modified_by.username,
             "lastModified": self.instance.last_modified.strftime(

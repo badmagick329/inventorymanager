@@ -1,29 +1,29 @@
-import { HistoricalOrder } from '@/types';
-import OrderHistoryCard from './order-history-card';
+import { HistoricalSale } from '@/types';
+import SaleHistoryCard from './sale-history-card';
 import { ICON_MD } from '@/consts';
 import { MoveRight } from 'lucide-react';
 
-export default function OrderChangeCards({
+export default function SaleChangeCards({
   first,
   last,
 }: {
-  first: HistoricalOrder;
-  last: HistoricalOrder | null;
+  first: HistoricalSale;
+  last: HistoricalSale | null;
 }) {
   return (
-    <div className='flex w-full flex-wrap gap-2 px-2'>
+    <div className='flex w-full flex-wrap gap-2'>
       {last && (
         <div className='flex items-center gap-2'>
           <div className='flex flex-col items-center gap-2'>
             <span>Oldest</span>
-            <OrderHistoryCard order={last} />
+            <SaleHistoryCard sale={last} />
           </div>
           <MoveRight size={ICON_MD} />
         </div>
       )}
       <div className='flex flex-col items-center gap-2'>
         <span>Latest</span>
-        <OrderHistoryCard order={first} />
+        <SaleHistoryCard sale={first} />
       </div>
     </div>
   );

@@ -24,7 +24,7 @@ export default function ChangesDisplay({
           return null;
         }
         return (
-          <div className='px-4' key={index}>
+          <div key={index}>
             <div className='flex gap-2'>
               <span className='font-semibold'>
                 {fieldMap.get(change.field) ||
@@ -32,9 +32,7 @@ export default function ChangesDisplay({
                     change.field.slice(1)}
               </span>
               <span> </span>
-              <span className='text-danger-500'>
-                {change.oldValue || '-'}
-              </span>
+              <span className='text-danger-500'>{change.oldValue || '-'}</span>
               <MoveRight size={ICON_MD} />
               <span className='text-success-500'>{change.newValue || '-'}</span>
             </div>
@@ -42,7 +40,7 @@ export default function ChangesDisplay({
         );
       })}
       {changes.length > 0 && (
-        <div className='px-4'>
+        <div>
           {lastModifiedBy} - {lastModified}
         </div>
       )}

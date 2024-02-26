@@ -1,4 +1,4 @@
-import { OrderResponse, SaleResponse } from '@/types';
+import { OrderResponse, SaleResponse, Delta } from '@/types';
 
 export function formatNumber(num: number) {
   const abs = Math.abs(num);
@@ -97,4 +97,20 @@ export function createSalesTableData(sales: SaleResponse[]) {
 
 export function getISODateString(date: Date) {
   return date.toISOString().split('T')[0];
+}
+
+export function injectDeltasWithUser(deltas: Delta[], firstUser: string) {
+  let lastUser = firstUser;
+  return deltas.map((delta) => {
+    const changes = delta.changes.map((change) => {
+      if (
+        change.field === 'lastModifiedBy' &&
+        typeof change.newValue === 'string'
+      ) {
+        lastUser = change.newValue;
+      }
+      return change;
+    });
+    return { ...delta, changes, lastModifiedBy: lastUser };
+  });
 }
