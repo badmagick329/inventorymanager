@@ -2,7 +2,11 @@ import React from 'react';
 import { Accordion, AccordionItem } from '@nextui-org/react';
 import { Delta, OrderHistory } from '@/types';
 import OrderChangeCards from './order-change-cards';
-import OrderDeltasList from './order-deltas-list';
+import DeltasList from './deltas-list';
+import SaleHistories from './sale-histories';
+import { ShoppingCart } from 'lucide-react';
+import { ICON_MD } from '@/consts';
+import { injectDeltasWithUser } from '@/utils';
 
 export default function OrderHistoryAccordian({
   orderHistory,
@@ -13,33 +17,36 @@ export default function OrderHistoryAccordian({
     orderHistory.deltas,
     orderHistory.first.lastModifiedBy || ''
   );
+  let totalChanges = orderHistory.deltas.length;
+  totalChanges += orderHistory.sales.reduce(
+    (acc, sale) => acc + sale.deltas.length,
+    0
+  );
   return (
     <Accordion selectionMode='multiple'>
-      <AccordionItem title={`${orderHistory.first.name}`}>
-        <div className='flex w-full flex-col gap-4 px-2'>
+      <AccordionItem
+        aria-label='Order History'
+        title={
+          <div className='flex w-full gap-4'>
+            <ShoppingCart size={ICON_MD} />
+            <span>{orderHistory.first.name}</span>
+            <span className='text-xs text-default-500'>
+              {totalChanges} changes - since {orderHistory.first.created}
+            </span>
+          </div>
+        }
+      >
+        <div className='flex w-full flex-col gap-4'>
           <OrderChangeCards
             first={orderHistory.first}
             last={orderHistory.last}
           />
-          <OrderDeltasList deltas={orderHistory.deltas} />
+          <DeltasList deltas={orderHistory.deltas} message='in this order' />
+        </div>
+        <div className='flex flex-col py-4'>
+          <SaleHistories saleHistories={orderHistory.sales} />
         </div>
       </AccordionItem>
     </Accordion>
   );
-}
-
-function injectDeltasWithUser(deltas: Delta[], firstUser: string) {
-  let lastUser = firstUser;
-  return deltas.map((delta) => {
-    const changes = delta.changes.map((change) => {
-      if (
-        change.field === 'lastModifiedBy' &&
-        typeof change.newValue === 'string'
-      ) {
-        lastUser = change.newValue;
-      }
-      return change;
-    });
-    return { ...delta, changes, lastModifiedBy: lastUser };
-  });
 }

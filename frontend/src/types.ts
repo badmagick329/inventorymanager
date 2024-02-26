@@ -165,7 +165,7 @@ export type HistoricalOrder = {
 };
 
 export type SaleHistory = {
-  first: HistoricalSale | null;
+  first: HistoricalSale;
   last: HistoricalSale | null;
   deltas: Delta[] | [];
 };
@@ -176,6 +176,7 @@ export type HistoricalSale = {
   pricePerItem: number;
   quantity: number;
   vendor: string;
+  amountPaid: number;
   created: string;
   lastModifiedBy: string;
   lastModified: string;
