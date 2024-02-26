@@ -7,7 +7,7 @@ export default function HistoricalOrderCard({
   order: HistoricalOrder;
 }) {
   return (
-    <Card className='min-w-[280px] max-w-[400px]'>
+    <Card className='min-w-[280px] max-w-[400px] px-2'>
       <CardHeader>
         <div className='flex w-full gap-2'>
           <span>{order.name}</span>
