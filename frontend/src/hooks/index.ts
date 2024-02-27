@@ -18,6 +18,7 @@ import useSubmitLoginForm from './useSubmitLoginForm';
 import useOrderFormDefaults from './useOrderFormDefaults';
 import useVendors from './useVendors';
 import useLocationHistory from './useLocationHistory';
+import useLocalStorage from './useLocalStorage';
 
 export {
   useLocations,
@@ -40,4 +41,5 @@ export {
   useOrderFormDefaults,
   useVendors,
   useLocationHistory,
+  useLocalStorage,
 };

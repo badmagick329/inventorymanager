@@ -10,6 +10,7 @@ import { UseFormRegister } from 'react-hook-form';
 import { Button, Input } from '@nextui-org/react';
 import { getISODateString } from '@/utils';
 import { useState } from 'react';
+import HelpTooltip from '@/components/help-tooltip';
 
 type OrderDateInputProps = {
   control: Control<OrderFormValues, any>;
@@ -17,6 +18,7 @@ type OrderDateInputProps = {
   formState: FormState<OrderFormValues>;
   setValue: UseFormSetValue<OrderFormValues>;
   getValues: UseFormGetValues<OrderFormValues>;
+  showHelpText?: boolean;
 };
 
 export default function OrderDateInput({
@@ -25,6 +27,7 @@ export default function OrderDateInput({
   formState,
   setValue,
   getValues,
+  showHelpText,
 }: OrderDateInputProps) {
   const [_, setDate] = useState(getValues().date);
 
@@ -34,9 +37,12 @@ export default function OrderDateInput({
         <Button onPress={() => handleClick(getValues, setValue, setDate)}>
           {dateIsEmpty(getValues) ? 'Use Today' : 'Clear Date'}
         </Button>
-        <span className='text-danger-500'>
-          {formState.errors.date?.message}
-        </span>
+        <div className='flex w-full justify-between px-2'>
+          <span className='text-danger-500'>
+            {formState.errors.date?.message}
+          </span>
+          {showHelpText && <HelpTooltip content='Date of purchase' />}
+        </div>
       </div>
       <Controller
         name='date'

@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useCreateOrder, useOrderFormDefaults } from '@/hooks';
 import { useState } from 'react';
 
-import { ModalContent, ModalFooter, Spacer, Checkbox } from '@nextui-org/react';
+import { ModalContent, ModalFooter, Checkbox } from '@nextui-org/react';
 import { Spinner } from '@/components/loaders';
 import { OrderFormValues } from '@/types';
 import OrderNameInput from './order-name-input';
@@ -13,6 +13,8 @@ import OrderSalePriceInput from './order-sale-price-input';
 import UpdateButton from '@/components/update-button';
 import CreateButton from '@/components/create-button';
 import CancelButton from '@/components/cancel-button';
+import { useLocalStorage } from '@/hooks';
+import ItemFormHeader from '@/components/item-form-header';
 
 type CreateOrderMutation = ReturnType<typeof useCreateOrder>['mutateAsync'];
 
@@ -27,6 +29,7 @@ export default function CreateOrderForm({
 }) {
   const [isCostPerItem, setIsCostPerItem] = useState(true);
   const [isSalePricePerItem, setIsSalePricePerItem] = useState(true);
+  const [value, updateValue] = useLocalStorage('showHelp', true);
 
   const fetchDefaults = useOrderFormDefaults({
     locationId,
@@ -63,10 +66,11 @@ export default function CreateOrderForm({
         <ModalContent>
           {(onClose) => (
             <div className='flex flex-col gap-4 px-4'>
-              <Spacer y={2} />
-              <span className='text-center text-2xl font-semibold'>
-                {orderId ? 'Edit Item' : 'Add Item'}
-              </span>
+              <ItemFormHeader
+                value={value}
+                updateValue={() => updateValue(!value)}
+                title={orderId ? 'Edit Item' : 'Add Item'}
+              />
               <OrderNameInput
                 control={control}
                 register={register}
@@ -78,6 +82,7 @@ export default function CreateOrderForm({
                 formState={formState}
                 setValue={setValue}
                 getValues={getValues}
+                showHelpText={value}
               />
               <OrderQuantityInput
                 control={control}
@@ -103,6 +108,7 @@ export default function CreateOrderForm({
                   control={control}
                   register={register}
                   formState={formState}
+                  showHelpText={value}
                 />
                 <Checkbox
                   defaultSelected={isSalePricePerItem}
