@@ -27,16 +27,7 @@ export default function OrderHistoryAccordian({
     );
   }, [orderHistory.deltas, orderHistory.first.lastModifiedBy]);
 
-  const totalChanges = useMemo(() => {
-    let changes = deltas.length - orderHistory.sales.length;
-    changes += orderHistory.sales.reduce((acc, sale) => {
-      return (
-        acc + sale.deltas.filter((delta) => delta.changes.length > 0).length
-      );
-    }, 0);
-    return changes;
-  }, [deltas, orderHistory.sales]);
-
+  const totalChanges = deltas.length - orderHistory.sales.length;
   const changeText = totalChanges > 1 ? 'changes' : 'change';
 
   return (
