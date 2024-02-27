@@ -13,7 +13,7 @@ export default function Locations() {
   const { error, isError, isLoading, data: locations } = useLocations();
 
   if (isError) {
-    console.log(`Received error ${error}`);
+    console.error(`Received error ${error}`);
     router.push(APP_LOGIN);
   }
 

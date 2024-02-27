@@ -27,7 +27,7 @@ export default function useCreateSale() {
       });
     },
     onError: (error) => {
-      console.log(`error during update/create sale. ${error}`);
+      console.error(`error during update/create sale. ${error}`);
     },
   });
   return mutation;

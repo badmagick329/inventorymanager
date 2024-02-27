@@ -30,7 +30,7 @@ export default function useDeleteSale() {
       });
     },
     onError: (error, mutationVars) => {
-      console.log(`error during delete sale. ${error}`);
+      console.error(`error during delete sale. ${error}`);
       const { locationId, orderId } = mutationVars;
       queryClient.invalidateQueries({ queryKey: ['sales', orderId] });
       queryClient.invalidateQueries({

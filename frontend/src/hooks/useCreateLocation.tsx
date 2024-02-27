@@ -19,7 +19,7 @@ export default function useCreateLocation() {
       queryClient.invalidateQueries({ queryKey: ['locations'], exact: true });
     },
     onError: (error) => {
-      console.log(`error during update/create location. ${error}`);
+      console.error(`error during update/create location. ${error}`);
     },
   });
   return mutation;

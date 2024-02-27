@@ -50,7 +50,7 @@ export default function useSaleFormDefaults({
       // queryClient.setQueryData(['sales', orderId, saleId], data);
     },
     onError: (error) => {
-      console.log(`error during sales defaults. ${error}`);
+      console.error(`error during sales defaults. ${error}`);
     },
   });
   return mutation;

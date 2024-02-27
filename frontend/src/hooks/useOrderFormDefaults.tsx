@@ -42,7 +42,7 @@ export default function useOrderFormDefaults({
       // queryClient.setQueryData(['orders', locationId, orderId], data);
     },
     onError: (error) => {
-      console.log(`error during order defaults. ${error}`);
+      console.error(`error during order defaults. ${error}`);
     },
   });
   return mutation;

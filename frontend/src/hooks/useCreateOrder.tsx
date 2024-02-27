@@ -24,7 +24,7 @@ export default function useCreateOrder() {
       });
     },
     onError: (error) => {
-      console.log(`error during update/create order. ${error}`);
+      console.error(`error during update/create order. ${error}`);
     },
   });
   return mutation;

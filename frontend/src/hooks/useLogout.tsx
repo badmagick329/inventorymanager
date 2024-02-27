@@ -14,7 +14,7 @@ export default function useLogout() {
     },
     onSuccess: () => {},
     onError: (error) => {
-      console.log(`error during logout. ${error}`);
+      console.error(`error during logout. ${error}`);
     },
   });
   return mutation;

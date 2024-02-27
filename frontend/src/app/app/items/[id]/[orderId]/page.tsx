@@ -26,7 +26,7 @@ export default function Sales() {
   } = useOrderDetail(locationId, orderId);
 
   if (isError || orderIsError) {
-    console.log('Received errors', error, orderError);
+    console.error('Received errors', error, orderError);
     router.push(APP_LOGIN);
   }
   const currentOrder = orderData;
