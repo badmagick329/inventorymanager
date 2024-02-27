@@ -1,6 +1,5 @@
 import { Delta } from '@/types';
 import ChangesDisplay from './changes-display';
-import PaddedDivider from '@/components/padded-divider';
 import { Accordion, AccordionItem } from '@nextui-org/react';
 
 export default function DeltasList({
@@ -20,21 +19,20 @@ export default function DeltasList({
         <AccordionItem
           title={`${nonEmptyDeltas.length} change${nonEmptyDeltas.length > 1 ? 's' : ''} ${message || ''}`}
         >
-          <>
+          <div className='flex flex-col divide-y-2 divide-default-500'>
             {deltas.map((delta, index) => {
               if (delta.changes.length === 0) return null;
               return (
-                <div key={index} className='flex flex-col'>
+                <div key={index} className='flex flex-col py-2'>
                   <ChangesDisplay
                     changes={delta.changes}
                     lastModifiedBy={delta.lastModifiedBy}
                     lastModified={delta.lastModified}
                   />
-                  {index < nonEmptyDeltas.length - 1 && <PaddedDivider />}
                 </div>
               );
             })}
-          </>
+          </div>
         </AccordionItem>
       </Accordion>
     </div>
