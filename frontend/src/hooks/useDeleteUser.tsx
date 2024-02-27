@@ -10,7 +10,8 @@ export default function useDeleteUser() {
     mutationFn: deleteUser,
     retry: false,
     onSettled: () => {},
-    onSuccess: (_, userId) => {
+    onSuccess: (_, mutationVars) => {
+      const { userId } = mutationVars;
       const previousData = queryClient.getQueryData(['users']);
       if (!(previousData && isUserArray(previousData))) {
         queryClient.invalidateQueries({ queryKey: ['users'] });
@@ -28,6 +29,6 @@ export default function useDeleteUser() {
   return mutation;
 }
 
-async function deleteUser(userId: number) {
+async function deleteUser({ userId }: { userId: number }) {
   return await axios.delete(`${NEXT_USERS}/${userId}`);
 }

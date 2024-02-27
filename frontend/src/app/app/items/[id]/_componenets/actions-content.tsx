@@ -3,10 +3,11 @@ import { DeleteOrder } from '@/types';
 import EditOrderModal from './edit-order-modal';
 import { ICON_SM } from '@/consts';
 import { List, Trash } from 'lucide-react';
-import { Button, Link } from '@nextui-org/react';
+import { Button, Link, useDisclosure } from '@nextui-org/react';
 import { APP_ITEMS } from '@/consts/urls';
 import { Tooltip } from '@nextui-org/react';
 import { DELAY_500 } from '@/consts';
+import DeleteModal from '@/components/delete-modal';
 
 type ActionsContentProps = {
   rowId: number;
@@ -19,6 +20,8 @@ export default function ActionsContent({
   locationId,
   deleteOrder,
 }: ActionsContentProps) {
+  const disclosure = useDisclosure();
+
   return (
     <>
       <div className='flex gap-2'>
@@ -32,7 +35,7 @@ export default function ActionsContent({
             size='sm'
             variant='flat'
             isIconOnly
-            onPress={() => deleteOrder.mutate(rowId)}
+            onPress={disclosure.onOpen}
             isDisabled={deleteOrder.isPending}
           >
             <Trash size={ICON_SM} />
@@ -51,6 +54,11 @@ export default function ActionsContent({
           </Button>
         </Tooltip>
       </div>
+      <DeleteModal
+        params={{ orderId: rowId }}
+        disclosure={disclosure}
+        mutation={deleteOrder}
+      />
     </>
   );
 }

@@ -26,7 +26,7 @@ export default function ConfirmedDelete({
         </Button>
         <DeleteModal
           disclosure={disclosure}
-          id={userId}
+          params={{ userId }}
           mutation={deleteUser}
         />
       </div>

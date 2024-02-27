@@ -10,7 +10,8 @@ export default function useDeleteLocation() {
     mutationFn: deleteLocation,
     retry: false,
     onSettled: () => {},
-    onSuccess: (_, locationId) => {
+    onSuccess: (_, mutationVars) => {
+      const { locationId } = mutationVars;
       if (!locationId) {
         return;
       }
@@ -33,6 +34,6 @@ export default function useDeleteLocation() {
   return mutation;
 }
 
-async function deleteLocation(locationId: number) {
+async function deleteLocation({ locationId }: { locationId: number }) {
   return await axios.delete(`${NEXT_LOCATIONS}/${locationId}`);
 }

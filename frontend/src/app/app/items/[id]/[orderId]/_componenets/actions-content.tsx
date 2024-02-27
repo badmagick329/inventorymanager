@@ -1,10 +1,11 @@
 import { ICON_SM } from '@/consts';
-import { Button } from '@nextui-org/react';
+import { Button, useDisclosure } from '@nextui-org/react';
 import { DeleteSale } from '@/types';
 import { Trash } from 'lucide-react';
 import EditSaleModal from './edit-sale-modal';
 import { Tooltip } from '@nextui-org/react';
 import { DELAY_500 } from '@/consts';
+import DeleteModal from '@/components/delete-modal';
 
 type ActionsContentProps = {
   rowId: number;
@@ -19,6 +20,8 @@ export default function ActionsContent({
   orderId,
   deleteSale,
 }: ActionsContentProps) {
+  const disclosure = useDisclosure();
+
   return (
     <div className='flex gap-2'>
       <EditSaleModal
@@ -33,17 +36,16 @@ export default function ActionsContent({
           variant='flat'
           isIconOnly
           isDisabled={deleteSale.isPending}
-          onPress={() =>
-            deleteSale.mutate({
-              saleId: rowId,
-              locationId,
-              orderId,
-            })
-          }
+          onPress={disclosure.onOpen}
         >
           <Trash size={ICON_SM} />
         </Button>
       </Tooltip>
+      <DeleteModal
+        params={{ saleId: rowId, locationId, orderId }}
+        disclosure={disclosure}
+        mutation={deleteSale}
+      />
     </div>
   );
 }
