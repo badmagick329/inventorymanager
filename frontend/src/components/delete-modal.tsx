@@ -15,17 +15,21 @@ import { AxiosResponse } from 'axios';
 type MutationResult = UseMutationResult<
   AxiosResponse<any, any>,
   unknown,
-  number,
+  any,
   unknown
 >;
 
 type ModalProps = {
-  id: number;
+  params: any;
   disclosure: Disclosure;
   mutation: MutationResult;
 };
 
-export default function DeleteModal({ id, disclosure, mutation }: ModalProps) {
+export default function DeleteModal({
+  params,
+  disclosure,
+  mutation,
+}: ModalProps) {
   return (
     <Modal
       className='mx-4 flex w-full'
@@ -53,7 +57,7 @@ export default function DeleteModal({ id, disclosure, mutation }: ModalProps) {
                   color='danger'
                   isDisabled={mutation.isPending}
                   onPress={() => {
-                    mutation.mutateAsync(id).then(() => {
+                    mutation.mutateAsync(params).then(() => {
                       onClose();
                     });
                   }}

@@ -10,7 +10,8 @@ export default function useDeleteOrder() {
     mutationFn: deleteOrder,
     retry: false,
     onSettled: () => {},
-    onSuccess: (_, orderId) => {
+    onSuccess: (_, mutationVars) => {
+      const { orderId } = mutationVars;
       const previousData = queryClient.getQueryData(['orders']);
       if (!isOrderResponseArray(previousData)) {
         queryClient.invalidateQueries({ queryKey: ['orders'] });
@@ -30,6 +31,6 @@ export default function useDeleteOrder() {
   return mutation;
 }
 
-async function deleteOrder(orderId: number) {
+async function deleteOrder({ orderId }: { orderId: number }) {
   return await axios.delete(`${NEXT_ORDER_DETAIL}/${orderId}`);
 }

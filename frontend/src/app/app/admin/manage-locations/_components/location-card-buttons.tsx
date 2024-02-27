@@ -39,7 +39,7 @@ export default function LocationCardButtons({
         <Trash size={ICON_MD} /> Delete
       </Button>
       <DeleteModal
-        id={locationId}
+        params={{ locationId }}
         disclosure={disclosure}
         mutation={deleteLocation}
       />
