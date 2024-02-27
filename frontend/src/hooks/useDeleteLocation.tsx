@@ -27,7 +27,7 @@ export default function useDeleteLocation() {
       queryClient.invalidateQueries({ queryKey: ['locations'], exact: true });
     },
     onError: (error) => {
-      console.log(`error during delete location. ${error}`);
+      console.error(`error during delete location. ${error}`);
       queryClient.invalidateQueries({ queryKey: ['locations'] });
     },
   });

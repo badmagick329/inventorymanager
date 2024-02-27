@@ -19,7 +19,7 @@ export default function useCreateUser() {
       queryClient.invalidateQueries({ queryKey: ['users'], exact: true });
     },
     onError: (error) => {
-      console.log(`error during create user. ${error}`);
+      console.error(`error during create user. ${error}`);
     },
   });
   return mutation;

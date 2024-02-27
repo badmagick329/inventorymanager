@@ -24,7 +24,7 @@ export default function useDeleteOrder() {
       queryClient.invalidateQueries({ queryKey: ['orders'], exact: true });
     },
     onError: (error) => {
-      console.log(`error during delete order. ${error}`);
+      console.error(`error during delete order. ${error}`);
       queryClient.invalidateQueries({ queryKey: ['orders'] });
     },
   });
