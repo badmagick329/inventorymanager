@@ -19,6 +19,9 @@ import SalePrice from './sale-price-input';
 import SaleQuantity from './sale-quantity-input';
 import SaleAmountPaid from './sale-amount-paid-input';
 import useSaleFormDefaults from '@/hooks/useSaleFormDefaults';
+import CancelButton from '@/components/cancel-button';
+import UpdateButton from '@/components/update-button';
+import CreateButton from '@/components/create-button';
 
 type CreateSaleMutation = ReturnType<typeof useCreateSale>['mutateAsync'];
 
@@ -131,16 +134,12 @@ export default function CreateSaleForm({
                 </Checkbox>
               </div>
               <ModalFooter>
-                <Button color='danger' variant='light' onPress={onClose}>
-                  Cancel
-                </Button>
-                <Button
-                  type='submit'
-                  color='primary'
-                  isLoading={formState.isSubmitting}
-                >
-                  {saleId ? 'Update' : 'Create'}
-                </Button>
+                <CancelButton onCancel={onClose} />
+                {saleId ? (
+                  <UpdateButton formState={formState} />
+                ) : (
+                  <CreateButton formState={formState} />
+                )}
               </ModalFooter>
             </div>
           )}
