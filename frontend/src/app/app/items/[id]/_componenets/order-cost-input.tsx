@@ -7,6 +7,7 @@ type OrderCostInputProps = {
   control: Control<OrderFormValues, any>;
   register: UseFormRegister<OrderFormValues>;
   formState: FormState<OrderFormValues>;
+  showHelpText?: boolean;
 };
 
 export default function OrderCostInput({
@@ -16,7 +17,11 @@ export default function OrderCostInput({
 }: OrderCostInputProps) {
   return (
     <>
-      <span className='text-danger-500'>{formState.errors.cost?.message}</span>
+      <div className='flex w-full justify-between px-2'>
+        <span className='text-danger-500'>
+          {formState.errors.cost?.message}
+        </span>
+      </div>
       <Controller
         name='cost'
         control={control}

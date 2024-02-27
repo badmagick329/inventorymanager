@@ -7,6 +7,7 @@ type OrderQuantityInputProps = {
   control: Control<OrderFormValues, any>;
   register: UseFormRegister<OrderFormValues>;
   formState: FormState<OrderFormValues>;
+  showHelpText?: boolean;
 };
 
 export default function OrderQuantityInput({
@@ -16,9 +17,11 @@ export default function OrderQuantityInput({
 }: OrderQuantityInputProps) {
   return (
     <>
-      <span className='text-danger-500'>
-        {formState.errors.quantity?.message}
-      </span>
+      <div className='flex w-full justify-between px-2'>
+        <span className='text-danger-500'>
+          {formState.errors.quantity?.message}
+        </span>
+      </div>
       <Controller
         name='quantity'
         control={control}

@@ -1,13 +1,7 @@
 import React from 'react';
 import { useForm, UseFormSetError } from 'react-hook-form';
 
-import {
-  ModalContent,
-  ModalFooter,
-  Button,
-  Spacer,
-  Checkbox,
-} from '@nextui-org/react';
+import { ModalContent, ModalFooter, Spacer, Checkbox } from '@nextui-org/react';
 import { useCreateSale } from '@/hooks';
 import axios from 'axios';
 import { useState } from 'react';
@@ -22,6 +16,8 @@ import useSaleFormDefaults from '@/hooks/useSaleFormDefaults';
 import CancelButton from '@/components/cancel-button';
 import UpdateButton from '@/components/update-button';
 import CreateButton from '@/components/create-button';
+import { useLocalStorage } from '@/hooks';
+import ItemFormHeader from '@/components/item-form-header';
 
 type CreateSaleMutation = ReturnType<typeof useCreateSale>['mutateAsync'];
 
@@ -38,6 +34,7 @@ export default function CreateSaleForm({
 }) {
   const [isSalePricePerItem, setIsSalePricePerItem] = useState(true);
   const [isAmountPaidPerItem, setIsAmountPaidPerItem] = useState(false);
+  const [value, updateValue] = useLocalStorage('showHelp', true);
 
   const fetchDefaults = useSaleFormDefaults({
     locationId,
@@ -84,14 +81,16 @@ export default function CreateSaleForm({
         <ModalContent>
           {(onClose) => (
             <div className='flex flex-col gap-4 px-4'>
-              <Spacer y={2} />
-              <span className='text-center text-2xl font-semibold'>
-                {orderId ? 'Edit Sale' : 'Add Sale'}
-              </span>
+              <ItemFormHeader
+                value={value}
+                updateValue={() => updateValue(!value)}
+                title={orderId ? 'Edit Sale' : 'Add Sale'}
+              />
               <SaleVendor
                 register={register}
                 formState={formState}
                 control={control}
+                showHelpText={value}
               />
               <SaleDate
                 register={register}
@@ -124,6 +123,7 @@ export default function CreateSaleForm({
                   register={register}
                   formState={formState}
                   control={control}
+                  showHelpText={value}
                 />
                 <Checkbox
                   defaultSelected={isAmountPaidPerItem}
