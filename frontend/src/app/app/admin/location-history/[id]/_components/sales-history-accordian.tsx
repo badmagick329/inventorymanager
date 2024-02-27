@@ -7,6 +7,7 @@ import { ICON_MD } from '@/consts';
 import { DollarSign } from 'lucide-react';
 import { injectDeltasWithUser } from '@/utils';
 import { useMemo } from 'react';
+import ItemChangeText from '@/components/item-change-text';
 
 export default function SaleHistoryAccordian({
   saleHistory,
@@ -24,8 +25,6 @@ export default function SaleHistoryAccordian({
     return deltas.filter((delta) => delta.changes.length > 0).length;
   }, [deltas]);
 
-  const changeText = totalChanges > 1 ? 'changes' : 'change';
-
   return (
     <Accordion selectionMode='multiple'>
       <AccordionItem
@@ -34,10 +33,12 @@ export default function SaleHistoryAccordian({
           <div className='flex w-full gap-4'>
             <DollarSign size={ICON_MD} />
             <span>Sale to {saleHistory.first.vendor}</span>
-            <span className='text-xs text-default-500'>
-              {totalChanges} {`${changeText}`} - since{' '}
-              {saleHistory.first.created}
-            </span>
+            <ItemChangeText
+              totalChanges={totalChanges}
+              created={saleHistory.first.created}
+              lastModifiedBy={saleHistory.first.lastModifiedBy}
+              lastModified={saleHistory.first.lastModified}
+            />
           </div>
         }
       >
