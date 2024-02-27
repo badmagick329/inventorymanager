@@ -12,6 +12,10 @@ export default function ManageLocation() {
   if (isError) {
     return <ConnectionError />;
   }
+  if (isLoading) {
+    return <Spinner />;
+  }
+
   if (locations) {
     return (
       <div className='flex w-full flex-col items-center gap-4 p-4'>
@@ -31,8 +35,5 @@ export default function ManageLocation() {
         </div>
       </div>
     );
-  }
-  if (isLoading) {
-    return <Spinner />;
   }
 }

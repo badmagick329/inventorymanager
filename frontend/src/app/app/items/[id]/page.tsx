@@ -14,7 +14,7 @@ import OrdersTable from './_componenets/orders-table';
 import { useState } from 'react';
 import { Location } from '@/types';
 import { useQueryClient } from '@tanstack/react-query';
-import { preFetchVendors } from '@/utils/requests';
+import { preFetchVendors as preFetchAdditionalVendorDetails } from '@/utils/requests';
 import MoreInformation from './_componenets/more-information';
 
 export default function Orders() {
@@ -45,12 +45,12 @@ export default function Orders() {
   if (!isOrderResponseArray(orders)) {
     return <ConnectionError message='Failed to load orders' />;
   }
-  preFetchVendors(queryClient, locationId);
+  preFetchAdditionalVendorDetails(queryClient, locationId);
 
   return (
     <div className='flex w-full flex-col justify-center p-4'>
       <Spacer y={2} />
-      <span className='text-2xl font-semibold text-center'>
+      <span className='text-center text-2xl font-semibold'>
         {location?.name}
       </span>
       <Spacer y={2} />

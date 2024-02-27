@@ -6,10 +6,6 @@ export default function SaleHistories({
 }: {
   saleHistories: SaleHistory[];
 }) {
-  const totalChanges = saleHistories.reduce(
-    (acc, sale) => acc + sale.deltas.length,
-    0
-  );
   if (saleHistories.length === 0) {
     return null;
   }

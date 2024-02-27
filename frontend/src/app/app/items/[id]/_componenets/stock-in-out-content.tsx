@@ -83,7 +83,7 @@ function getStyling(stockIn: number, stockOut: number) {
   } else if (stockIn === 0) {
     return 'text-default-500';
   } else if (stockIn <= 0) {
-    return 'text-danger-500 font-semibold';
+    return 'font-semibold text-danger-500';
   } else {
     return 'text-foreground';
   }
