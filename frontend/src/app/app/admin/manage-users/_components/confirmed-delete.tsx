@@ -2,7 +2,8 @@ import { Button } from '@nextui-org/react';
 import { ICON_MD } from '@/consts';
 import { Trash } from 'lucide-react';
 import { Disclosure } from '@/types';
-import DeleteModal from './delete-modal';
+import DeleteModal from '@/components/delete-modal';
+import { useDeleteUser } from '@/hooks';
 
 export default function ConfirmedDelete({
   disclosure,
@@ -11,6 +12,7 @@ export default function ConfirmedDelete({
   disclosure: Disclosure;
   userId: number;
 }) {
+  const deleteUser = useDeleteUser();
   return (
     <>
       <div className='flex w-full justify-center gap-4'>
@@ -22,7 +24,11 @@ export default function ConfirmedDelete({
         >
           <Trash size={ICON_MD} /> Delete
         </Button>
-        <DeleteModal disclosure={disclosure} userId={userId} />
+        <DeleteModal
+          disclosure={disclosure}
+          id={userId}
+          mutation={deleteUser}
+        />
       </div>
     </>
   );

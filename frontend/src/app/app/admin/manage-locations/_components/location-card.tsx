@@ -15,7 +15,7 @@ import LocationCardSkeleton from './location-card-skeleton';
 import LocationCardError from './location-card-error';
 import LocationCardHeader from './location-card-header';
 import LocationCardBody from './location-card-body';
-import ConfirmedDelete from './confirmed-delete';
+import LocationCardButtons from './location-card-buttons';
 
 type LocationCardProps = {
   locationId: number;
@@ -81,7 +81,7 @@ export default function LocationCard({
       </CardBody>
       <Divider />
       <CardFooter>
-        <ConfirmedDelete
+        <LocationCardButtons
           locationId={locationId}
           onEditPress={() => setShowForm(true)}
           isLoading={deleteLocation.isPending}

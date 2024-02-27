@@ -1,22 +1,24 @@
 import { ICON_MD } from '@/consts';
 import { Button } from '@nextui-org/react';
 import { Pencil, Trash } from 'lucide-react';
-import DeleteModal from './delete-modal';
+import DeleteModal from '@/components/delete-modal';
 import { Disclosure } from '@/types';
+import { useDeleteLocation } from '@/hooks';
 
-type ConfirmedDeleteProps = {
+type LocationCardButtonsProps = {
   locationId: number;
   onEditPress: () => void;
   isLoading: boolean;
   disclosure: Disclosure;
 };
 
-export default function ConfirmedDelete({
+export default function LocationCardButtons({
   locationId,
   onEditPress,
   isLoading,
   disclosure,
-}: ConfirmedDeleteProps) {
+}: LocationCardButtonsProps) {
+  const deleteLocation = useDeleteLocation();
   return (
     <div className='flex w-full justify-center gap-4'>
       <Button
@@ -36,7 +38,11 @@ export default function ConfirmedDelete({
       >
         <Trash size={ICON_MD} /> Delete
       </Button>
-      <DeleteModal disclosure={disclosure} locationId={locationId} />
+      <DeleteModal
+        id={locationId}
+        disclosure={disclosure}
+        mutation={deleteLocation}
+      />
     </div>
   );
 }
