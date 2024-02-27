@@ -5,7 +5,7 @@ import { useLocations } from '@/hooks';
 import { Divider } from '@nextui-org/react';
 import { APP_LOGIN } from '@/consts/urls';
 import LocationOverview from '@/app/app/_components/location-overview';
-import LocationLink from '@/components/location-link';
+import LocationLink from './_components/location-link';
 import { Location } from '@/types';
 
 export default function Locations() {
