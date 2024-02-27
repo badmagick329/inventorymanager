@@ -8,6 +8,7 @@ import { ShoppingCart } from 'lucide-react';
 import { ICON_MD } from '@/consts';
 import { injectDeltasWithUser } from '@/utils';
 import { useMemo } from 'react';
+import ItemChangeText from '@/components/item-change-text';
 
 export default function OrderHistoryAccordian({
   orderHistory,
@@ -28,7 +29,6 @@ export default function OrderHistoryAccordian({
   }, [orderHistory.deltas, orderHistory.first.lastModifiedBy]);
 
   const totalChanges = deltas.length - orderHistory.sales.length;
-  const changeText = totalChanges > 1 ? 'changes' : 'change';
 
   return (
     <div className='flex flex-col px-4'>
@@ -37,14 +37,10 @@ export default function OrderHistoryAccordian({
           <AccordionItem
             aria-label='Order History'
             title={
-              <div className='flex w-full gap-4'>
-                <ShoppingCart size={ICON_MD} />
-                <span>{orderHistory.first.name}</span>
-                <span className='text-xs text-default-500'>
-                  {totalChanges} {changeText} - since{' '}
-                  {orderHistory.first.created}
-                </span>
-              </div>
+              <TitleComponent
+                orderHistory={orderHistory}
+                totalChanges={totalChanges}
+              />
             }
           >
             <div className='flex w-full flex-col gap-4'>
@@ -61,6 +57,27 @@ export default function OrderHistoryAccordian({
           </AccordionItem>
         </Accordion>
       </div>
+    </div>
+  );
+}
+
+function TitleComponent({
+  orderHistory,
+  totalChanges,
+}: {
+  orderHistory: OrderHistory;
+  totalChanges: number;
+}) {
+  return (
+    <div className='flex w-full gap-4'>
+      <ShoppingCart size={ICON_MD} />
+      <span>{orderHistory.first.name}</span>
+      <ItemChangeText
+        totalChanges={totalChanges}
+        created={orderHistory.first.created}
+        lastModified={orderHistory.first.lastModified}
+        lastModifiedBy={orderHistory.first.lastModifiedBy}
+      />
     </div>
   );
 }
