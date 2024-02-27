@@ -8,17 +8,24 @@ import {
   ModalBody,
   Spacer,
 } from '@nextui-org/react';
-import { useDeleteUser } from '@/hooks';
 import { Disclosure } from '@/types';
+import { UseMutationResult } from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
+
+type MutationResult = UseMutationResult<
+  AxiosResponse<any, any>,
+  unknown,
+  number,
+  unknown
+>;
 
 type ModalProps = {
+  id: number;
   disclosure: Disclosure;
-  userId: number;
+  mutation: MutationResult;
 };
 
-export default function DeleteModal({ userId, disclosure }: ModalProps) {
-  const deleteUser = useDeleteUser();
-
+export default function DeleteModal({ id, disclosure, mutation }: ModalProps) {
   return (
     <Modal
       className='mx-4 flex w-full'
@@ -38,14 +45,17 @@ export default function DeleteModal({ userId, disclosure }: ModalProps) {
                   color='default'
                   variant='light'
                   onPress={disclosure.onClose}
+                  isDisabled={mutation.isPending}
                 >
                   Cancel
                 </Button>
                 <Button
                   color='danger'
+                  isDisabled={mutation.isPending}
                   onPress={() => {
-                    deleteUser.mutate(userId);
-                    onClose();
+                    mutation.mutateAsync(id).then(() => {
+                      onClose();
+                    });
                   }}
                 >
                   Delete
