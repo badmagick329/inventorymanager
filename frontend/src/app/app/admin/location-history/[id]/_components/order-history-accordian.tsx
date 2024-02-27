@@ -7,6 +7,7 @@ import SaleHistories from './sale-histories';
 import { ShoppingCart } from 'lucide-react';
 import { ICON_MD } from '@/consts';
 import { injectDeltasWithUser } from '@/utils';
+import { useMemo } from 'react';
 
 export default function OrderHistoryAccordian({
   orderHistory,
@@ -18,15 +19,26 @@ export default function OrderHistoryAccordian({
   if (isFiltered(orderHistory, searchValue)) {
     return null;
   }
-  orderHistory.deltas = injectDeltasWithUser(
-    orderHistory.deltas,
-    orderHistory.first.lastModifiedBy || ''
-  );
-  let totalChanges = orderHistory.deltas.length;
-  totalChanges += orderHistory.sales.reduce(
-    (acc, sale) => acc + sale.deltas.length,
-    0
-  );
+
+  const deltas = useMemo(() => {
+    return injectDeltasWithUser(
+      orderHistory.deltas,
+      orderHistory.first.lastModifiedBy || ''
+    );
+  }, [orderHistory.deltas, orderHistory.first.lastModifiedBy]);
+
+  const totalChanges = useMemo(() => {
+    let changes = deltas.length - orderHistory.sales.length;
+    changes += orderHistory.sales.reduce((acc, sale) => {
+      return (
+        acc + sale.deltas.filter((delta) => delta.changes.length > 0).length
+      );
+    }, 0);
+    return changes;
+  }, [deltas, orderHistory.sales]);
+
+  const changeText = totalChanges > 1 ? 'changes' : 'change';
+
   return (
     <div className='flex flex-col px-4'>
       <div className='flex flex-col rounded-md border-1 border-default-400'>
@@ -38,7 +50,8 @@ export default function OrderHistoryAccordian({
                 <ShoppingCart size={ICON_MD} />
                 <span>{orderHistory.first.name}</span>
                 <span className='text-xs text-default-500'>
-                  {totalChanges} changes - since {orderHistory.first.created}
+                  {totalChanges} {changeText} - since{' '}
+                  {orderHistory.first.created}
                 </span>
               </div>
             }
@@ -49,10 +62,7 @@ export default function OrderHistoryAccordian({
                 last={orderHistory.last}
                 numberOfSales={orderHistory.sales.length}
               />
-              <DeltasList
-                deltas={orderHistory.deltas}
-                message='made to this order'
-              />
+              <DeltasList deltas={deltas} message='made to this order' />
             </div>
             <div className='flex flex-col py-4'>
               <SaleHistories saleHistories={orderHistory.sales} />

@@ -26,7 +26,6 @@ export default function OrdersTable({
 }: OrdersTableProps) {
   const tableData = createOrdersTableData(orders);
   const columns = [
-    // { key: 'id', label: 'ID' },
     { key: 'name', label: 'Name' },
     { key: 'purchaseDate', label: 'Purchase Date' },
     { key: 'quantity', label: 'Quantity' },

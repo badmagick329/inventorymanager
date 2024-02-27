@@ -18,17 +18,21 @@ export default function LocationHistory() {
   if (!locationId) {
     return <ConnectionError message={'Invalid URL'} />;
   }
+
   const {
     isError,
     isLoading,
     data: orderHistories,
   } = useLocationHistory(locationId);
+
   if (isError) {
     return <ConnectionError />;
   }
+
   if (isLoading) {
     return <Spinner />;
   }
+
   if (!isOrderHistoryArray(orderHistories)) {
     return (
       <ConnectionError

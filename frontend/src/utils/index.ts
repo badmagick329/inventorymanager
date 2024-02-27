@@ -1,3 +1,4 @@
+import { isOrderResponseArray } from '@/predicates';
 import { OrderResponse, SaleResponse, Delta } from '@/types';
 
 export function formatNumber(num: number) {

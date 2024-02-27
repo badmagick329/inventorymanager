@@ -1,4 +1,7 @@
-import { isLocationArray, isOrderResponseArray, isSaleResponseArray } from '@/predicates';
+import {
+  isOrderResponseArray,
+  isSaleResponseArray,
+} from '@/predicates';
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
 
 export async function getOrderById(locationId: number, orderId: number) {
@@ -18,24 +21,6 @@ export async function getOrderById(locationId: number, orderId: number) {
       return order;
     }
   }
-}
-
-export function getUsersWithAccessTo(locationId?: number) {
-  if (!locationId) {
-    return [] as string[];
-  }
-  const queryClient = useQueryClient();
-  const locations = queryClient.getQueryData(['locations']);
-  if (!isLocationArray(locations)) {
-    return [] as string[];
-  }
-  let selectedNames = [] as string[];
-  for (const location of locations) {
-    if (location.id === locationId) {
-      return location.users || ([] as string[]);
-    }
-  }
-  return selectedNames;
 }
 
 export function getOrderByOrderId(

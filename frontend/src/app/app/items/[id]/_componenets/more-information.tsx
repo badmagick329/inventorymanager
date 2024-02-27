@@ -14,7 +14,7 @@ export default function MoreInformation({
   }
 
   return (
-    <div className='flex w-full justify-center gap-4 flex-wrap'>
+    <div className='flex w-full flex-wrap justify-center gap-4'>
       <LocationInformationCard
         revenue={location?.revenue}
         spendings={location?.spendings}

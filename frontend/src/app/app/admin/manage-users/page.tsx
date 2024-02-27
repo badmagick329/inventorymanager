@@ -12,6 +12,10 @@ export default function ManageUsers() {
   if (isError) {
     return <ConnectionError />;
   }
+  if (isLoading) {
+    return <Spinner />;
+  }
+
   if (users) {
     return (
       <div className='flex h-full w-full flex-grow flex-col items-center gap-4 p-4'>
@@ -24,8 +28,5 @@ export default function ManageUsers() {
         </div>
       </div>
     );
-  }
-  if (isLoading) {
-    return <Spinner />;
   }
 }

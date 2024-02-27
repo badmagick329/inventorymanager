@@ -9,6 +9,7 @@ export const NEXT_SALES = '/fetch/sales';
 export const NEXT_SALE_DETAIL = '/fetch/sales/detail';
 export const NEXT_VENDORS = '/fetch/vendors';
 export const NEXT_LOCATION_HISTORY = '/fetch/locations/history';
+
 export const APP_LOCATIONS = '/app';
 export const APP_LOGIN = '/';
 export const APP_ADMIN = '/app/admin';
@@ -17,6 +18,7 @@ export const APP_MANAGE_USERS = '/app/admin/manage-users';
 export const APP_LOCATION_HISTORY = '/app/admin/location-history';
 export const APP_SALES = '/app/sales';
 export const APP_ITEMS = '/app/items';
+
 export const API_LOGIN = '/api/users/auth/login';
 export const API_LOGOUT = '/api/users/auth/logout';
 export const API_IS_ADMIN = '/api/users/auth/is-admin';
