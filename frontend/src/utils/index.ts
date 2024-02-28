@@ -1,4 +1,3 @@
-import { isOrderResponseArray } from '@/predicates';
 import { OrderResponse, SaleResponse, Delta } from '@/types';
 
 export function formatNumber(num: number) {
@@ -12,6 +11,13 @@ export function formatNumber(num: number) {
   if (abs < 1000000000) {
     return `${(num / 1000000).toFixed(1)}M`;
   }
+  if (abs < 1000000000000) {
+    return `${(num / 1000000000).toFixed(1)}B`;
+  }
+  if (abs < 1000000000000000) {
+    return `${(num / 1000000000000).toFixed(1)}T`;
+  }
+  return num.toFixed(0);
 }
 
 export function formatCurrency(num: number) {
