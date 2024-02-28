@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm, UseFormSetError } from 'react-hook-form';
 
-import { ModalContent, ModalFooter, Spacer, Checkbox } from '@nextui-org/react';
+import { ModalContent, ModalFooter, Checkbox } from '@nextui-org/react';
 import { useCreateSale } from '@/hooks';
 import axios from 'axios';
 import { useState } from 'react';
@@ -64,8 +64,9 @@ export default function CreateSaleForm({
     <>
       <form
         className='flex flex-col gap-4 p-4'
-        onSubmit={handleSubmit((data) =>
-          submitForm(
+        onSubmit={handleSubmit((data, e) => {
+          e?.preventDefault();
+          return submitForm(
             data,
             isSalePricePerItem,
             isAmountPaidPerItem,
@@ -75,8 +76,8 @@ export default function CreateSaleForm({
             createSale.mutateAsync,
             onClose,
             setError
-          )
-        )}
+          );
+        })}
       >
         <ModalContent>
           {(onClose) => (
@@ -179,27 +180,47 @@ async function submitForm(
     await mutateAsync({ locationId, orderId, saleId, sale });
     onClose();
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const errorData = error.response?.data;
-      if (errorData) {
-        for (const [field, message] of Object.entries(errorData)) {
-          // @ts-ignore
-          setError(mapErrorKeyToField(field), { type: 'server', message });
-          return;
-        }
-      }
-    }
-    setError('vendor', { type: 'server', message: 'An error occurred' });
+    handleFormError(error, setError);
   }
 }
 
+function handleFormError(
+  error: any,
+  setError: UseFormSetError<SaleFormValues>
+) {
+  if (axios.isAxiosError(error)) {
+    const errorData = error.response?.data;
+    if (errorData) {
+      for (const [field, messages] of Object.entries(errorData)) {
+        if (!Array.isArray(messages) || messages.length === 0) {
+          continue;
+        }
+        const message = messages[0];
+        if (typeof message !== 'string') {
+          continue;
+        }
+        setError(mapErrorKeyToField(field), { type: 'manual', message });
+        return;
+      }
+    }
+  }
+  setError('vendor', { type: 'manual', message: 'An error occurred' });
+  console.error(error);
+}
+
 function mapErrorKeyToField(key: string) {
-  const errorMap = new Map([
-    ['vendor', 'vendor'],
-    ['date', 'date'],
-    ['quantity', 'quantity'],
-    ['price_per_item', 'salePrice'],
-    ['debt', 'amountPaid'],
-  ]);
-  return errorMap.get(key) || 'vendor';
+  switch (key) {
+    case 'vendor':
+      return 'vendor';
+    case 'date':
+      return 'date';
+    case 'quantity':
+      return 'quantity';
+    case 'price_per_item':
+      return 'salePrice';
+    case 'debt':
+      return 'amountPaid';
+    default:
+      return 'vendor';
+  }
 }

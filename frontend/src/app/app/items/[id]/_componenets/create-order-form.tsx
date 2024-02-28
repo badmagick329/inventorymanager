@@ -1,6 +1,7 @@
-import { useForm } from 'react-hook-form';
+import { UseFormSetError, useForm } from 'react-hook-form';
 import { useCreateOrder, useOrderFormDefaults } from '@/hooks';
 import { useState } from 'react';
+import axios from 'axios';
 
 import { ModalContent, ModalFooter, Checkbox } from '@nextui-org/react';
 import { Spinner } from '@/components/loaders';
@@ -36,11 +37,18 @@ export default function CreateOrderForm({
     orderId,
   });
 
-  const { register, handleSubmit, formState, control, setValue, getValues } =
-    useForm({
-      // @ts-ignore
-      defaultValues: fetchDefaults.mutateAsync,
-    });
+  const {
+    register,
+    handleSubmit,
+    formState,
+    control,
+    setValue,
+    getValues,
+    setError,
+  } = useForm({
+    // @ts-ignore
+    defaultValues: fetchDefaults.mutateAsync,
+  });
   const createOrder = useCreateOrder();
 
   if (formState.isLoading) {
@@ -51,17 +59,19 @@ export default function CreateOrderForm({
     <>
       <form
         className='flex flex-col gap-4 p-4'
-        onSubmit={handleSubmit((data) =>
-          submitForm(
+        onSubmit={handleSubmit((data, e) => {
+          e?.preventDefault();
+          return submitForm(
             data,
             isCostPerItem,
             isSalePricePerItem,
             locationId,
             createOrder.mutateAsync,
             onClose,
+            setError,
             orderId
-          )
-        )}
+          );
+        })}
       >
         <ModalContent>
           {(onClose) => (
@@ -134,13 +144,14 @@ export default function CreateOrderForm({
   );
 }
 
-function submitForm(
+async function submitForm(
   data: OrderFormValues,
   isCostPerItem: boolean,
   isSalePricePerItem: boolean,
   locationId: string,
   mutateAsync: CreateOrderMutation,
   onClose: () => void,
+  setError: UseFormSetError<OrderFormValues>,
   orderId?: string
 ) {
   const quantity = parseInt(data.quantity);
@@ -154,14 +165,58 @@ function submitForm(
     pricePerItem: isCostPerItem ? cost : cost / quantity,
     currentSalePrice: isSalePricePerItem ? salePrice : salePrice / quantity,
   };
-  mutateAsync({
-    locationId,
-    orderId,
-    order,
-  });
   try {
+    await mutateAsync({
+      locationId,
+      orderId,
+      order,
+    });
     onClose();
   } catch (error) {
-    console.error(error);
+    handleFormError(error, setError);
+  }
+}
+
+function handleFormError(
+  error: any,
+  setError: UseFormSetError<OrderFormValues>
+) {
+  if (axios.isAxiosError(error)) {
+    const errorData = error.response?.data;
+    if (error.response?.status === 400 && errorData) {
+      for (const [field, messages] of Object.entries(errorData)) {
+        if (!Array.isArray(messages) || messages.length === 0) {
+          continue;
+        }
+        const message = messages[0];
+        if (typeof message !== 'string') {
+          continue;
+        }
+        setError(mapErrorKeyToField(field), {
+          type: 'manual',
+          message: message,
+        });
+        return;
+      }
+    }
+  }
+  setError('name', { type: 'manual', message: 'An error occurred' });
+  console.error(error);
+}
+
+function mapErrorKeyToField(key: string) {
+  switch (key) {
+    case 'name':
+      return 'name';
+    case 'date':
+      return 'date';
+    case 'quantity':
+      return 'quantity';
+    case 'price_per_item':
+      return 'cost';
+    case 'current_sale_price':
+      return 'salePrice';
+    default:
+      return 'name';
   }
 }
