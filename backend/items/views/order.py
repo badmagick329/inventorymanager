@@ -15,7 +15,7 @@ class OrderDetail(APIView):
     def get(self, request: Request, order_id: int):
         user = request.user
         assert isinstance(user, UserAccount)
-        order = get_object_or_404(Order, id=order_id)
+        order = get_object_or_404(Order, id=order_id, deleted=False)
         if not order.is_visible_to(user):
             return APIResponses.forbidden_order()
 
@@ -23,9 +23,11 @@ class OrderDetail(APIView):
         return APIResponses.ok(serializer.data)
 
     def patch(self, request: Request, order_id: int):
+        print("PATCH")
+        print(request.data)
         user = request.user
         assert isinstance(user, UserAccount)
-        order = get_object_or_404(Order, id=order_id)
+        order = get_object_or_404(Order, id=order_id, deleted=False)
         if not order.is_visible_to(user):
             return APIResponses.forbidden_order()
         initial_data = {
@@ -40,10 +42,10 @@ class OrderDetail(APIView):
     def delete(self, request: Request, order_id: int):
         user = request.user
         assert isinstance(user, UserAccount)
-        order = get_object_or_404(Order, id=order_id)
+        order = get_object_or_404(Order, id=order_id, deleted=False)
         if not order.is_visible_to(user):
             return APIResponses.forbidden_order()
-        order.delete()
+        order.mark_as_deleted(user)
         return APIResponses.deleted()
 
 
@@ -80,7 +82,7 @@ class OrderList(APIView):
 
     @staticmethod
     def filter_orders_for(user: UserAccount, location: ItemLocation):
-        filters = [Q(location=location)]
+        filters = [Q(location=location), Q(deleted=False)]
         if not user.is_admin:
             filters.append(Q(location__users__in=[user]))
 

@@ -148,8 +148,8 @@ export type Delta = {
 
 export type Change = {
   field: string;
-  oldValue: number | string | null;
-  newValue: number | string | null;
+  oldValue: number | string | null | boolean;
+  newValue: number | string | null | boolean;
 };
 
 export type HistoricalOrder = {
@@ -158,6 +158,7 @@ export type HistoricalOrder = {
   date: null | string;
   pricePerItem: number;
   quantity: number;
+  deleted: boolean;
   created: string;
   currentSalePrice: number;
   lastModifiedBy: string;
@@ -177,6 +178,7 @@ export type HistoricalSale = {
   quantity: number;
   vendor: string;
   amountPaid: number;
+  deleted: boolean;
   created: string;
   lastModifiedBy: string;
   lastModified: string;

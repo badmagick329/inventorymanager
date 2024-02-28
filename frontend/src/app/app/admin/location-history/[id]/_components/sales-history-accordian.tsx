@@ -32,7 +32,15 @@ export default function SaleHistoryAccordian({
         title={
           <div className='flex w-full gap-4'>
             <DollarSign size={ICON_MD} />
-            <span>Sale to {saleHistory.first.vendor}</span>
+            <span
+              className={
+                saleHistory.first.deleted
+                  ? `text-danger-500`
+                  : `text-foreground`
+              }
+            >
+              Sale to {saleHistory.first.vendor}
+            </span>
             <ItemChangeText
               totalChanges={totalChanges}
               created={saleHistory.first.created}
