@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models.functions import Lower
 from items.base_model import ModelWithLastModified
 from simple_history.models import HistoricalRecords
+from users.models import UserAccount
 
 
 class ItemLocation(models.Model):
@@ -124,6 +125,7 @@ class Order(ModelWithLastModified):
     quantity = models.IntegerField()
     current_sale_price = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
+    deleted = models.BooleanField(default=False)
     last_modified_by = models.ForeignKey(
         "users.UserAccount",
         on_delete=models.SET_NULL,
@@ -169,6 +171,7 @@ class Order(ModelWithLastModified):
             "price_per_item",
             "quantity",
             "current_sale_price",
+            "deleted",
             "created_at",
             "last_modified_by_id",
             "last_modified",
@@ -180,8 +183,9 @@ class Order(ModelWithLastModified):
             self.price_per_item,
             self.quantity,
             self.current_sale_price,
+            self.deleted,
             self.created_at,
-            self.last_modified_by.id,
+            self.last_modified_by.id, # type: ignore
             self.last_modified,
         ]
 
@@ -197,6 +201,14 @@ class Order(ModelWithLastModified):
         kwargs = super().set_last_modified_by(**kwargs)
         self.full_clean()
         super().save(*args, **kwargs)
+
+    def mark_as_deleted(self, user: UserAccount):
+        print("self", self)
+        self.last_modified = datetime.utcnow()
+        self.last_modified_by = user
+        self.deleted = True
+        self.save()
+        return self.id
 
     def cost(self, vendor: Vendor | None = None):
         if vendor:
@@ -220,11 +232,11 @@ class Order(ModelWithLastModified):
         return (self.revenue(vendor) - cost) / cost * 100
 
     def current_quantity(self):
-        sold_quantity = sum([sale.quantity for sale in self.sales.all()])  # type: ignore
+        sold_quantity = sum([sale.quantity for sale in self.sales.filter(deleted=False)])  # type: ignore
         return self.quantity - sold_quantity
 
     def sold_quantity(self):
-        return sum([sale.quantity for sale in self.sales()])  # type: ignore
+        return sum([sale.quantity for sale in self.sales.filter(deleted=False)])  # type: ignore
 
     def is_visible_to(self, user):
         return user.is_admin or self.location.users.filter(id=user.id).exists()
@@ -241,6 +253,7 @@ class Order(ModelWithLastModified):
             f"price_per_item={self.price_per_item}, "
             f"quantity={self.quantity}, "
             f"current_sale_price={self.current_sale_price}, "
+            f"deleted={self.deleted}, "
             f"created_at={self.created_at}, "
             f"last_modified_by={username}, "
             f"last_modified={self.last_modified})>"
@@ -262,6 +275,7 @@ class Sale(ModelWithLastModified):
         max_digits=10, decimal_places=2, blank=True, null=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
+    deleted = models.BooleanField(default=False)
     last_modified_by = models.ForeignKey(
         "users.UserAccount",
         on_delete=models.SET_NULL,
@@ -302,6 +316,7 @@ class Sale(ModelWithLastModified):
             "quantity",
             "price_per_item",
             "debt",
+            "deleted",
             "created_at",
             "last_modified_by_id",
         ]
@@ -312,6 +327,7 @@ class Sale(ModelWithLastModified):
             self.quantity,
             self.price_per_item,
             self.debt,
+            self.deleted,
             self.created_at,
             self.last_modified_by.id,
         ]
@@ -328,6 +344,14 @@ class Sale(ModelWithLastModified):
         self.order.last_modified_by = self.last_modified_by
         self.order.current_sale_price = self.price_per_item
         self.order.save()
+
+    def mark_as_deleted(self, user: UserAccount):
+        self.order.last_modified = datetime.utcnow()
+        self.order.last_modified_by = user
+        self.order.save()
+        self.deleted = True
+        self.save()
+        return self.id
 
     def delete(self, *args, **kwargs):
         user = kwargs.pop("user", None)
@@ -348,17 +372,6 @@ class Sale(ModelWithLastModified):
                     )
                 }
             )
-        # TODO: Implement quantity validation
-        # if self.quantity > remaining_quantity:
-        #     raise ValidationError(
-        #         {
-        #             "quantity": (
-        #                 f"Quantity cannot be greater "
-        #                 f"than remaining quantity "
-        #                 f"({remaining_quantity}) for this order."
-        #             )
-        #         }
-        #     )
         super().full_clean(*args, **kwargs)
 
     def cost(self):
@@ -406,6 +419,7 @@ class Sale(ModelWithLastModified):
             f"quantity={self.quantity}, "
             f"price_per_item={self.price_per_item}, "
             f"debt={self.debt}, "
+            f"deleted={self.deleted}, "
             f"created_at={self.created_at}, "
             f"last_modified_by={username}, "
             f"last_modified={self.last_modified})>"

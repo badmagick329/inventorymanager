@@ -32,9 +32,13 @@ export default function ChangesDisplay({
                     change.field.slice(1)}
               </span>
               <span> </span>
-              <span className='text-danger-500'>{change.oldValue || '-'}</span>
+              <span className='text-danger-500'>
+                {valueString(change.oldValue)}
+              </span>
               <MoveRight size={ICON_MD} />
-              <span className='text-success-500'>{change.newValue || '-'}</span>
+              <span className='text-success-500'>
+                {valueString(change.newValue)}
+              </span>
             </div>
           </div>
         );
@@ -46,4 +50,17 @@ export default function ChangesDisplay({
       )}
     </div>
   );
+}
+
+function valueString(value: number | string | null | boolean) {
+  switch (typeof value) {
+    case 'number':
+      return value.toString();
+    case 'string':
+      return value;
+    case 'boolean':
+      return value ? 'yes' : 'no';
+    default:
+      return '-';
+  }
 }

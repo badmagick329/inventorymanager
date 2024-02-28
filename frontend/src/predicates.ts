@@ -142,9 +142,11 @@ export function isChange(body: any): body is Change {
     typeof body.field === 'string' &&
     (typeof body.oldValue === 'string' ||
       typeof body.oldValue === 'number' ||
+      typeof body.oldValue === 'boolean' ||
       body.oldValue === null) &&
     (typeof body.newValue === 'string' ||
       typeof body.newValue === 'number' ||
+      typeof body.newValue === 'boolean' ||
       body.newValue === null)
   );
 }
@@ -176,6 +178,7 @@ export function isHistoricalOrder(body: any): body is HistoricalOrder {
     typeof body.pricePerItem === 'number' &&
     typeof body.quantity === 'number' &&
     typeof body.currentSalePrice === 'number' &&
+    typeof body.deleted === 'boolean' &&
     typeof body.created === 'string' &&
     typeof body.lastModifiedBy === 'string' &&
     typeof body.lastModified === 'string'
@@ -193,6 +196,7 @@ export function isHistoricalSale(body: any): body is HistoricalSale {
     typeof body.vendor === 'string' &&
     typeof body.amountPaid === 'number' &&
     typeof body.created === 'string' &&
+    typeof body.deleted === 'boolean' &&
     typeof body.lastModifiedBy === 'string' &&
     typeof body.lastModified === 'string'
   );

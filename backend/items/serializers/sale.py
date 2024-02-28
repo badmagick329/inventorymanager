@@ -70,7 +70,7 @@ class SaleSerializer(serializers.BaseSerializer):
 
     def _get_order(self):
         order_id = self.validated_data.get("orderId")
-        order = Order.objects.filter(id=order_id).first()
+        order = Order.objects.filter(id=order_id, deleted=False).first()
         if not order:
             raise ValidationErrorWithMessage(
                 {"order_id": [f"Order with id {order_id} not found"]}

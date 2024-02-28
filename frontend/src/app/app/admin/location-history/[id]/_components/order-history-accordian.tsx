@@ -71,7 +71,13 @@ function TitleComponent({
   return (
     <div className='flex w-full gap-4'>
       <ShoppingCart size={ICON_MD} />
-      <span>{orderHistory.first.name}</span>
+      <span
+        className={
+          orderHistory.first.deleted ? `text-danger-500` : `text-foreground`
+        }
+      >
+        {orderHistory.first.name}
+      </span>
       <ItemChangeText
         totalChanges={totalChanges}
         created={orderHistory.first.created}

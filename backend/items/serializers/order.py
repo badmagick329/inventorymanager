@@ -40,11 +40,14 @@ class OrderSerializer(serializers.BaseSerializer):
         instance.current_sale_price = validated_data.get(
             "currentSalePrice", instance.current_sale_price
         )
+        print("VALIDATED DATA", validated_data)
         try:
             instance.save(user=validated_data["user"])
         except ValidationError as e:
+            print("ERROR", e)
             raise ValidationErrorWithMessage(e.message_dict)
         except IntegrityError as e:
+            print("ERROR", e)
             raise ErrorHandler(e).error
         return instance
 
@@ -52,9 +55,9 @@ class OrderSerializer(serializers.BaseSerializer):
         location_id = data.get("locationId")
         date = data.get("date")
         name = data.get("name")
-        price_per_item = data.get("pricePerItem")
+        price_per_item = round(data.get("pricePerItem"), 2)
         quantity = data.get("quantity")
-        current_sale_price = data.get("currentSalePrice")
+        current_sale_price = round(data.get("currentSalePrice"), 2)
         user = data.get("user")
         return {
             "locationId": location_id,
@@ -70,7 +73,7 @@ class OrderSerializer(serializers.BaseSerializer):
         date_repr = (
             instance.date.strftime("%Y-%m-%d") if instance.date else None
         )
-        sales = instance.sales.all()
+        sales = instance.sales.filter(deleted=False)
         profit_per_item = sum([sale.profit_per_item() for sale in sales])
         total_profit = sum([sale.profit() for sale in sales])
         debt = sum([sale.debt for sale in sales])
@@ -210,6 +213,7 @@ class HistoricalOrderSerializer:
             "pricePerItem": self.instance.price_per_item,
             "quantity": self.instance.quantity,
             "currentSalePrice": self.instance.current_sale_price,
+            "deleted": self.instance.deleted,
             "created": self.instance.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "lastModifiedBy": self.instance.last_modified_by.username,
             "lastModified": self.instance.last_modified.strftime(
@@ -323,6 +327,7 @@ class HistoricalSaleSerializer:
             "quantity": self.instance.quantity,
             "vendor": self.instance.vendor.name,
             "amountPaid": amount_paid,
+            "deleted": self.instance.deleted,
             "created": self.instance.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "lastModifiedBy": self.instance.last_modified_by.username,
             "lastModified": self.instance.last_modified.strftime(

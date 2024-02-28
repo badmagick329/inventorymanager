@@ -15,7 +15,7 @@ class SaleDetail(APIView):
     def get(self, request: Request, sale_id: int):
         user = request.user
         assert isinstance(user, UserAccount)
-        sale = get_object_or_404(Sale, id=sale_id)
+        sale = get_object_or_404(Sale, id=sale_id, deleted=False)
         if not sale.order.is_visible_to(user):
             return APIResponses.forbidden_order()
 
@@ -25,7 +25,7 @@ class SaleDetail(APIView):
     def patch(self, request: Request, sale_id: int):
         user = request.user
         assert isinstance(user, UserAccount)
-        sale = get_object_or_404(Sale, id=sale_id)
+        sale = get_object_or_404(Sale, id=sale_id, deleted=False)
         if not sale.order.is_visible_to(user):
             return APIResponses.forbidden_order()
         initial_data = {
@@ -43,10 +43,10 @@ class SaleDetail(APIView):
     def delete(self, request: Request, sale_id: int):
         user = request.user
         assert isinstance(user, UserAccount)
-        sale = get_object_or_404(Sale, id=sale_id)
+        sale = get_object_or_404(Sale, id=sale_id, deleted=False)
         if not sale.order.is_visible_to(user):
             return APIResponses.forbidden_order()
-        sale.delete(user=user)
+        sale.mark_as_deleted(user)
         return APIResponses.deleted()
 
 
@@ -56,10 +56,10 @@ class SaleList(APIView):
     def get(self, request: Request, order_id: int):
         user = request.user
         assert isinstance(user, UserAccount)
-        order = get_object_or_404(Order, id=order_id)
+        order = get_object_or_404(Order, id=order_id, deleted=False)
         if not order.is_visible_to(user):
             return APIResponses.forbidden_location()
-        sales = Sale.objects.filter(order=order)
+        sales = Sale.objects.filter(order=order, deleted=False)
         serializer = SaleSerializer(sales, many=True)
         return APIResponses.ok(serializer.data)
 
