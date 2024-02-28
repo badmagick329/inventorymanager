@@ -185,7 +185,7 @@ class Order(ModelWithLastModified):
             self.current_sale_price,
             self.deleted,
             self.created_at,
-            self.last_modified_by.id, # type: ignore
+            self.last_modified_by.id,  # type: ignore
             self.last_modified,
         ]
 
