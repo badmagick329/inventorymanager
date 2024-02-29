@@ -8,6 +8,7 @@ import { DollarSign } from 'lucide-react';
 import { injectDeltasWithUser } from '@/utils';
 import { useMemo } from 'react';
 import ItemChangeText from '@/components/item-change-text';
+import { UTCStringtoLocalDate } from '@/utils';
 
 export default function SaleHistoryAccordian({
   saleHistory,
@@ -45,7 +46,9 @@ export default function SaleHistoryAccordian({
               totalChanges={totalChanges}
               created={saleHistory.first.created}
               lastModifiedBy={saleHistory.first.lastModifiedBy}
-              lastModified={saleHistory.first.lastModified}
+              lastModified={UTCStringtoLocalDate(
+                saleHistory.first.lastModified
+              ).toLocaleString()}
             />
           </div>
         }

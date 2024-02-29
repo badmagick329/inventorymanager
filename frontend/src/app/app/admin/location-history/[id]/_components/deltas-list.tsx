@@ -1,6 +1,7 @@
 import { Delta } from '@/types';
 import ChangesDisplay from './changes-display';
 import { Accordion, AccordionItem } from '@nextui-org/react';
+import { UTCStringtoLocalDate } from '@/utils';
 
 export default function DeltasList({
   deltas,
@@ -27,7 +28,9 @@ export default function DeltasList({
                   <ChangesDisplay
                     changes={delta.changes}
                     lastModifiedBy={delta.lastModifiedBy}
-                    lastModified={delta.lastModified}
+                    lastModified={UTCStringtoLocalDate(
+                      delta.lastModified
+                    ).toLocaleString()}
                   />
                 </div>
               );

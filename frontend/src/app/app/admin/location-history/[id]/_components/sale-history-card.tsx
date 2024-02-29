@@ -1,6 +1,8 @@
 import { HistoricalSale } from '@/types';
 import { Card, CardHeader, CardBody, Divider } from '@nextui-org/react';
 import PriceFieldContent from '@/components/price-field-content';
+import { UTCStringtoLocalDate } from '@/utils';
+
 export default function SaleHistoryCard({ sale }: { sale: HistoricalSale }) {
   return (
     <Card className='min-w-[280px] max-w-[540px] px-2'>
@@ -9,7 +11,9 @@ export default function SaleHistoryCard({ sale }: { sale: HistoricalSale }) {
           <span>Sale to {sale.vendor}</span>
           <div className='flex gap-2 text-xs text-default-500'>
             <span>{sale.lastModifiedBy}</span>
-            <span>{sale.lastModified}</span>
+            <span>
+              {UTCStringtoLocalDate(sale.lastModified).toLocaleString()}
+            </span>
           </div>
         </div>
       </CardHeader>

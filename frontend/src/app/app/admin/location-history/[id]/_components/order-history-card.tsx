@@ -1,6 +1,8 @@
 import { HistoricalOrder } from '@/types';
 import { Card, CardHeader, CardBody, Divider } from '@nextui-org/react';
 import PriceFieldContent from '@/components/price-field-content';
+import { UTCStringtoLocalDate } from '@/utils';
+
 export default function OrderHistoryCard({
   order,
   numberOfSales,
@@ -15,7 +17,9 @@ export default function OrderHistoryCard({
           <span>{order.name}</span>
           <div className='flex gap-2 text-xs text-default-500'>
             <span>{order.lastModifiedBy}</span>
-            <span>{order.lastModified}</span>
+            <span>
+              {UTCStringtoLocalDate(order.lastModified).toLocaleString()}
+            </span>
           </div>
         </div>
       </CardHeader>
