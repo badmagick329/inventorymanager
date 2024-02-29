@@ -48,10 +48,8 @@ export function createOrdersTableData(orders: OrderResponse[]) {
         ? vendors.slice(0, 2).join(', ') + '...'
         : vendors.join(', ');
     const lastModifiedBy = order.lastModifiedBy;
-    const lastModifiedUTC = new Date(order.lastModified).getTime();
-    const offset = new Date().getTimezoneOffset();
-    const lastModified = new Date(
-      lastModifiedUTC - offset * 60000
+    const lastModified = UTCStringtoLocalDate(
+      order.lastModified
     ).toLocaleString();
 
     const profitValues = [profit, profitPerItem];
@@ -72,6 +70,12 @@ export function createOrdersTableData(orders: OrderResponse[]) {
   });
 }
 
+export function UTCStringtoLocalDate(utcString: string) {
+  const time = new Date(utcString).getTime();
+  const offset = new Date().getTimezoneOffset();
+  return new Date(time - offset * 60000);
+}
+
 export function createSalesTableData(sales: SaleResponse[]) {
   return sales.map((sale) => {
     const totalSalePrice = sale.pricePerItem * sale.quantity;
@@ -80,10 +84,8 @@ export function createSalesTableData(sales: SaleResponse[]) {
     const salePriceValues = [totalSalePrice, sale.pricePerItem];
     const profit = totalSalePrice - sale.cost;
     const lastModifiedBy = sale.lastModifiedBy;
-    const lastModifiedUTC = new Date(sale.lastModified).getTime();
-    const offset = new Date().getTimezoneOffset();
-    const lastModified = new Date(
-      lastModifiedUTC - offset * 60000
+    const lastModified = UTCStringtoLocalDate(
+      sale.lastModified
     ).toLocaleString();
 
     return {

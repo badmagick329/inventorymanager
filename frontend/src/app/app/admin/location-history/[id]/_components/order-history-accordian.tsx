@@ -9,6 +9,7 @@ import { ICON_MD } from '@/consts';
 import { injectDeltasWithUser } from '@/utils';
 import { useMemo } from 'react';
 import ItemChangeText from '@/components/item-change-text';
+import { UTCStringtoLocalDate } from '@/utils';
 
 export default function OrderHistoryAccordian({
   orderHistory,
@@ -81,7 +82,9 @@ function TitleComponent({
       <ItemChangeText
         totalChanges={totalChanges}
         created={orderHistory.first.created}
-        lastModified={orderHistory.first.lastModified}
+        lastModified={UTCStringtoLocalDate(
+          orderHistory.first.lastModified
+        ).toLocaleString()}
         lastModifiedBy={orderHistory.first.lastModifiedBy}
       />
     </div>
