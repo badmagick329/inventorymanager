@@ -101,7 +101,7 @@ class Vendor(ModelWithLastModified):
         super().save(*args, **kwargs)
 
     def debt(self):
-        return sum([sale.debt for sale in self.sales.all()])  # type: ignore
+        return sum([sale.debt for sale in self.sales.filter(deleted=False)])  # type: ignore
 
     def __str__(self):
         username = (
