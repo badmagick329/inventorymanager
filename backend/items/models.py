@@ -203,7 +203,6 @@ class Order(ModelWithLastModified):
         super().save(*args, **kwargs)
 
     def mark_as_deleted(self, user: UserAccount):
-        print("self", self)
         self.last_modified = datetime.utcnow()
         self.last_modified_by = user
         self.deleted = True
@@ -212,16 +211,16 @@ class Order(ModelWithLastModified):
 
     def cost(self, vendor: Vendor | None = None):
         if vendor:
-            order_sales = self.sales.filter(vendor=vendor)  # type: ignore
+            order_sales = self.sales.filter(vendor=vendor, deleted=False)  # type: ignore
             order_quantity = sum([sale.quantity for sale in order_sales])
             return self.price_per_item * order_quantity
         return self.total_price
 
     def revenue(self, vendor: Vendor | None = None):
         if vendor:
-            order_sales = self.sales.filter(vendor=vendor)  # type: ignore
+            order_sales = self.sales.filter(vendor=vendor, deleted=False)  # type: ignore
         else:
-            order_sales = self.sales.all()  # type: ignore
+            order_sales = self.sales.filter(deleted=False)  # type: ignore
         return sum([sale.revenue() for sale in order_sales])
 
     def profit(self, vendor: Vendor | None = None):
