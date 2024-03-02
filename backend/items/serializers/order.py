@@ -40,14 +40,11 @@ class OrderSerializer(serializers.BaseSerializer):
         instance.current_sale_price = validated_data.get(
             "currentSalePrice", instance.current_sale_price
         )
-        print("VALIDATED DATA", validated_data)
         try:
             instance.save(user=validated_data["user"])
         except ValidationError as e:
-            print("ERROR", e)
             raise ValidationErrorWithMessage(e.message_dict)
         except IntegrityError as e:
-            print("ERROR", e)
             raise ErrorHandler(e).error
         return instance
 

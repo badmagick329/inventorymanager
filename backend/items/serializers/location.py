@@ -80,7 +80,7 @@ class ItemLocationSerializer(serializers.ModelSerializer):
         return data
 
     def to_representation(self, instance):
-        orders = instance.orders.all()
+        orders = instance.orders.filter(deleted=False)
         spendings = ItemLocation.spendings(orders)
         revenue = ItemLocation.revenue(orders)
         profit = revenue - spendings

@@ -23,8 +23,6 @@ class OrderDetail(APIView):
         return APIResponses.ok(serializer.data)
 
     def patch(self, request: Request, order_id: int):
-        print("PATCH")
-        print(request.data)
         user = request.user
         assert isinstance(user, UserAccount)
         order = get_object_or_404(Order, id=order_id, deleted=False)
