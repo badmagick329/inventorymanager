@@ -14,16 +14,14 @@ export default function AppDemo() {
       </span>
       {videosAndText.map((data, idx) => {
         return (
-          <>
+          <div
+            className={`flex w-full max-w-[${WIDTH}px] flex-col p-4 items-center rounded-md bg-neutral-100 dark:bg-neutral-950`}
+            key={data.video}
+          >
             <Spacer y={2} />
-            <div
-              className={`flex w-full max-w-[${WIDTH}px] flex-col p-4 items-center rounded-md bg-neutral-100 dark:bg-neutral-950`}
-              key={data.video}
-            >
-              <InstructionText step={idx + 1} text={data.text} width={WIDTH} />
-              <VideoPlayer width={WIDTH} videoName={data.video} />
-            </div>
-          </>
+            <InstructionText step={idx + 1} text={data.text} width={WIDTH} />
+            <VideoPlayer width={WIDTH} videoName={data.video} />
+          </div>
         );
       })}
     </div>
