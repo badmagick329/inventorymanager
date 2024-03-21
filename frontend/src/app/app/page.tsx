@@ -3,10 +3,11 @@ import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/loaders';
 import { useLocations } from '@/hooks';
 import { Divider } from '@nextui-org/react';
-import { APP_LOGIN } from '@/consts/urls';
+import { APP_LOGIN, APP_DEMO_WORKFLOW } from '@/consts/urls';
 import LocationOverview from '@/app/app/_components/location-overview';
 import LocationLink from './_components/location-link';
 import { Location } from '@/types';
+import { Button, Link } from '@nextui-org/react';
 
 export default function Locations() {
   const router = useRouter();
@@ -23,6 +24,17 @@ export default function Locations() {
   if (locations) {
     return (
       <>
+        <div className='flex w-full justify-center p-6 md:w-2/3 2xl:w-1/3'>
+          <Button
+            as={Link}
+            href={APP_DEMO_WORKFLOW}
+            variant='flat'
+            size='md'
+            color='default'
+          >
+            View Demo
+          </Button>
+        </div>
         <div className='mb-8 mt-4 text-2xl font-semibold'>Locations</div>
         {locations.map((loc: Location, idx: number) => (
           <div key={loc.name} className='flex w-full flex-col items-center'>
