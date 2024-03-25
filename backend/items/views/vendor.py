@@ -13,19 +13,13 @@ class VendorList(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request: Request):
-        print("Inside VendorList GET")
         params = request.GET
         user = request.user
         assert isinstance(user, UserAccount)
-        print("User is", user)
         if location_id := params.get("locationId"):
-            print("Location ID is", location_id)
             location = get_object_or_404(ItemLocation, id=location_id)
-            print("Location is", location)
             if not location.is_visible_to(user):
-                print("Location is not visible to user")
                 return APIResponses.forbidden_location()
-            print("Location is visible to user")
             vendors = location.vendors.all()  # type: ignore
         else:
             all_locations = [
