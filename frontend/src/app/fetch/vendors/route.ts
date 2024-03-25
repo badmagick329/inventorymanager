@@ -10,7 +10,7 @@ export async function GET(req: Request) {
   const location_id = reqUrl.searchParams.get('location_id');
   let url = `${BASE_URL}${API_VENDORS}`;
   if (location_id) {
-    url = `${BASE_URL}${API_VENDORS}/?location_id=${location_id}`;
+    url = `${BASE_URL}${API_VENDORS}?location_id=${location_id}`;
   }
   const { Authorization, ErrorResponse } = createAuthHeader();
   if (ErrorResponse) {
