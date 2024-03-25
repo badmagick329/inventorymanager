@@ -76,9 +76,9 @@ class SaleList(APIView):
             "user": user,
             "orderId": order_id,
         }
-        serializer = SaleSerializer(data=initial_data)
 
         try:
+            serializer = SaleSerializer(data=initial_data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
         except ValidationErrorWithMessage as e:

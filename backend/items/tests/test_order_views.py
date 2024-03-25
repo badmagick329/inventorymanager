@@ -6,8 +6,8 @@ order_list_url = partial(reverse, "orders")
 order_detail_url = partial(reverse, "order_detail")
 
 from items.tests.factories import item_location_factory, order_factory
-from users.tests.factories import user_factory
 from rest_framework.test import APIClient
+from users.tests.factories import user_factory
 
 
 def test_user_can_access_order_list(
@@ -146,6 +146,28 @@ def test_user_can_create_order(
         format="json",
     )
     assert response.status_code == 201
+
+
+def test_whitespace_in_order_name_is_stripped(
+    api_client: APIClient, user_factory, item_location_factory
+):
+    user, _ = user_factory()
+    location = item_location_factory(users=[user])
+    api_client.force_authenticate(user=user)
+    data = {
+        "name": " test order 2 ",
+        "date": "2024-01-01",
+        "pricePerItem": 0.5,
+        "quantity": 10,
+        "currentSalePrice": 200,
+    }
+    response = api_client.post(
+        order_list_url(kwargs={"location_id": location.id}),
+        data,
+        format="json",
+    )
+    assert response.status_code == 201
+    assert response.json()["name"] == "test order 2"
 
 
 def test_order_creation_fails_with_invalid_data(

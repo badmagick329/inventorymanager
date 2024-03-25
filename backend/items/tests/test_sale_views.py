@@ -83,6 +83,36 @@ def test_user_can_create_sale(
     assert sale["vendor"] == vendor.name
 
 
+def test_whitespace_in_vendor_name_is_stripped(
+    api_client: APIClient,
+    user_factory,
+    item_location_factory,
+    order_factory,
+    vendor_factory,
+):
+    user, _ = user_factory()
+    location = item_location_factory(users=[user])
+    order = order_factory(location=location)
+    vendor, _ = vendor_factory(location=location)
+    api_client.force_authenticate(user=user)
+    data = {
+        "orderId": order.id,
+        "vendor": " Test Vendor ",
+        "quantity": 10,
+        "date": "2021-01-01",
+        "pricePerItem": 10,
+        "amountPaid": 50,
+    }
+    response = api_client.post(
+        sale_list_url(kwargs={"order_id": order.id}),
+        data=data,
+        format="json",
+    )
+    assert response.status_code == 201, f"Response: {response.json()}"
+    sale = response.json()
+    assert sale["vendor"] == "Test Vendor"
+
+
 def test_user_without_access_cannot_create_sale(
     api_client: APIClient,
     user_factory,
