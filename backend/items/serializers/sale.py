@@ -55,7 +55,7 @@ class SaleSerializer(serializers.BaseSerializer):
         quantity = data.get("quantity")
         amount_paid = data.get("amountPaid", 0)
         debt = data["pricePerItem"] * data["quantity"] - amount_paid
-        vendor = data.get("vendor")
+        vendor = data.get("vendor").strip() if data.get("vendor") else None
         order_id = data.get("orderId")
 
         return {

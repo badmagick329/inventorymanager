@@ -51,10 +51,16 @@ class OrderSerializer(serializers.BaseSerializer):
     def to_internal_value(self, data):
         location_id = data.get("locationId")
         date = data.get("date")
-        name = data.get("name")
-        price_per_item = round(data.get("pricePerItem"), 2)
+        name = data.get("name").strip() if data.get("name") else None
+        try:
+            price_per_item = round(data.get("pricePerItem"), 2)
+        except TypeError:
+            price_per_item = None
         quantity = data.get("quantity")
-        current_sale_price = round(data.get("currentSalePrice"), 2)
+        try:
+            current_sale_price = round(data.get("currentSalePrice"), 2)
+        except TypeError:
+            current_sale_price = None
         user = data.get("user")
         return {
             "locationId": location_id,
