@@ -6,7 +6,7 @@ from items.views.location import (
 )
 from items.views.order import OrderDetail, OrderList
 from items.views.sale import SaleDetail, SaleList
-from items.views.vendor import VendorList
+from items.views.vendor import VendorDetail, VendorList
 
 urlpatterns = [
     path("/locations", ItemLocationsList.as_view(), name="locations"),
@@ -28,9 +28,14 @@ urlpatterns = [
         name="sale_detail",
     ),
     path(
-        "/vendors/",
+        "/vendors",
         VendorList.as_view(),
         name="vendors",
+    ),
+    path(
+        "/vendors/<int:vendor_id>",
+        VendorDetail.as_view(),
+        name="vendor_detail",
     ),
     path(
         "/locations/history/<int:location_id>",

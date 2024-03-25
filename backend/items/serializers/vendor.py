@@ -11,13 +11,13 @@ class VendorSerializer(serializers.BaseSerializer):
         name = validated_data["name"]
         location_id = validated_data["locationId"]
         location = ItemLocation.objects.filter(id=location_id).first()
-        if not location:
+        if not location or not location.is_visible_to(validated_data["user"]):
             raise ValidationErrorWithMessage(
-                {"location_id": ["Location for this order was not found"]}
+                {"location_id": ["Location for this vendor was not found"]}
             )
         vendor = Vendor(name=name, location=location)
         try:
-            vendor.save()
+            vendor.save(user=validated_data["user"])
         except ValidationError as e:
             raise ValidationErrorWithMessage(e.message_dict)
         except IntegrityError as e:
@@ -30,7 +30,7 @@ class VendorSerializer(serializers.BaseSerializer):
         location = ItemLocation.objects.filter(id=location_id).first()
         if not location:
             raise ValidationErrorWithMessage(
-                {"location_id": ["Location for this order was not found"]}
+                {"location_id": ["Location for this vendor was not found"]}
             )
         instance.location = location
         try:
@@ -39,13 +39,16 @@ class VendorSerializer(serializers.BaseSerializer):
             raise ValidationErrorWithMessage(e.message_dict)
         except IntegrityError as e:
             raise ErrorHandler(e).error
+        return instance
 
     def to_internal_value(self, data):
         name = data.get("name").strip() if data.get("name") else None
         location_id = data.get("locationId")
+        user = data.get("user")
         return {
             "name": name,
             "locationId": location_id,
+            "user": user,
         }
 
     def to_representation(self, instance):
