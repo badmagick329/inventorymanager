@@ -44,7 +44,7 @@ class ValidationErrorWithMessage(serializers.ValidationError):
     def message_dict(self):
         error_dict = dict()
         for key, value in self.detail.items():
-            error_dict[key] = str(value[0])
+            error_dict[key] = [str(value[0])]
         return error_dict
 
 
