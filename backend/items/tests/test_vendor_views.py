@@ -52,7 +52,7 @@ def test_user_can_access_vendor_list(
     vendor, _ = vendor_factory(location=location)
     api_client.force_authenticate(user=user)
     response = api_client.get(
-        vendor_list_url(),
+        f"{vendor_list_url()}?location_id={location.id}",
     )
     assert response.status_code == 200, response.json()
     vendors = response.json()
@@ -67,10 +67,8 @@ def test_user_cannot_access_vendor_list_for_location_they_dont_have_access_to(
     location = item_location_factory()
     vendor, _ = vendor_factory(location=location)
     api_client.force_authenticate(user=user)
-    data = {"locationId": location.id}
     response = api_client.get(
-        vendor_list_url(),
-        data=data,
+        f"{vendor_list_url()}?location_id={location.id}",
         format="json",
     )
     assert response.status_code == 403, response.json()

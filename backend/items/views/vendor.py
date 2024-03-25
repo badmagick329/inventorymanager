@@ -16,7 +16,7 @@ class VendorList(APIView):
         params = request.GET
         user = request.user
         assert isinstance(user, UserAccount)
-        if location_id := params.get("locationId"):
+        if location_id := params.get("location_id"):
             location = get_object_or_404(ItemLocation, id=location_id)
             if not location.is_visible_to(user):
                 return APIResponses.forbidden_location()
