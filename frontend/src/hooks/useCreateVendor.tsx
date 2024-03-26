@@ -11,6 +11,8 @@ export default function useCreateVendor() {
     retry: false,
     onSettled: () => {},
     onSuccess: (data, mutationVars) => {
+      queryClient.invalidateQueries({ queryKey: ['sales'] });
+      queryClient.invalidateQueries({ queryKey: ['items'] });
       if (!isVendorResponse(data)) {
         queryClient.invalidateQueries({ queryKey: ['vendors'] });
         return;
