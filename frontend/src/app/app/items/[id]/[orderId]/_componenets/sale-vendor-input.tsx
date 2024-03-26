@@ -1,12 +1,15 @@
 import { SaleFormValues, VendorResponse } from '@/types';
-import { Control, Controller, FormState } from 'react-hook-form';
-import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  FormState,
+  UseFormRegister,
+  UseFormGetValues,
+} from 'react-hook-form';
 import HelpTooltip from '@/components/help-tooltip';
-import React from 'react';
-import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem} from '@nextui-org/react';
 import { useVendors } from '@/hooks';
-import { Button } from '@nextui-org/react';
-import useDeleteVendor from '@/hooks/useDeleteVendor';
+import VendorInputBadge from './sale-vendor-input-badge';
 
 type SaleVendorProps = {
   control: Control<SaleFormValues, any>;
@@ -14,7 +17,7 @@ type SaleVendorProps = {
   formState: FormState<SaleFormValues>;
   showHelpText: boolean;
   locationId: string;
-  setValue: UseFormSetValue<SaleFormValues>;
+  getValues: UseFormGetValues<SaleFormValues>;
 };
 
 export default function SaleVendor({
@@ -23,13 +26,14 @@ export default function SaleVendor({
   formState,
   showHelpText,
   locationId,
-  setValue,
+  getValues,
 }: SaleVendorProps) {
   const { data, isLoading, isError } = useVendors(locationId);
-  const deleteVendor = useDeleteVendor();
-  if (isError || !data) {
+
+  if (isError || !data || isLoading) {
     return null;
   }
+  const existingNames = data.map((vendor: VendorResponse) => vendor.name);
 
   return (
     <div className='flex flex-col items-end gap-2'>
@@ -52,10 +56,15 @@ export default function SaleVendor({
               label='Enter vendor name or select from existing vendors'
               isLoading={isLoading}
               defaultItems={data}
-              className='max-w-md'
               onInputChange={onChange}
               inputValue={value}
               allowsCustomValue
+              endContent={
+                <VendorInputBadge
+                  getValue={() => getValues('vendor')}
+                  existingNames={existingNames}
+                />
+              }
               {...register('vendor', { required: 'Vendor name is required' })}
               // Fix for Autocomplete throwing the following error:
               // "stopPropagation is now the default behavior for events in
@@ -64,28 +73,8 @@ export default function SaleVendor({
               // https://github.com/nextui-org/nextui/issues/2074
               onKeyDown={(e: any) => e.continuePropagation()}
             >
-              {data.map((vendor: VendorResponse) => (
-                <AutocompleteItem
-                  key={vendor.name}
-                  endContent={
-                    <Button
-                      color='danger'
-                      isDisabled={deleteVendor.isPending}
-                      onPress={() => {
-                        console.log('about to delete', vendor);
-                        deleteVendor
-                          .mutateAsync({ vendorId: vendor.id })
-                          .then(() => {
-                            setValue('vendor', '');
-                          });
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  }
-                >
-                  {vendor.name}
-                </AutocompleteItem>
+              {existingNames.map((name: string) => (
+                <AutocompleteItem key={name}>{name}</AutocompleteItem>
               ))}
             </Autocomplete>
           )}

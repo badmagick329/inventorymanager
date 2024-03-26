@@ -19,6 +19,8 @@ import useOrderFormDefaults from './useOrderFormDefaults';
 import useVendors from './useVendors';
 import useLocationHistory from './useLocationHistory';
 import useLocalStorage from './useLocalStorage';
+import useDeleteVendor from './useDeleteVendor';
+import useCreateVendor from './useCreateVendor';
 
 export {
   useLocations,
@@ -42,4 +44,6 @@ export {
   useVendors,
   useLocationHistory,
   useLocalStorage,
+  useDeleteVendor,
+  useCreateVendor,
 };
