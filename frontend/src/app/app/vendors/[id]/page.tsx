@@ -46,7 +46,7 @@ export default function LocationVendors() {
         <div key={vendor.name} className='flex w-full flex-col items-center'>
           <VendorForm vendor={vendor} locationId={locationId} />
           {idx !== vendors.length - 1 && (
-            <Divider className='my-6 w-full px-6 md:w-2/3 2xl:w-1/3' />
+            <Divider className='my-6 w-full px-6 md:w-2/3' />
           )}
         </div>
       ))}

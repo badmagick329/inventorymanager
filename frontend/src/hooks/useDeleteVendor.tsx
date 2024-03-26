@@ -14,6 +14,7 @@ export default function useDeleteVendor() {
       const { vendorId } = mutationVars;
       const previousData = queryClient.getQueryData(['vendors']);
       queryClient.invalidateQueries({ queryKey: ['sales'] });
+      queryClient.invalidateQueries({ queryKey: ['items'] });
       if (!isVendorResponseArray(previousData)) {
         queryClient.invalidateQueries({ queryKey: ['vendors'] });
         return;
