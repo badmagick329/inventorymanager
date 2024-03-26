@@ -32,8 +32,8 @@ class SaleDetail(APIView):
             **request.data,
             "user": user,
         }
-        serializer = SaleSerializer(sale, data=initial_data, partial=True)
         try:
+            serializer = SaleSerializer(sale, data=initial_data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
         except ValidationErrorWithMessage as e:

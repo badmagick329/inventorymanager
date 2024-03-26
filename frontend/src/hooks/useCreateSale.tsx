@@ -13,6 +13,9 @@ export default function useCreateSale() {
     onSettled: () => {},
     onSuccess: (data, mutationVars) => {
       const { locationId, orderId } = mutationVars;
+      // Invalidating vendors in case a new vendor is created during
+      // sale creation
+      queryClient.invalidateQueries({ queryKey: ['vendors', locationId] });
       if (!isSaleResponse(data)) {
         queryClient.invalidateQueries({ queryKey: ['sales'] });
       } else {

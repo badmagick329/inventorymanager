@@ -86,6 +86,8 @@ class SaleSerializer(serializers.BaseSerializer):
                 vendor.save(user=user)
             except IntegrityError as e:
                 raise ErrorHandler(e).error
+            except ValidationError as e:
+                raise ValidationErrorWithMessage(e.message_dict)
         return vendor
 
     def to_representation(self, instance):

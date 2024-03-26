@@ -59,7 +59,6 @@ export default function CreateSaleForm({
   if (formState.isLoading) {
     return <Spinner />;
   }
-
   return (
     <>
       <form
@@ -85,13 +84,15 @@ export default function CreateSaleForm({
               <ItemFormHeader
                 value={value}
                 updateValue={() => updateValue(!value)}
-                title={orderId ? 'Edit Sale' : 'Add Sale'}
+                title={saleId ? 'Edit Sale' : 'Add Sale'}
               />
               <SaleVendor
                 register={register}
                 formState={formState}
                 control={control}
                 showHelpText={value}
+                locationId={locationId}
+                setValue={setValue}
               />
               <SaleDate
                 register={register}
