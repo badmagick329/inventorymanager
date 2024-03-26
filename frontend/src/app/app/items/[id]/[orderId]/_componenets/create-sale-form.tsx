@@ -92,7 +92,7 @@ export default function CreateSaleForm({
                 control={control}
                 showHelpText={value}
                 locationId={locationId}
-                setValue={setValue}
+                getValues={getValues}
               />
               <SaleDate
                 register={register}
