@@ -19,6 +19,7 @@ export const APP_LOCATION_HISTORY = '/app/admin/location-history';
 export const APP_SALES = '/app/sales';
 export const APP_ITEMS = '/app/items';
 export const APP_DEMO_WORKFLOW = '/demo/workflow';
+export const APP_MANAGE_VENDORS = '/app/vendors';
 
 export const API_LOGIN = '/api/users/auth/login';
 export const API_LOGOUT = '/api/users/auth/logout';

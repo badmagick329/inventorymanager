@@ -2,14 +2,14 @@
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/loaders';
 import { useLocations, useOrders } from '@/hooks';
-import { APP_LOGIN, APP_LOCATIONS } from '@/consts/urls';
+import { APP_LOGIN, APP_LOCATIONS, APP_MANAGE_VENDORS } from '@/consts/urls';
 import { usePathname } from 'next/navigation';
 import { isOrderResponseArray } from '@/predicates';
 import { ConnectionError } from '@/components/errors';
 import { Spacer, Button, Link } from '@nextui-org/react';
 import CreateOrderModal from './_componenets/create-order-modal';
 import { useDeleteOrder } from '@/hooks';
-import OptionalErrorElement from './_componenets/optional-error-element';
+import OptionalErrorElement from '@/components/optional-error-element';
 import OrdersTable from './_componenets/orders-table';
 import { useState } from 'react';
 import { Location } from '@/types';
@@ -67,6 +67,15 @@ export default function Orders() {
           onPress={() => setDetailsHidden(!detailsHidden)}
         >
           {detailsHidden ? 'Show More' : 'Hide'}
+        </Button>
+        <Button
+          as={Link}
+          href={`${APP_MANAGE_VENDORS}/${locationId}`}
+          variant='flat'
+          size='md'
+          color='default'
+        >
+          Manage Vendors
         </Button>
         <Button
           as={Link}
