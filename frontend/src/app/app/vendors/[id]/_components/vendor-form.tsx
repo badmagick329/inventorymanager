@@ -52,7 +52,7 @@ export default function VendorForm({
 
   return (
     <form
-      className='flex w-full justify-between px-6 md:w-2/3 2xl:w-1/3'
+      className='flex w-full justify-between px-6 md:w-2/3'
       onSubmit={handleSubmit((data) => submitForm(data, vendor.id))}
     >
       <NameInput
