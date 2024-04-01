@@ -56,13 +56,13 @@ class ItemLocationSerializer(serializers.ModelSerializer):
             match data["users"]:
                 case str():
                     data["users"] = [
-                        user.strip().lower()
+                        user.strip()
                         for user in data["users"].split(",")
                         if user.strip()
                     ]
                 case list():
                     data["users"] = [
-                        user.strip().lower()
+                        user.strip()
                         for user in data["users"]
                         if user.strip()
                     ]

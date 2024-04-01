@@ -27,6 +27,7 @@ export default function Orders() {
   let list = useAsyncList({
     async load({ signal }) {
       const { data } = await axios.get(`${NEXT_ORDERS}/${locationId}`);
+      queryClient.setQueryData(['orders', locationId], data);
       isLoading && setIsLoading(false);
       const tableData = createOrdersTableData(data);
       return {
