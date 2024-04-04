@@ -13,6 +13,21 @@ export type Result<T> =
       value?: T;
     };
 
+export type ColorType =
+  | 'secondary'
+  | 'default'
+  | 'danger'
+  | 'primary'
+  | 'success'
+  | 'warning';
+export type VariantType =
+  | 'light'
+  | 'solid'
+  | 'bordered'
+  | 'faded'
+  | 'flat'
+  | 'shadow';
+
 export type Location = {
   id: number;
   name: string;

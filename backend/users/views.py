@@ -6,6 +6,7 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from utils.permissions import ReadOnlyUserPermission
 from utils.responses import APIResponses
 
 from .models import UserAccount
@@ -32,12 +33,51 @@ class IsAdminView(APIView):
 
 
 class UserAccountsDetail(APIView):
-    permission_classes = (permissions.IsAdminUser,)
+    permission_classes = (permissions.IsAuthenticated, ReadOnlyUserPermission)
 
     def delete(self, request: Request, user_id: int):
         user = get_object_or_404(UserAccount, id=user_id)
         user.delete()
         return APIResponses.deleted()
+
+    def get(self, request: Request, user_id: int):
+        user = get_object_or_404(UserAccount, id=user_id)
+        if request.GET.get("name_only"):
+            return APIResponses.ok({"username": user.username})
+
+        serializer = UserAccountSerializer(user)
+        return APIResponses.ok(serializer.data)
+
+
+class MeView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request: Request):
+        user = request.user
+        assert isinstance(user, UserAccount)
+        if request.GET.get("name_only"):
+            return APIResponses.ok({"username": user.username})
+
+        serializer = UserAccountSerializer(user)
+        return APIResponses.ok(serializer.data)
+
+    def patch(self, request: Request):
+        user = request.user
+        assert isinstance(user, UserAccount)
+        old_password = request.data.get("password", "")
+        if not user.check_password(raw_password=old_password):
+            return APIResponses.bad_request(
+                {"password": "Password is incorrect"}
+            )
+        new_password = request.data.get("newPassword")
+        new_password2 = request.data.get("newPassword2")
+        if new_password and new_password != new_password2:
+            return APIResponses.bad_request(
+                {"newPassword": "Passwords do not match"}
+            )
+        user.set_password(new_password)
+        user.save()
+        return APIResponses.ok({"message": "Password updated"})
 
 
 class UserAccountsList(APIView):

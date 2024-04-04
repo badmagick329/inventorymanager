@@ -1,0 +1,50 @@
+import { NextResponse } from 'next/server';
+import axios from 'axios';
+import { createErrorResponse } from '@/utils/responses';
+const BASE_URL = process.env.BASE_URL;
+import { API_USERS_ME } from '@/consts/urls';
+import { createAuthHeader } from '@/utils/responses';
+
+export async function GET(req: Request) {
+  const url = `${BASE_URL}${API_USERS_ME}?name_only=true`;
+  const { Authorization, ErrorResponse } = createAuthHeader();
+  if (ErrorResponse) {
+    return ErrorResponse;
+  }
+  const headers = { Authorization };
+  try {
+    const response = await axios.get(url, {
+      headers,
+    });
+    return new NextResponse(JSON.stringify(response.data), {
+      status: 200,
+    });
+  } catch (error) {
+    return createErrorResponse(error);
+  }
+}
+
+export async function PATCH(req: Request) {
+  const url = `${BASE_URL}${API_USERS_ME}`;
+  const { Authorization, ErrorResponse } = createAuthHeader();
+  if (ErrorResponse) {
+    return ErrorResponse;
+  }
+  const headers = { Authorization };
+  try {
+    const data = await req.json();
+    const payload = {
+      password: data.password,
+      newPassword: data.newPassword,
+      newPassword2: data.newPassword2,
+    };
+    const response = await axios.patch(url, payload, {
+      headers,
+    });
+    return new NextResponse(JSON.stringify(response.data), {
+      status: 200,
+    });
+  } catch (error) {
+    return createErrorResponse(error);
+  }
+}
