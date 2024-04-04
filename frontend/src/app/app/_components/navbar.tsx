@@ -1,5 +1,4 @@
-import LogoutButton from '@/app/app/_components/logout-button';
-import AdminNavItem from '@/app/app/_components/admin-nav-item';
+import LoggedInDropdown from '@/app/app/_components/logged-in-dropdown';
 import LocationsNavItem from './locations-nav-item';
 import ThemeToggler from './theme-toggler';
 
@@ -10,13 +9,12 @@ export default function Navbar() {
         <li>
           <div className='flex items-center gap-2'>
             <LocationsNavItem />
-            <AdminNavItem />
           </div>
         </li>
         <li>
           <div className='flex h-full items-center gap-2'>
             <ThemeToggler />
-            <LogoutButton />
+            <LoggedInDropdown />
           </div>
         </li>
       </ul>

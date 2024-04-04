@@ -6,28 +6,17 @@ from items.serializers.order import (
     SaleHistorySerializer,
 )
 from rest_framework import permissions
-from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from users.models import UserAccount
+from utils.permissions import ReadOnlyUserPermission
 from utils.responses import APIResponses
-
-
-class ItemLocationPermission(BasePermission):
-    ADMIN_METHODS = ["POST", "PUT", "DELETE", "PATCH"]
-
-    def has_permission(self, request, view):
-        user = request.user
-        assert isinstance(user, UserAccount)
-        if user.is_admin:
-            return True
-        return request.method not in self.ADMIN_METHODS
 
 
 class ItemLocationsDetail(APIView):
     permission_classes = (
         permissions.IsAuthenticated,
-        ItemLocationPermission,
+        ReadOnlyUserPermission,
     )
     lookup_url_kwarg = "id"
 
@@ -64,7 +53,7 @@ class ItemLocationsDetail(APIView):
 class ItemLocationsList(APIView):
     permission_classes = (
         permissions.IsAuthenticated,
-        ItemLocationPermission,
+        ReadOnlyUserPermission,
     )
 
     def post(self, request: Request):
