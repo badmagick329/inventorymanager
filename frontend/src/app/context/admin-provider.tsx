@@ -23,7 +23,7 @@ async function fetchData(
   const result = await Promise.allSettled([adminRequest, usersMeRequest]);
   const adminResult = result[0].status === 'fulfilled' ? true : false;
   const usernameResult =
-    result[1].status === 'fulfilled' ? result[1].value.data.username : null;
+    result[1].status === 'fulfilled' ? result[1].value.data.username : '';
   setIsAdmin(adminResult);
   setUsername(usernameResult);
 }

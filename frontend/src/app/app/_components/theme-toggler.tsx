@@ -13,7 +13,9 @@ export default function ThemeToggler() {
   useEffect(() => setMounted(true), []);
 
   if (!mounted) {
-    return <Button color='default' variant='flat' isIconOnly></Button>;
+    return (
+      <Button color='default' variant='flat' isIconOnly radius='sm'></Button>
+    );
   }
 
   function getThumbIcon(isSelected: boolean, className: string) {

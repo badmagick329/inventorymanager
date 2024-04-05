@@ -18,10 +18,10 @@ export default function VisiblePlayer({
       </div>
       <div>
         <Button
-          className='rounded-md'
           color='default'
           variant='bordered'
           onPress={callback}
+          radius='sm'
         >
           Hide Video
         </Button>

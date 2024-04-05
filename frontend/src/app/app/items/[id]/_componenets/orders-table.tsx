@@ -9,25 +9,22 @@ import {
   getKeyValue,
 } from '@nextui-org/react';
 import { createOrdersTableData } from '@/utils';
-import { DeleteOrder } from '@/types';
+import { DeleteOrder, OrderResponse } from '@/types';
 
 import OrdersTableContent from './orders-table-content';
-import { AsyncListData } from '@react-stately/data';
 
 type OrdersTableProps = {
   locationId: string;
-  list: AsyncListData<unknown>;
+  orders: OrderResponse[];
   deleteOrder: DeleteOrder;
 };
 
-type TableData = ReturnType<typeof createOrdersTableData>;
-
 export default function OrdersTable({
   locationId,
-  list,
+  orders,
   deleteOrder,
 }: OrdersTableProps) {
-  const tableData = list.items as TableData;
+  const tableData = createOrdersTableData(orders);
   const columns = [
     { key: 'name', label: 'Name' },
     { key: 'purchaseDate', label: 'Purchase Date' },
@@ -43,35 +40,12 @@ export default function OrdersTable({
     { key: 'actions', label: 'Actions' },
   ];
 
-  function shouldAllowSorting(columnKey: string) {
-    const sortableColumns = [
-      'quantity',
-      'cost',
-      'salePrice',
-      'lastModified',
-      'profit',
-      'purchaseDate',
-    ];
-    return sortableColumns.includes(columnKey);
-  }
-
   return (
-    <Table
-      aria-label='Items Table'
-      sortDescriptor={list.sortDescriptor}
-      onSortChange={list.sort}
-    >
+    <Table aria-label='Items Table'>
       <TableHeader columns={columns}>
-        {(column) => (
-          <TableColumn
-            key={column.key}
-            allowsSorting={shouldAllowSorting(column.key)}
-          >
-            {column.label}
-          </TableColumn>
-        )}
+        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
-      <TableBody emptyContent={'No items added'} items={tableData}>
+      <TableBody emptyContent={'No items added'}>
         {tableData.map((row) => (
           <TableRow key={row.id}>
             {(columnKey) => {

@@ -39,6 +39,7 @@ export default function LocationOverview({
         href={`${APP_LOCATION_HISTORY}/${locationId}`}
         variant='bordered'
         color='default'
+        radius='sm'
         isIconOnly
       >
         <Tooltip content={'Logs'} delay={DELAY_500}>

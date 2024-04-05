@@ -1,6 +1,8 @@
 import React from 'react';
 import { Modal, Button, useDisclosure } from '@nextui-org/react';
 import CreateSaleForm from './create-sale-form';
+import { Plus } from 'lucide-react';
+import { ICON_SM } from '@/consts';
 
 export default function CreateSaleModal({
   locationId,
@@ -16,7 +18,14 @@ export default function CreateSaleModal({
 
   return (
     <>
-      <Button onPress={onOpen} isDisabled={remainingStock <= 0}>
+      <Button
+        onPress={onOpen}
+        isDisabled={remainingStock <= 0}
+        endContent={<Plus size={ICON_SM} />}
+        variant='ghost'
+        color='default'
+        radius='sm'
+      >
         Add Sale
       </Button>
       <Modal

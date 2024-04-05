@@ -9,9 +9,9 @@ export default function LocationsNavItem() {
       <Button
         className='rounded-md border-foreground-500 p-2'
         variant='bordered'
+        radius='sm'
         as={Link}
         href={APP_LOCATIONS}
-        isIconOnly
       >
         <Image
           width={30}
@@ -20,6 +20,7 @@ export default function LocationsNavItem() {
           alt='Warehouse'
           unoptimized
         />
+        <span>Home</span>
       </Button>
     </>
   );

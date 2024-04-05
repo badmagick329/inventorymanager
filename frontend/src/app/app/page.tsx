@@ -29,10 +29,10 @@ export default function Locations() {
             as={Link}
             href={APP_DEMO_WORKFLOW}
             variant='flat'
-            size='md'
+            radius='sm'
             color='default'
           >
-            View Demo
+            View Workflow Demo
           </Button>
         </div>
         <div className='mb-8 mt-4 text-2xl font-semibold'>Locations</div>

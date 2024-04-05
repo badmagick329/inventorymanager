@@ -6,7 +6,12 @@ type FormState = {
 
 export default function CreateButton({ formState }: { formState: FormState }) {
   return (
-    <Button type='submit' color='primary' isLoading={formState.isSubmitting}>
+    <Button
+      type='submit'
+      color='primary'
+      isLoading={formState.isSubmitting}
+      radius='sm'
+    >
       Create
     </Button>
   );

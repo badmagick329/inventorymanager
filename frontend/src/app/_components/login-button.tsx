@@ -15,6 +15,7 @@ export default function LoginButton({
       className='mt-2 py-6 text-xl font-semibold'
       color='primary'
       variant='ghost'
+      radius='sm'
       isLoading={formState.isSubmitting || isLoading}
     >
       Login

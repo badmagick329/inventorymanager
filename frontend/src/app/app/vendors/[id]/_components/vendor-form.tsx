@@ -68,6 +68,7 @@ export default function VendorForm({
             className='text-success-600'
             variant='light'
             type='submit'
+            radius='sm'
             isDisabled={createVendor.isPending}
             isLoading={createVendor.isPending}
           >
@@ -78,6 +79,7 @@ export default function VendorForm({
           onPress={() => setIsEditing((prev) => !prev)}
           className='text-warning-600'
           variant='light'
+          radius='sm'
           isDisabled={createVendor.isPending}
         >
           <Pencil size={ICON_MD} /> {isEditing ? 'Cancel Edit' : 'Edit'}
@@ -85,6 +87,7 @@ export default function VendorForm({
         <Button
           className='text-danger-600'
           variant='light'
+          radius='sm'
           isDisabled={createVendor.isPending}
           onPress={disclosure.onOpen}
         >

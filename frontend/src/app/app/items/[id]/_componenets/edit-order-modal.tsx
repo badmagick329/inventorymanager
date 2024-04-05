@@ -24,7 +24,8 @@ export default function EditOrderModal({
         <Button
           onPress={onOpen}
           size='sm'
-          variant='flat'
+          variant='ghost'
+          color='warning'
           isIconOnly
           isDisabled={isDisabled}
         >
