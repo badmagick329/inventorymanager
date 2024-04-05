@@ -26,11 +26,19 @@ export default function ChartsPage() {
   }
 
   return (
-    <div className='flex w-3/5 flex-col items-center justify-center gap-4'>
+    <div className='flex h-[calc(100dvh-55px)] w-full flex-col items-center gap-4'>
       <span className='pt-6 text-2xl font-semibold tracking-wide'>
         Highest Item Costs
       </span>
-      <Pie data={prepareChartData(orders)} />
+      <div className='flex h-4/5 w-full justify-center'>
+        <Pie
+          data={prepareChartData(orders)}
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+          }}
+        />
+      </div>
     </div>
   );
 }
