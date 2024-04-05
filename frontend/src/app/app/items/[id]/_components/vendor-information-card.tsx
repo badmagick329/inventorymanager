@@ -8,10 +8,10 @@ export default function VendorsInformationCard({
 }: {
   locationId?: number;
 }) {
+  const { data, isLoading, isError } = useVendors(locationId?.toString() || '');
   if (!locationId) {
     return null;
   }
-  const { data, isLoading, isError } = useVendors(locationId.toString());
 
   if (isLoading) {
     return (
