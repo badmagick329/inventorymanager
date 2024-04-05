@@ -51,20 +51,21 @@ export default function Sales() {
       />
       <Spacer y={2} />
       <div className='flex justify-center gap-4'>
+        <Button
+          as={Link}
+          href={`${APP_ITEMS}/${locationId}`}
+          variant='flat'
+          radius='sm'
+          color='default'
+          showAnchorIcon
+        >
+          Back to Items
+        </Button>
         <CreateSaleModal
           locationId={locationId}
           orderId={orderId}
           remainingStock={remainingStock}
         />
-        <Button
-          as={Link}
-          href={`${APP_ITEMS}/${locationId}`}
-          variant='flat'
-          size='md'
-          color='default'
-        >
-          Back to Items
-        </Button>
       </div>
       <Spacer y={4} />
       <SalesTable

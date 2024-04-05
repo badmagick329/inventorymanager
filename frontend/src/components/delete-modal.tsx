@@ -48,6 +48,7 @@ export default function DeleteModal({
                 <Button
                   color='default'
                   variant='light'
+                  radius='sm'
                   onPress={disclosure.onClose}
                   isDisabled={mutation.isPending}
                 >
@@ -56,6 +57,7 @@ export default function DeleteModal({
                 <Button
                   color='danger'
                   isDisabled={mutation.isPending}
+                  radius='sm'
                   onPress={() => {
                     mutation.mutateAsync(params).then(() => {
                       onClose();

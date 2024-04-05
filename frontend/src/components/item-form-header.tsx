@@ -16,7 +16,7 @@ export default function ItemFormHeader({
         <Button
           className='absolute right-2'
           variant='light'
-          size='sm'
+          radius='sm'
           onPress={updateValue}
         >
           {value ? 'Hide' : 'Show'} Help

@@ -20,8 +20,9 @@ export default function AdminNavItem() {
     <Dropdown>
       <DropdownTrigger>
         <Button
-          className='rounded-md border-secondary-500 p-2'
+          className='border-secondary-500 p-2'
           color='secondary'
+          radius='sm'
           variant='bordered'
         >
           Admin

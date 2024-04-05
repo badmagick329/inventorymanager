@@ -8,9 +8,11 @@ import {
   DropdownMenu,
   DropdownItem,
   Button,
+  Skeleton,
+  Card,
 } from '@nextui-org/react';
 import { useLogout } from '@/hooks';
-import { APP_CHANGE_PASSWORD } from '@/consts/urls';
+import { APP_CHANGE_PASSWORD, APP_LOCATIONS } from '@/consts/urls';
 import { useAdminStatus, useUsername } from '@/app/context/admin-provider';
 import { APP_MANAGE_LOCATIONS, APP_MANAGE_USERS } from '@/consts/urls';
 import { ColorType, VariantType } from '@/types';
@@ -19,8 +21,17 @@ export default function LoggedInDropdown() {
   const logout = useLogout();
   const username = useUsername();
   const isAdmin = useAdminStatus();
-  if (!username) {
+  if (username === '') {
     return null;
+  }
+  if (username === null) {
+    return (
+      <Card className='flex min-h-[38px] min-w-[160px] flex-row items-center justify-around gap-4'>
+        <Skeleton className='flex rounded-lg'>
+          <div className='h-3 min-w-[100px] rounded-lg bg-default-200'></div>
+        </Skeleton>
+      </Card>
+    );
   }
   const userButtonColor = isAdmin ? 'secondary' : 'default';
   const items = getDropdownItems(isAdmin, logout.mutate);
@@ -31,6 +42,7 @@ export default function LoggedInDropdown() {
         <Button
           color={userButtonColor}
           className='rounded-md p-2 font-semibold'
+          radius='sm'
           variant='bordered'
         >
           <User size={ICON_SM} />
@@ -62,6 +74,15 @@ function getDropdownItems(isAdmin: boolean | null, logout: () => void) {
   let items: ItemType[] = [
     {
       as: Link,
+      children: 'Locations',
+      className: 'text-foreground',
+      color: 'default' as ColorType,
+      href: APP_LOCATIONS,
+      key: 'locations',
+      startContent: <Warehouse size={ICON_SM} />,
+    },
+    {
+      as: Link,
       children: 'Change password',
       className: 'text-foreground',
       color: 'default' as ColorType,
@@ -82,18 +103,18 @@ function getDropdownItems(isAdmin: boolean | null, logout: () => void) {
     items.unshift(
       {
         as: Link,
-        children: 'Locations',
+        children: 'Manage Locations',
         className: 'text-secondary-500',
         href: APP_MANAGE_LOCATIONS,
-        key: 'locations',
+        key: 'manage-locations',
         startContent: <Warehouse size={ICON_SM} />,
       },
       {
         as: Link,
-        children: 'Users',
+        children: 'Manage Users',
         className: 'text-secondary-500',
         href: APP_MANAGE_USERS,
-        key: 'users',
+        key: 'manage-users',
         startContent: <User size={ICON_SM} />,
       }
     );

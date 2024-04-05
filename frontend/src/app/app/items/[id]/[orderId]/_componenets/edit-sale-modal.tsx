@@ -25,8 +25,9 @@ export default function EditSaleModal({
       <Tooltip content='Edit' color='default' delay={DELAY_500}>
         <Button
           onPress={onOpen}
-          size='sm'
-          variant='flat'
+          radius='sm'
+          variant='ghost'
+          color='warning'
           isIconOnly
           isDisabled={isDisabled}
         >

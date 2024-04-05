@@ -24,7 +24,7 @@ export default function LocationCardButtons({
       <Button
         className='text-warning-600'
         variant='light'
-        size='lg'
+        radius='sm'
         onPress={onEditPress}
       >
         <Pencil size={ICON_MD} /> Edit
@@ -33,7 +33,7 @@ export default function LocationCardButtons({
         className='text-danger-600'
         onPress={disclosure.onOpen}
         variant='light'
-        size='lg'
+        radius='sm'
         isLoading={isLoading}
       >
         <Trash size={ICON_MD} /> Delete

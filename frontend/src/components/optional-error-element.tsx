@@ -16,7 +16,7 @@ export default function OptionalErrorElement({
           as={Link}
           href={APP_LOCATIONS}
           variant='flat'
-          size='md'
+          radius='sm'
           color='default'
         >
           Back to Locations

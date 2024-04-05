@@ -34,7 +34,10 @@ export default function OrderDateInput({
   return (
     <>
       <div className='flex items-center gap-2'>
-        <Button onPress={() => handleClick(getValues, setValue, setDate)}>
+        <Button
+          onPress={() => handleClick(getValues, setValue, setDate)}
+          radius='sm'
+        >
           {dateIsEmpty(getValues) ? 'Use Today' : 'Clear Date'}
         </Button>
         <div className='flex w-full justify-between px-2'>

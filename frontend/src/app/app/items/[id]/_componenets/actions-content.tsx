@@ -33,7 +33,8 @@ export default function ActionsContent({
         <Tooltip content='Delete' color='default' delay={DELAY_500}>
           <Button
             size='sm'
-            variant='flat'
+            variant='ghost'
+            color='danger'
             isIconOnly
             onPress={disclosure.onOpen}
             isDisabled={deleteOrder.isPending}
@@ -46,7 +47,8 @@ export default function ActionsContent({
             as={Link}
             href={`${APP_ITEMS}/${locationId}/${rowId}`}
             size='sm'
-            variant='flat'
+            variant='ghost'
+            color='primary'
             isIconOnly
             isDisabled={deleteOrder.isPending}
           >

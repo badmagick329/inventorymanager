@@ -19,6 +19,7 @@ export default function LocationLink({ id, name }: LocationLinkProps) {
       href={`${APP_ITEMS}/${id}`}
       variant='light'
       color='primary'
+      radius='sm'
       className='text-xl font-semibold'
     >
       {name}

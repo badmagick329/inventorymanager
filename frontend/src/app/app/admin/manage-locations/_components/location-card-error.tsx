@@ -10,7 +10,7 @@ export default function LocationCardError({
   return (
     <div className='flex flex-col gap-4'>
       <span>{message}</span>
-      <Button color='danger' variant='solid' onPress={refetcher}>
+      <Button color='danger' variant='solid' onPress={refetcher} radius='sm'>
         Retry?
       </Button>
     </div>

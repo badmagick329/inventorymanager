@@ -16,7 +16,7 @@ export default function FormHeader({
         <Button
           className='absolute right-2'
           variant='light'
-          size='sm'
+          radius='sm'
           onPress={updateValue}
         >
           {value ? 'Hide' : 'Show'} Help

@@ -50,7 +50,7 @@ export default function LocationHistory() {
           as={Link}
           href={APP_LOCATIONS}
           variant='flat'
-          size='md'
+          radius='sm'
           color='default'
         >
           Back to Locations
@@ -61,7 +61,7 @@ export default function LocationHistory() {
           className='max-w-[540px]'
           type='search'
           placeholder='Search by item name'
-          size='sm'
+          radius='sm'
           fullWidth
           onChange={(e) => {
             setSearchValue(e.target.value);

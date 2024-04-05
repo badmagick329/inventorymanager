@@ -22,6 +22,7 @@ export default function LogoutButton() {
       onPress={unauthUser}
       variant='ghost'
       color='default'
+      radius='sm'
     >
       Logout
     </Button>

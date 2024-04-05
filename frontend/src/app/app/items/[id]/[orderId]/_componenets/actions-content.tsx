@@ -32,9 +32,10 @@ export default function ActionsContent({
       />
       <Tooltip content='Delete' color='default' delay={DELAY_500}>
         <Button
-          size='sm'
-          variant='flat'
+          radius='sm'
           isIconOnly
+          variant='ghost'
+          color='danger'
           isDisabled={deleteSale.isPending}
           onPress={disclosure.onOpen}
         >

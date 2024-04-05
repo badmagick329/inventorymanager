@@ -31,14 +31,15 @@ export default function LocationVendors() {
   }
 
   return (
-    <div className='flex w-full flex-col items-center pt-6 gap-4'>
+    <div className='flex w-full flex-col items-center gap-4 pt-6'>
       <span className='text-2xl font-black'>Manage Vendors</span>
       <Button
         as={Link}
         href={`${APP_ITEMS}/${locationId}`}
         variant='flat'
-        size='md'
+        radius='sm'
         color='default'
+        showAnchorIcon
       >
         Back to Items
       </Button>
@@ -50,6 +51,11 @@ export default function LocationVendors() {
           )}
         </div>
       ))}
+      {vendors.length === 0 && (
+        <div className='text-2xl font-semibold pt-4'>
+          No vendors found for this location
+        </div>
+      )}
     </div>
   );
 }
