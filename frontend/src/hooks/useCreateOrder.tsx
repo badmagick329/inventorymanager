@@ -12,6 +12,7 @@ export default function useCreateOrder() {
     onSettled: () => {},
     onSuccess: (data, mutationVars) => {
       const { locationId } = mutationVars;
+      queryClient.invalidateQueries({ queryKey: ['locations'] });
       if (!isOrderResponse(data)) {
         queryClient.invalidateQueries({ queryKey: ['orders'] });
         return;

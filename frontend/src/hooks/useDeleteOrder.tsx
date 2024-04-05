@@ -11,6 +11,7 @@ export default function useDeleteOrder() {
     onSettled: () => {},
     onSuccess: (_, mutationVars) => {
       const { orderId } = mutationVars;
+      queryClient.invalidateQueries({ queryKey: ['locations'] });
       const previousData = queryClient.getQueryData(['orders']);
       if (!isOrderResponseArray(previousData)) {
         queryClient.invalidateQueries({ queryKey: ['orders'] });
