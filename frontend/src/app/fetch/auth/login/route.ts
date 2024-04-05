@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server';
-import { serialize } from 'cookie';
-import axios from 'axios';
-import { AxiosResponse } from 'axios';
-import { createErrorResponse } from '@/utils/responses';
 import { TOKEN_KEY } from '@/consts';
-const BASE_URL = process.env.BASE_URL;
 import { API_LOGIN } from '@/consts/urls';
+import { createErrorResponse } from '@/utils/responses';
+import axios, { AxiosResponse } from 'axios';
+import { serialize } from 'cookie';
+import { NextResponse } from 'next/server';
+
+const BASE_URL = process.env.BASE_URL;
 
 export async function POST(req: Request) {
   const url = `${BASE_URL}${API_LOGIN}`;

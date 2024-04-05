@@ -1,6 +1,6 @@
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { NEXT_SALES } from '@/consts/urls';
 import { SHORT_STALE_TIME } from '@/consts';
+import { NEXT_SALES } from '@/consts/urls';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 export default function useSales(orderId: string) {

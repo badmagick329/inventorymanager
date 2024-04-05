@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server';
-import axios from 'axios';
-const BASE_URL = process.env.BASE_URL;
 import { API_ORDERS } from '@/consts/urls';
-import { createErrorResponse } from '@/utils/responses';
-import { isOrderResponseArray, isOrderPost } from '@/predicates';
-import { createAuthHeader } from '@/utils/responses';
+import { isOrderPost, isOrderResponseArray } from '@/predicates';
+import { createAuthHeader, createErrorResponse } from '@/utils/responses';
+import axios from 'axios';
+import { NextResponse } from 'next/server';
+
+const BASE_URL = process.env.BASE_URL;
 
 export async function GET(
   req: Request,

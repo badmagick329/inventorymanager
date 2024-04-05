@@ -1,8 +1,9 @@
 'use client';
-import { useLogout } from '@/hooks';
+
+import { useAdminStatus } from '@/app/context/global-context-provider';
 import { APP_LOGIN } from '@/consts/urls';
+import { useLogout } from '@/hooks';
 import { useRouter } from 'next/navigation';
-import { useAdminStatus } from '@/app/context/admin-provider';
 
 export default function AdminLayout({
   children,

@@ -1,5 +1,5 @@
-import { Input } from '@nextui-org/react';
 import { LoginFormValues } from '@/types';
+import { Input } from '@nextui-org/react';
 import { FormState, UseFormRegister } from 'react-hook-form';
 
 type InputProps = {

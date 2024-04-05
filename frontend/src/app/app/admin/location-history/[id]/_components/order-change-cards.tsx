@@ -1,7 +1,8 @@
-import { HistoricalOrder } from '@/types';
-import OrderHistoryCard from './order-history-card';
 import { ICON_MD } from '@/consts';
+import { HistoricalOrder } from '@/types';
 import { MoveRight } from 'lucide-react';
+
+import OrderHistoryCard from './order-history-card';
 
 export default function OrderChangeCards({
   first,

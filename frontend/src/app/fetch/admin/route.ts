@@ -1,9 +1,10 @@
-import { NextResponse } from 'next/server';
-import axios from 'axios';
-import { createErrorResponse } from '@/utils/responses';
 import { API_IS_ADMIN } from '@/consts/urls';
-const BASE_URL = process.env.BASE_URL;
+import { createErrorResponse } from '@/utils/responses';
 import { createAuthHeader } from '@/utils/responses';
+import axios from 'axios';
+import { NextResponse } from 'next/server';
+
+const BASE_URL = process.env.BASE_URL;
 
 export async function GET(req: Request) {
   const url = `${BASE_URL}${API_IS_ADMIN}`;

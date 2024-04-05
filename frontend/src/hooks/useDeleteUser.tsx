@@ -1,8 +1,7 @@
 import { NEXT_USERS } from '@/consts/urls';
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { useQueryClient } from '@tanstack/react-query';
 import { isUserArray } from '@/predicates';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 
 export default function useDeleteUser() {
   const queryClient = useQueryClient();

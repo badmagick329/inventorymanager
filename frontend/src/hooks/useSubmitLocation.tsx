@@ -1,6 +1,6 @@
 import { useCreateLocation } from '@/hooks';
-import axios from 'axios';
 import { LocationFormValues } from '@/types';
+import axios from 'axios';
 
 export default function useSubmitLocation({
   onSuccess,

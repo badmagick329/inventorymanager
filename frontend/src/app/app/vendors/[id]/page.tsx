@@ -1,12 +1,13 @@
 'use client';
-import { useVendors } from '@/hooks';
-import { usePathname, useRouter } from 'next/navigation';
-import OptionalErrorElement from '@/components/optional-error-element';
+
+import { OptionalErrorElement, Spinner } from '@/components';
 import { APP_ITEMS, APP_LOGIN } from '@/consts/urls';
-import { Button, Divider, Link } from '@nextui-org/react';
+import { useVendors } from '@/hooks';
 import { VendorResponse } from '@/types';
+import { Button, Divider, Link } from '@nextui-org/react';
+import { usePathname, useRouter } from 'next/navigation';
+
 import VendorForm from './_components/vendor-form';
-import { Spinner } from '@/components/loaders';
 
 export default function LocationVendors() {
   const locationId = usePathname().split('/')[3];
@@ -52,7 +53,7 @@ export default function LocationVendors() {
         </div>
       ))}
       {vendors.length === 0 && (
-        <div className='text-2xl font-semibold pt-4'>
+        <div className='pt-4 text-2xl font-semibold'>
           No vendors found for this location
         </div>
       )}

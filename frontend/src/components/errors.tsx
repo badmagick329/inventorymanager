@@ -1,5 +1,5 @@
-import { ServerCrash } from 'lucide-react';
 import { ICON_MD } from '@/consts';
+import { ServerCrash } from 'lucide-react';
 
 export function ConnectionError({ message }: { message?: string }) {
   message = message ?? 'Could not connect to the server';

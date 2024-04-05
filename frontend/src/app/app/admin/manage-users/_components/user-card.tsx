@@ -1,18 +1,19 @@
 'use client';
-import React from 'react';
+
+import { User } from '@/types';
 import {
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
+  CardHeader,
   Divider,
   useDisclosure,
 } from '@nextui-org/react';
-import UsernameDisplay from './username-display';
-import LocationList from './location-list';
-import ConfirmedDelete from './confirmed-delete';
+import React from 'react';
 
-import { User } from '@/types';
+import ConfirmedDelete from './confirmed-delete';
+import LocationList from './location-list';
+import UsernameDisplay from './username-display';
 
 export default function UserCard({ user }: { user: User }) {
   const disclosure = useDisclosure();

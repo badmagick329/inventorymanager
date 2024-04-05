@@ -1,11 +1,12 @@
-import UserForm from './user-form';
 import {
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
+  CardHeader,
   Divider,
 } from '@nextui-org/react';
+
+import UserForm from './user-form';
 
 type FormCardProps = {
   setShowForm: (show: boolean) => void;

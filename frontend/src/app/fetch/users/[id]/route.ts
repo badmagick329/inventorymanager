@@ -1,9 +1,9 @@
 import { API_USERS } from '@/consts/urls';
+import { createAuthHeader, createErrorResponse } from '@/utils/responses';
 import axios from 'axios';
-import { createErrorResponse } from '@/utils/responses';
 import { NextResponse } from 'next/server';
+
 const BASE_URL = process.env.BASE_URL;
-import { createAuthHeader } from '@/utils/responses';
 
 export async function DELETE(
   req: Request,

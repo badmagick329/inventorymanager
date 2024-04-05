@@ -1,5 +1,6 @@
 'use client';
-import { formatNumber,formatCurrency } from '@/utils';
+
+import { formatCurrency, formatNumber } from '@/utils';
 import { Tooltip } from '@nextui-org/react';
 
 type ProfitContentProps = {
@@ -12,7 +13,7 @@ export default function ProfitContent({
   profitPerItem,
 }: ProfitContentProps) {
   return (
-    <div className='flex gap-1 items-start'>
+    <div className='flex items-start gap-1'>
       <ProfitValue profit={profit} profitPerItem={profitPerItem} />
       <ProfitPerItemValue profitPerItem={profitPerItem} />
     </div>
@@ -38,7 +39,7 @@ function ProfitPerItemValue({ profitPerItem }: { profitPerItem: number }) {
   return (
     <>
       <Tooltip content={formatCurrency(profitPerItem)} placement='top'>
-        <span className='text-default-500 text-xs'>
+        <span className='text-xs text-default-500'>
           {formatNumber(profitPerItem)}ea.
         </span>
       </Tooltip>

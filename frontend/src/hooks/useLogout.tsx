@@ -1,4 +1,4 @@
-import { NEXT_LOGOUT, APP_LOGIN } from '@/consts/urls';
+import { APP_LOGIN, NEXT_LOGOUT } from '@/consts/urls';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';

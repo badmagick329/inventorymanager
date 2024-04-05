@@ -1,5 +1,5 @@
-import { Change } from '@/types';
 import { ICON_MD } from '@/consts';
+import { Change } from '@/types';
 import { MoveRight } from 'lucide-react';
 
 const fieldMap = new Map([

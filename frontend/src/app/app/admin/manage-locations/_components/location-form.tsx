@@ -1,15 +1,17 @@
+import {
+  CancelButton,
+  ConnectionError,
+  CreateButton,
+  UpdateButton,
+} from '@/components';
+import { useLocations, useSubmitLocation } from '@/hooks';
+import { isLocationArray } from '@/predicates';
+import { Location } from '@/types';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
-import React from 'react';
+
 import LocationInput from './location-input';
 import UsernamesSelect from './usernames-select';
-import CancelButton from '@/components/cancel-button';
-import CreateButton from '@/components/create-button';
-import { useSubmitLocation, useLocations } from '@/hooks';
-import { ConnectionError } from '@/components/errors';
-import { Location } from '@/types';
-import { isLocationArray } from '@/predicates';
-import UpdateButton from '@/components/update-button';
 
 type FormProps = {
   location: string;

@@ -1,6 +1,5 @@
-import { Link } from '@nextui-org/react';
 import { APP_ITEMS } from '@/consts/urls';
-import { Button } from '@nextui-org/react';
+import { Button, Link } from '@nextui-org/react';
 
 type LocationLinkProps = {
   id: number | undefined;

@@ -1,11 +1,11 @@
 'use client';
-import { Spinner } from '@/components/loaders';
-import { Location } from '@/types';
+
+import { ConnectionError, Spinner } from '@/components';
 import { useLocations } from '@/hooks';
+import { Location } from '@/types';
 import React from 'react';
-import LocationCard from './_components/location-card';
-import NewForm from './_components/new-form';
-import { ConnectionError } from '@/components/errors';
+
+import { LocationCard, NewForm } from './_components';
 
 export default function ManageLocation() {
   const { isError, isLoading, data: locations } = useLocations();

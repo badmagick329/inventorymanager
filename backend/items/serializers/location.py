@@ -62,9 +62,7 @@ class ItemLocationSerializer(serializers.ModelSerializer):
                     ]
                 case list():
                     data["users"] = [
-                        user.strip()
-                        for user in data["users"]
-                        if user.strip()
+                        user.strip() for user in data["users"] if user.strip()
                     ]
                 case _:
                     pass

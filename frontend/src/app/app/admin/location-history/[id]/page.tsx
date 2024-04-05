@@ -1,14 +1,14 @@
 'use client';
-import { Spinner } from '@/components/loaders';
-import React from 'react';
-import { ConnectionError } from '@/components/errors';
-import { useLocationHistory } from '@/hooks';
-import { usePathname } from 'next/navigation';
-import { isOrderHistoryArray } from '@/predicates';
-import OrderHistoryAccordian from './_components/order-history-accordian';
-import { Button, Input, Link } from '@nextui-org/react';
+
+import { ConnectionError, Spinner } from '@/components';
 import { APP_LOCATIONS } from '@/consts/urls';
-import { useState } from 'react';
+import { useLocationHistory } from '@/hooks';
+import { isOrderHistoryArray } from '@/predicates';
+import { Button, Input, Link } from '@nextui-org/react';
+import { usePathname } from 'next/navigation';
+import React, { useState } from 'react';
+
+import OrderHistoryAccordian from './_components/order-history-accordian';
 
 export default function LocationHistory() {
   const pathname = usePathname();

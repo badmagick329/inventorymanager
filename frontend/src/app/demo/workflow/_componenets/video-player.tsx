@@ -1,7 +1,9 @@
 'use client';
+
 import { useState } from 'react';
-import VisiblePlayer from './visible-player';
+
 import HiddenPlayer from './hidden-player';
+import VisiblePlayer from './visible-player';
 
 export default function VideoPlayer({
   width,

@@ -1,7 +1,7 @@
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { NEXT_VENDORS } from '@/consts/urls';
-import axios from 'axios';
 import { SHORT_STALE_TIME } from '@/consts';
+import { NEXT_VENDORS } from '@/consts/urls';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 
 export default function useVendors(locationId: string) {
   const query = useQuery({

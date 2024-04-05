@@ -1,7 +1,8 @@
-import { HistoricalSale } from '@/types';
-import SaleHistoryCard from './sale-history-card';
 import { ICON_MD } from '@/consts';
+import { HistoricalSale } from '@/types';
 import { MoveRight } from 'lucide-react';
+
+import SaleHistoryCard from './sale-history-card';
 
 export default function SaleChangeCards({
   first,

@@ -1,7 +1,8 @@
 import { Delta } from '@/types';
-import ChangesDisplay from './changes-display';
-import { Accordion, AccordionItem } from '@nextui-org/react';
 import { UTCStringtoLocalDate } from '@/utils';
+import { Accordion, AccordionItem } from '@nextui-org/react';
+
+import ChangesDisplay from './changes-display';
 
 export default function DeltasList({
   deltas,

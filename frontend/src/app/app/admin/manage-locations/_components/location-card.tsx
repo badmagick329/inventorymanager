@@ -1,21 +1,25 @@
 'use client';
-import React from 'react';
+
+import { useDeleteLocation, useUsers } from '@/hooks';
+import { User } from '@/types';
 import {
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
+  CardHeader,
   Divider,
   useDisclosure,
 } from '@nextui-org/react';
-import { useDeleteLocation, useUsers } from '@/hooks';
-import LocationFormCard from './location-form-card';
-import { User } from '@/types';
-import LocationCardSkeleton from './location-card-skeleton';
-import LocationCardError from './location-card-error';
-import LocationCardHeader from './location-card-header';
-import LocationCardBody from './location-card-body';
-import LocationCardButtons from './location-card-buttons';
+import React from 'react';
+
+import {
+  LocationCardBody,
+  LocationCardButtons,
+  LocationCardError,
+  LocationCardHeader,
+  LocationCardSkeleton,
+  LocationFormCard,
+} from '.';
 
 type LocationCardProps = {
   locationId: number;

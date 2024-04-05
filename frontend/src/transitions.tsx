@@ -1,4 +1,5 @@
 'use client';
+
 import { motion } from 'framer-motion';
 
 export function MoveRight({ children }: { children: React.ReactNode }) {

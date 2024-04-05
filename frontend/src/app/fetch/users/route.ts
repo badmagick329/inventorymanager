@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
-import axios from 'axios';
-import { createErrorResponse } from '@/utils/responses';
-const BASE_URL = process.env.BASE_URL;
 import { API_USERS } from '@/consts/urls';
-import { createAuthHeader } from '@/utils/responses';
+import { createAuthHeader, createErrorResponse } from '@/utils/responses';
+import axios from 'axios';
+import { NextResponse } from 'next/server';
+
+const BASE_URL = process.env.BASE_URL;
 
 export async function GET(req: Request) {
   const url = `${BASE_URL}${API_USERS}`;

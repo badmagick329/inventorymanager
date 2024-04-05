@@ -1,6 +1,7 @@
 'use client';
-import Navbar from '@/app/app/_components/navbar';
-import { AdminProvider } from '@/app/context/admin-provider';
+
+import { GlobalContextProvider } from '@/app/context/global-context-provider';
+import { Navbar } from '@/components';
 
 export default function AppLayout({
   children,
@@ -9,10 +10,10 @@ export default function AppLayout({
 }>) {
   return (
     <div className='foreground flex w-full flex-col items-center'>
-      <AdminProvider>
+      <GlobalContextProvider>
         <Navbar />
         {children}
-      </AdminProvider>
+      </GlobalContextProvider>
     </div>
   );
 }

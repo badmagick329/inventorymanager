@@ -22,7 +22,7 @@ export default function NameInput({
 }: NameInputProps) {
   if (isEditing) {
     return (
-      <div className='flex flex-col w-full'>
+      <div className='flex w-full flex-col'>
         <span className='text-danger-500'>
           {formState.errors.name?.message || error}
         </span>
@@ -39,7 +39,7 @@ export default function NameInput({
     );
   }
   return (
-    <div className='flex flex-col w-full'>
+    <div className='flex w-full flex-col'>
       <span className='text-xl'>{name}</span>
     </div>
   );

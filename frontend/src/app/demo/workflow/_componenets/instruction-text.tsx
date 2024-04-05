@@ -8,7 +8,7 @@ export default function InstructionText({
   width: number;
 }) {
   return (
-    <div className={`flex py-2 gap-2 text-2xl w-full max-w-[${width}px]`}>
+    <div className={`flex w-full gap-2 py-2 text-2xl max-w-[${width}px]`}>
       <span className='font-bold'>{step}.</span>
       <span>{text}</span>
     </div>

@@ -1,17 +1,17 @@
 import {
-  OrderResponse,
-  OrderPost,
-  SaleResponse,
-  SalePost,
-  Location,
-  User,
-  VendorResponse,
-  OrderHistory,
-  Delta,
   Change,
+  Delta,
   HistoricalOrder,
   HistoricalSale,
+  Location,
+  OrderHistory,
+  OrderPost,
+  OrderResponse,
   SaleHistory,
+  SalePost,
+  SaleResponse,
+  User,
+  VendorResponse,
 } from './types';
 
 export function isLocation(body: any): body is Location {

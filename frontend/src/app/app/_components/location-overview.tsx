@@ -1,9 +1,9 @@
-import { formatCurrency, formatNumber } from '@/utils';
-import { useAdminStatus } from '@/app/context/admin-provider';
-import { Button, Tooltip } from '@nextui-org/react';
-import { ScrollText } from 'lucide-react';
+import { useAdminStatus } from '@/app/context/global-context-provider';
 import { DELAY_500, ICON_MD } from '@/consts';
 import { APP_LOCATION_HISTORY } from '@/consts/urls';
+import { formatCurrency, formatNumber } from '@/utils';
+import { Button, Tooltip } from '@nextui-org/react';
+import { ScrollText } from 'lucide-react';
 import Link from 'next/link';
 
 type LocationOverviewProps = {
@@ -53,7 +53,7 @@ export default function LocationOverview({
 function CurrencyField({ label, amount }: { label: string; amount: number }) {
   return (
     <Tooltip content={formatCurrency(amount)}>
-      <div className='flex flex-col text-foreground items-center'>
+      <div className='flex flex-col items-center text-foreground'>
         <span className='text-xs'>{label}</span>
         <span>{formatNumber(amount)}</span>
       </div>

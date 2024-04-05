@@ -1,9 +1,8 @@
 import { NEXT_SALES, NEXT_SALE_DETAIL } from '@/consts/urls';
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { useQueryClient } from '@tanstack/react-query';
-import { SalePost } from '@/types';
 import { isSaleResponse } from '@/predicates';
+import { SalePost } from '@/types';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 
 export default function useCreateSale() {
   const queryClient = useQueryClient();

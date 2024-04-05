@@ -1,6 +1,7 @@
-import VideoPlayer from './_componenets/video-player';
-import InstructionText from './_componenets/instruction-text';
 import { Spacer } from '@nextui-org/react';
+
+import InstructionText from './_componenets/instruction-text';
+import VideoPlayer from './_componenets/video-player';
 
 const WIDTH = 1280;
 
@@ -15,7 +16,7 @@ export default function AppDemo() {
       {videosAndText.map((data, idx) => {
         return (
           <div
-            className={`flex w-full max-w-[${WIDTH}px] flex-col p-4 items-center rounded-md bg-neutral-100 dark:bg-neutral-950`}
+            className={`flex w-full max-w-[${WIDTH}px] flex-col items-center rounded-md bg-neutral-100 p-4 dark:bg-neutral-950`}
             key={data.video}
           >
             <Spacer y={2} />

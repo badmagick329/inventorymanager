@@ -8,7 +8,7 @@ export default function HiddenPlayer({
   callback: () => void;
 }) {
   return (
-    <div className={`max-w-[${width}px] rounded-md py-2 px-4 mx-2`}>
+    <div className={`max-w-[${width}px] mx-2 rounded-md px-4 py-2`}>
       <Button color='default' variant='bordered' radius='sm' onPress={callback}>
         Show Video
       </Button>

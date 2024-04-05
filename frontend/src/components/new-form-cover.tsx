@@ -1,5 +1,5 @@
 import { ICON_LG } from '@/consts';
-import { Card, CardHeader, CardBody, Divider, Button } from '@nextui-org/react';
+import { Button, Card, CardBody, CardHeader, Divider } from '@nextui-org/react';
 import { Plus } from 'lucide-react';
 
 export default function NewFormCover({
