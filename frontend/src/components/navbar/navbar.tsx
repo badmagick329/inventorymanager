@@ -4,7 +4,7 @@ import ThemeToggler from './theme-toggler';
 
 export default function Navbar() {
   return (
-    <nav className='foreground flex w-full items-center bg-neutral-100 p-2 dark:bg-neutral-950'>
+    <nav className='foreground flex h-[55px] w-full items-center bg-neutral-100 p-2 dark:bg-neutral-950'>
       <ul className='flex w-full items-center justify-between gap-4'>
         <li>
           <div className='flex items-center gap-2'>
