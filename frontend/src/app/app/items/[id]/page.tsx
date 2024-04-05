@@ -3,7 +3,12 @@
 import { ConnectionError, OptionalErrorElement, Spinner } from '@/components';
 import { ICON_SM } from '@/consts';
 import { APP_LOGIN, APP_MANAGE_VENDORS } from '@/consts/urls';
-import { useDeleteOrder, useLocations, useOrders } from '@/hooks';
+import {
+  useDeleteOrder,
+  useLocalStorage,
+  useLocations,
+  useOrders,
+} from '@/hooks';
 import { isOrderResponseArray } from '@/predicates';
 import { Location } from '@/types';
 import { preFetchVendors as preFetchAdditionalVendorDetails } from '@/utils/requests';
@@ -11,7 +16,6 @@ import { Button, Link, Spacer } from '@nextui-org/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 import { CreateOrderModal, MoreInformation, OrdersTable } from './_components';
 
@@ -20,7 +24,10 @@ export default function Orders() {
   const router = useRouter();
   const { error, isError, isLoading, data } = useOrders(locationId);
   const { data: locations } = useLocations();
-  const [detailsHidden, setDetailsHidden] = useState(true);
+  const [detailsHidden, setDetailsHidden] = useLocalStorage(
+    'detailsHidden',
+    true
+  );
   const deleteOrder = useDeleteOrder();
   const queryClient = useQueryClient();
 
