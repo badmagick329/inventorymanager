@@ -32,7 +32,7 @@ export default function ActionsContent({
       />
       <Tooltip content='Delete' color='default' delay={DELAY_500}>
         <Button
-          radius='sm'
+          size='sm'
           isIconOnly
           variant='ghost'
           color='danger'
