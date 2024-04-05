@@ -7,7 +7,7 @@ import {
   UseFormGetValues,
 } from 'react-hook-form';
 import HelpTooltip from '@/components/help-tooltip';
-import { Autocomplete, AutocompleteItem} from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
 import { useVendors } from '@/hooks';
 import VendorInputBadge from './sale-vendor-input-badge';
 
