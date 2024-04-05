@@ -1,8 +1,7 @@
 import { NEXT_USERS } from '@/consts/urls';
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { useQueryClient } from '@tanstack/react-query';
 import { isUser } from '@/predicates';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 
 export default function useCreateUser() {
   const queryClient = useQueryClient();

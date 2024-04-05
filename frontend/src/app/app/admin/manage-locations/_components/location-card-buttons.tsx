@@ -1,9 +1,9 @@
+import { DeleteModal } from '@/components';
 import { ICON_MD } from '@/consts';
+import { useDeleteLocation } from '@/hooks';
+import { Disclosure } from '@/types';
 import { Button } from '@nextui-org/react';
 import { Pencil, Trash } from 'lucide-react';
-import DeleteModal from '@/components/delete-modal';
-import { Disclosure } from '@/types';
-import { useDeleteLocation } from '@/hooks';
 
 type LocationCardButtonsProps = {
   locationId: number;

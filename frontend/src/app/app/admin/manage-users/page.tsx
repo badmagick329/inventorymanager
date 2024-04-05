@@ -1,11 +1,12 @@
 'use client';
-import { Spinner } from '@/components/loaders';
-import React from 'react';
-import UserCard from './_components/user-card';
-import NewForm from './_components/new-form';
-import { User } from '@/types';
+
+import { ConnectionError, Spinner } from '@/components';
 import { useUsers } from '@/hooks';
-import { ConnectionError } from '@/components/errors';
+import { User } from '@/types';
+import React from 'react';
+
+import NewForm from './_components/new-form';
+import UserCard from './_components/user-card';
 
 export default function ManageUsers() {
   const { isError, isLoading, data: users } = useUsers();

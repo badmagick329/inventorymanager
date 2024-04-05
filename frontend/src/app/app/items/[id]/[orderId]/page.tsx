@@ -1,16 +1,13 @@
 'use client';
-import { useRouter } from 'next/navigation';
-import { Spinner } from '@/components/loaders';
-import { useSales } from '@/hooks';
+
+import { ConnectionError, Spinner } from '@/components';
 import { APP_ITEMS, APP_LOGIN } from '@/consts/urls';
-import { usePathname } from 'next/navigation';
+import { useDeleteSale, useOrderDetail, useSales } from '@/hooks';
 import { isOrderResponse, isSaleResponseArray } from '@/predicates';
-import { ConnectionError } from '@/components/errors';
-import { Spacer, Button, Link } from '@nextui-org/react';
-import CreateSaleModal from './_componenets/create-sale-modal';
-import { useDeleteSale, useOrderDetail } from '@/hooks';
-import SalesTable from './_componenets/sales-table';
-import OrderCard from './_componenets/order-card';
+import { Button, Link, Spacer } from '@nextui-org/react';
+import { usePathname, useRouter } from 'next/navigation';
+
+import { CreateSaleModal, OrderCard, SalesTable } from './_components';
 
 export default function Sales() {
   const locationId = usePathname().split('/')[3];

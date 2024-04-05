@@ -1,8 +1,7 @@
 import { NEXT_VENDORS } from '@/consts/urls';
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { useQueryClient } from '@tanstack/react-query';
 import { isVendorResponse } from '@/predicates';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 
 export default function useCreateVendor() {
   const queryClient = useQueryClient();

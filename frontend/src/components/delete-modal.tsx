@@ -1,16 +1,17 @@
 'use client';
-import React from 'react';
+
+import { Disclosure } from '@/types';
 import {
   Button,
   Modal,
+  ModalBody,
   ModalContent,
   ModalHeader,
-  ModalBody,
   Spacer,
 } from '@nextui-org/react';
-import { Disclosure } from '@/types';
 import { UseMutationResult } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
+import React from 'react';
 
 type MutationResult = UseMutationResult<
   AxiosResponse<any, any>,

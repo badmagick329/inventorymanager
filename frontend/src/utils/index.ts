@@ -1,4 +1,4 @@
-import { OrderResponse, SaleResponse, Delta } from '@/types';
+import { Delta, OrderResponse, SaleResponse } from '@/types';
 
 export function formatNumber(num: number) {
   const abs = Math.abs(num);

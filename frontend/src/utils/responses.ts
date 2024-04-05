@@ -1,8 +1,7 @@
-import { NextResponse } from 'next/server';
-import axios from 'axios';
-import { AxiosError } from 'axios';
-import { cookies } from 'next/headers';
 import { TOKEN_KEY } from '@/consts';
+import axios, { AxiosError } from 'axios';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
 export function createErrorResponse(
   error: unknown,

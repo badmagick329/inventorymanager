@@ -1,9 +1,9 @@
-import { Button } from '@nextui-org/react';
+import { DeleteModal } from '@/components';
 import { ICON_MD } from '@/consts';
-import { Trash } from 'lucide-react';
-import { Disclosure } from '@/types';
-import DeleteModal from '@/components/delete-modal';
 import { useDeleteUser } from '@/hooks';
+import { Disclosure } from '@/types';
+import { Button } from '@nextui-org/react';
+import { Trash } from 'lucide-react';
 
 export default function ConfirmedDelete({
   disclosure,

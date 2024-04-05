@@ -1,13 +1,14 @@
-import { ICON_MD, ICON_SM } from '@/consts';
+import DeleteModal from '@/components/delete-modal';
+import { ICON_MD } from '@/consts';
+import { useCreateVendor, useDeleteVendor } from '@/hooks';
 import { VendorResponse } from '@/types';
 import { Button, useDisclosure } from '@nextui-org/react';
-import { Pencil, Trash, Check } from 'lucide-react';
-import { useState } from 'react';
-import NameInput from './name-input';
-import { useForm } from 'react-hook-form';
-import { useCreateVendor, useDeleteVendor } from '@/hooks';
 import axios from 'axios';
-import DeleteModal from '@/components/delete-modal';
+import { Check, Pencil, Trash } from 'lucide-react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+import NameInput from './name-input';
 
 export default function VendorForm({
   vendor,

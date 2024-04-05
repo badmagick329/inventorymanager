@@ -1,8 +1,8 @@
-import { Select, SelectItem } from '@nextui-org/react';
-import { useEffect } from 'react';
 import { LocationFormValues } from '@/types';
-import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
+import { Select, SelectItem } from '@nextui-org/react';
 import { User as UserIcon } from 'lucide-react';
+import { useEffect } from 'react';
+import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 
 type UsernamesSelectProps = {
   usernames: string[];

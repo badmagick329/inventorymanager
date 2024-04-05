@@ -1,5 +1,6 @@
 'use client';
-import { formatNumber, formatCurrency } from '@/utils';
+
+import { formatCurrency, formatNumber } from '@/utils';
 import { Tooltip } from '@nextui-org/react';
 
 type PriceFieldContentProps = {

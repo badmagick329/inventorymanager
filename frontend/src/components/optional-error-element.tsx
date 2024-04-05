@@ -1,5 +1,5 @@
-import { APP_LOCATIONS } from '@/consts/urls';
 import { ConnectionError, GenericError } from '@/components/errors';
+import { APP_LOCATIONS } from '@/consts/urls';
 import { Button, Link } from '@nextui-org/react';
 
 export default function OptionalErrorElement({

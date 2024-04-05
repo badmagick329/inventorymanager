@@ -1,8 +1,7 @@
 import { NEXT_LOCATIONS } from '@/consts/urls';
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { useQueryClient } from '@tanstack/react-query';
 import { isLocation } from '@/predicates';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 
 export default function useCreateLocation() {
   const queryClient = useQueryClient();

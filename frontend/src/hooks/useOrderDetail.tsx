@@ -1,6 +1,6 @@
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { NEXT_ORDER_DETAIL } from '@/consts/urls';
 import { SHORT_STALE_TIME } from '@/consts';
+import { NEXT_ORDER_DETAIL } from '@/consts/urls';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 export default function useOrderDetail(locationId: string, orderId?: string) {

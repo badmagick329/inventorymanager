@@ -1,5 +1,5 @@
-import { createOrdersTableData, createSalesTableData } from './utils';
 import { useDeleteOrder, useDeleteSale } from './hooks';
+import { createOrdersTableData, createSalesTableData } from './utils';
 
 type ValueOf<T> = T[keyof T];
 export type Error = boolean;
@@ -134,6 +134,12 @@ export type SaleFormValues = {
   quantity: string;
   salePrice: string;
   amountPaid: string;
+};
+
+export type ChangePasswordFormValues = {
+  password: string;
+  newPassword: string;
+  newPassword2: string;
 };
 
 export type OrdersTableRow = ReturnType<typeof createOrdersTableData>[0];

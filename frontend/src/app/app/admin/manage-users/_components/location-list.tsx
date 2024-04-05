@@ -1,8 +1,8 @@
-import { Location } from '@/types';
-import { APP_ITEMS, APP_MANAGE_LOCATIONS } from '@/consts/urls';
-import Link from 'next/link';
 import { ICON_MD } from '@/consts';
+import { APP_ITEMS, APP_MANAGE_LOCATIONS } from '@/consts/urls';
+import { Location } from '@/types';
 import { Warehouse } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LocationList({ locations }: { locations: Location[] }) {
   return (

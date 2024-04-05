@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@testing-library/react": "^14.1.2",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -35,6 +36,7 @@
     "autoprefixer": "^10.0.1",
     "jsdom": "^24.0.0",
     "postcss": "^8",
+    "prettier-plugin-tailwindcss": "^0.5.13",
     "tailwindcss": "^3.3.0",
     "typescript": "^5",
     "vitest": "^1.2.1"
@@ -46,6 +48,19 @@
     "tabWidth": 2,
     "useTabs": false,
     "trailingComma": "es5",
-    "printWidth": 80
+    "printWidth": 80,
+    "importOrder": [
+      "^@core/(.*)$",
+      "<THIRD_PARTY_MODULES>",
+      "^@server/(.*)$",
+      "^@ui/(.*)$",
+      "^[./]"
+    ],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true,
+    "plugins": [
+      "@trivago/prettier-plugin-sort-imports",
+      "prettier-plugin-tailwindcss"
+    ]
   }
 }

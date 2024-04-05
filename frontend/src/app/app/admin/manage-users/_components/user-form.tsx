@@ -1,10 +1,8 @@
-import { useForm } from 'react-hook-form';
-import { useState } from 'react';
-import React from 'react';
-import { Input } from '@nextui-org/react';
-import CancelButton from '@/components/cancel-button';
-import CreateButton from '@/components/create-button';
+import { CancelButton, CreateButton } from '@/components';
 import { useSubmitUser } from '@/hooks';
+import { Input } from '@nextui-org/react';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 type FormProps = {
   onSuccess: () => void;

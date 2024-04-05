@@ -1,15 +1,15 @@
 'use client';
-import { Input, Button } from '@nextui-org/react';
-import { useForm, UseFormSetError } from 'react-hook-form';
+
 import { NEXT_USERS_ME } from '@/consts/urls';
+import { ChangePasswordFormValues } from '@/types';
+import { Button } from '@nextui-org/react';
 import axios from 'axios';
 import { useState } from 'react';
+import { UseFormReset, UseFormSetError, useForm } from 'react-hook-form';
 
-type ChangePasswordFormValues = {
-  password: string;
-  newPassword: string;
-  newPassword2: string;
-};
+import NewPasswordInput from './_components/new-password';
+import NewPassword2Input from './_components/new-password2';
+import PasswordInput from './_components/password-input';
 
 export default function ChangePassword() {
   const [output, setOutput] = useState<string>('');
@@ -21,62 +21,18 @@ export default function ChangePassword() {
     },
   });
 
-  async function submitForm(data: ChangePasswordFormValues) {
-    const payload = {
-      password: data.password,
-      newPassword: data.newPassword,
-      newPassword2: data.newPassword2,
-    };
-    try {
-      const { data: response } = await axios.patch(NEXT_USERS_ME, payload);
-      reset();
-      setOutput(response?.message);
-    } catch (error) {
-      setFormError(error, setError);
-    }
-  }
-
   return (
     <div className='flex flex-col items-center gap-2 pt-24'>
       <span className='text-2xl font-semibold'>Change password</span>
       <form
         className='flex w-64 flex-col gap-2'
-        onSubmit={handleSubmit((data) => submitForm(data))}
+        onSubmit={handleSubmit((data) =>
+          submitForm(data, reset, setError, setOutput)
+        )}
       >
-        <span className='text-danger-500'>
-          {formState.errors.password?.message}
-        </span>
-        <Input
-          type='password'
-          variant='flat'
-          label='Current Password'
-          autoComplete='off'
-          {...register('password', {
-            required: 'Current Password is required',
-          })}
-        />
-        <span className='text-danger-500'>
-          {formState.errors.newPassword?.message}
-        </span>
-        <Input
-          type='password'
-          variant='flat'
-          label='New Password'
-          autoComplete='off'
-          {...register('newPassword', { required: 'New Password is required' })}
-        />
-        <span className='text-danger-500'>
-          {formState.errors.newPassword2?.message}
-        </span>
-        <Input
-          type='password'
-          variant='flat'
-          label='Retype New Password'
-          autoComplete='off'
-          {...register('newPassword2', {
-            required: 'Please retype your new password',
-          })}
-        />
+        <PasswordInput formState={formState} register={register} />
+        <NewPasswordInput formState={formState} register={register} />
+        <NewPassword2Input formState={formState} register={register} />
         <Button
           type='submit'
           className='mt-2 py-6 text-xl font-semibold'
@@ -113,4 +69,24 @@ function setFormError(
     }
   }
   setError('password', { message: 'Something went wrong' });
+}
+
+async function submitForm(
+  data: ChangePasswordFormValues,
+  reset: UseFormReset<ChangePasswordFormValues>,
+  setError: UseFormSetError<ChangePasswordFormValues>,
+  setOutput: (output: string) => void
+) {
+  const payload = {
+    password: data.password,
+    newPassword: data.newPassword,
+    newPassword2: data.newPassword2,
+  };
+  try {
+    const { data: response } = await axios.patch(NEXT_USERS_ME, payload);
+    reset();
+    setOutput(response?.message);
+  } catch (error) {
+    setFormError(error, setError);
+  }
 }

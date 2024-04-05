@@ -1,10 +1,9 @@
-import { useState } from 'react';
-import LocationFormCard from './location-form-card';
-import NewFormCover from '@/components/new-form-cover';
+import { ConnectionError, NewFormCover, Spinner } from '@/components';
 import { useUsers } from '@/hooks';
 import { User } from '@/types';
-import { Spinner } from '@/components/loaders';
-import { ConnectionError } from '@/components/errors';
+import { useState } from 'react';
+
+import { LocationFormCard } from '.';
 
 export default function NewForm() {
   const [showForm, setShowForm] = useState(false);

@@ -1,7 +1,8 @@
-import React from 'react';
 import LoginForm from '@/app/_components/login-form';
-import Image from 'next/image';
 import { MoveRight, MoveUp } from '@/transitions';
+import Image from 'next/image';
+import React from 'react';
+
 import WarehouseImage from '../../public/images/warehouse-sm.png';
 
 export const metadata = {

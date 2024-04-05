@@ -1,7 +1,7 @@
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { NEXT_LOCATIONS } from '@/consts/urls';
-import axios from 'axios';
 import { SHORT_STALE_TIME } from '@/consts';
+import { NEXT_LOCATIONS } from '@/consts/urls';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 
 export default function useLocations() {
   const query = useQuery({

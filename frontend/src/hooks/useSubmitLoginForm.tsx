@@ -1,9 +1,9 @@
-import { useRouter } from 'next/navigation';
 import { APP_LOCATIONS } from '@/consts/urls';
 import { LoginFormValues } from '@/types';
 import { tryLogin } from '@/utils/requests';
-import { UseFormSetError } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 import React from 'react';
+import { UseFormSetError } from 'react-hook-form';
 
 type UseSubmitLoginFormProps = {
   setError: UseFormSetError<LoginFormValues>;

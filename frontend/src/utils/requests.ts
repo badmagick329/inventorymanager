@@ -1,13 +1,8 @@
-import {
-  NEXT_LOGIN,
-  NEXT_LOCATIONS,
-  NEXT_ADMIN,
-  NEXT_VENDORS,
-} from '@/consts/urls';
-import axios from 'axios';
-import { UseFormSetError } from 'react-hook-form';
+import { NEXT_LOGIN, NEXT_VENDORS } from '@/consts/urls';
 import { LoginFormValues } from '@/types';
 import { QueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import { UseFormSetError } from 'react-hook-form';
 
 export async function tryLogin(
   username: string,

@@ -1,7 +1,4 @@
-import {
-  isOrderResponseArray,
-  isSaleResponseArray,
-} from '@/predicates';
+import { isOrderResponseArray, isSaleResponseArray } from '@/predicates';
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
 
 export async function getOrderById(locationId: number, orderId: number) {

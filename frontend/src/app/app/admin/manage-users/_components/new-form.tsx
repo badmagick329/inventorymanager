@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import UserFormCard from './user-form-card';
 import NewFormCover from '@/components/new-form-cover';
+import { useState } from 'react';
+
+import UserFormCard from './user-form-card';
 
 export default function NewForm() {
   const [showForm, setShowForm] = useState(false);

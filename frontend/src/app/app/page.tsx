@@ -1,13 +1,14 @@
 'use client';
-import { useRouter } from 'next/navigation';
-import { Spinner } from '@/components/loaders';
+
+import { Spinner } from '@/components';
+import { APP_DEMO_WORKFLOW, APP_LOGIN } from '@/consts/urls';
 import { useLocations } from '@/hooks';
-import { Divider } from '@nextui-org/react';
-import { APP_LOGIN, APP_DEMO_WORKFLOW } from '@/consts/urls';
-import LocationOverview from '@/app/app/_components/location-overview';
-import LocationLink from './_components/location-link';
 import { Location } from '@/types';
-import { Button, Link } from '@nextui-org/react';
+import { Button, Divider, Link } from '@nextui-org/react';
+import { useRouter } from 'next/navigation';
+
+import LocationLink from './_components/location-link';
+import LocationOverview from './_components/location-overview';
 
 export default function Locations() {
   const router = useRouter();

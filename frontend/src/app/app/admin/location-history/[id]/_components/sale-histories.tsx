@@ -1,4 +1,5 @@
 import { SaleHistory } from '@/types';
+
 import SaleHistoryAccordian from './sales-history-accordian';
 
 export default function SaleHistories({

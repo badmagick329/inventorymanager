@@ -1,11 +1,12 @@
-import LocationForm from './location-form';
 import {
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
+  CardHeader,
   Divider,
 } from '@nextui-org/react';
+
+import LocationForm from './location-form';
 
 type FormCardProps = {
   location: string;
