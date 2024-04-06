@@ -1,3 +1,4 @@
+import useSaleAmountPaidInput from './useAmountPaidInput';
 import useCreateLocation from './useCreateLocation';
 import useCreateOrder from './useCreateOrder';
 import useCreateSale from './useCreateSale';
@@ -48,4 +49,5 @@ export {
   useLocalStorage,
   useDeleteVendor,
   useCreateVendor,
+  useSaleAmountPaidInput,
 };

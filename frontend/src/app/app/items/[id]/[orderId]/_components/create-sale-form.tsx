@@ -51,6 +51,7 @@ export default function CreateSaleForm({
     control,
     setValue,
     getValues,
+    watch,
   } = useForm({
     // @ts-ignore
     defaultValues: fetchDefaults.mutateAsync,
@@ -123,10 +124,14 @@ export default function CreateSaleForm({
               </div>
               <div className='flex flex-col gap-2'>
                 <SaleAmountPaid
-                  register={register}
                   formState={formState}
                   control={control}
                   showHelpText={value}
+                  getValues={getValues}
+                  setValue={setValue}
+                  watch={watch}
+                  isAmountPaidPerItem={isAmountPaidPerItem}
+                  isSalePricePerItem={isSalePricePerItem}
                 />
                 <Checkbox
                   defaultSelected={isAmountPaidPerItem}
