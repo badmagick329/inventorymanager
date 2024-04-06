@@ -14,7 +14,7 @@ import OrderSalePriceInput from './order-sale-price-input';
 import OrdersTable from './orders-table';
 import OrdersTableContent from './orders-table-content';
 import StockInOutContent from './stock-in-out-content';
-import VendorsInformationCard from './vendor-information-card';
+import VendorsInformationCard from './vendors-information-card';
 
 export {
   ActionsContent,

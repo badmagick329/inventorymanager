@@ -11,6 +11,7 @@ import SaleVendor from './sale-vendor-input';
 import VendorInputBadge from './sale-vendor-input-badge';
 import SalesTable from './sales-table';
 import SalesTableContent from './sales-table-content';
+import VendorsCard from './vendors-card';
 
 export {
   ActionsContent,
@@ -26,4 +27,5 @@ export {
   SalesTableContent,
   SalesTable,
   VendorInputBadge,
+  VendorsCard,
 };

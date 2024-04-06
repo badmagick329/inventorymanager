@@ -15,6 +15,7 @@ import useLocations from './useLocations';
 import useLogout from './useLogout';
 import useOrderDetail from './useOrderDetail';
 import useOrderFormDefaults from './useOrderFormDefaults';
+import useOrderVendors from './useOrderVendors';
 import useOrders from './useOrders';
 import useSaleFormDefaults from './useSaleFormDefaults';
 import useSales from './useSales';
@@ -50,4 +51,5 @@ export {
   useDeleteVendor,
   useCreateVendor,
   useSaleAmountPaidInput,
+  useOrderVendors,
 };

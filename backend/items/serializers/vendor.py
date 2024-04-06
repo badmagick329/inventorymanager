@@ -58,3 +58,12 @@ class VendorSerializer(serializers.BaseSerializer):
             "location": instance.location.name,
             "debt": instance.debt(),
         }
+
+    @classmethod
+    def to_representation_for(cls, instance, order_id: int):
+        return {
+            "id": instance.id,
+            "name": instance.name,
+            "location": instance.location.name,
+            "debt": instance.debt(order_id=order_id),
+        }
