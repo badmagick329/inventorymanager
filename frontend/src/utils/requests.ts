@@ -14,13 +14,21 @@ export async function tryLogin(
     await axios.post(NEXT_LOGIN, { username, password });
     return true;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      setError('username', {
-        type: 'server',
-        message: 'Invalid username or password',
-      });
-    } else {
-      setError('username', { type: 'server', message: 'An error occurred' });
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 401) {
+        setError('username', {
+          type: 'server',
+          message: 'Invalid username or password',
+        });
+      } else if (error.response?.status === 429) {
+        setError('username', {
+          type: 'server',
+          message:
+            'You have sent too many login requests and are being rate limited',
+        });
+      } else {
+        setError('username', { type: 'server', message: 'An error occurred' });
+      }
     }
     setIsLoading(false);
     return false;
