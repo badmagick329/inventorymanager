@@ -48,11 +48,14 @@ export default function useSaleAmountPaidInput({
       setButtonText(paidText);
       setButtonColor('success');
       setButtonDisabled(true);
-    } else {
-      setButtonText(notPaidText);
-      setButtonColor('default');
-      setButtonDisabled(false);
+      return;
     }
+
+    setButtonText(notPaidText);
+    setButtonColor('default');
+    watchedQuantity && watchedSalePrice
+      ? setButtonDisabled(false)
+      : setButtonDisabled(true);
   }, [
     watchedQuantity,
     watchedSalePrice,
