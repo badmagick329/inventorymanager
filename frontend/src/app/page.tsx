@@ -11,7 +11,7 @@ export const metadata = {
 
 export default function LoginPage() {
   return (
-    <main className='flex min-h-screen flex-col items-center gap-4 px-2 py-24 xs:px-24'>
+    <main className='flex min-h-dvh flex-col items-center gap-4 px-2 py-24 xs:px-24'>
       <div className='flex w-72 items-end justify-center'>
         <MoveUp>
           <Image
