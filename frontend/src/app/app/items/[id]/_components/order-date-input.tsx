@@ -34,12 +34,6 @@ export default function OrderDateInput({
   return (
     <>
       <div className='flex items-center gap-2'>
-        <Button
-          onPress={() => handleClick(getValues, setValue, setDate)}
-          radius='sm'
-        >
-          {dateIsEmpty(getValues) ? 'Use Today' : 'Clear Date'}
-        </Button>
         <div className='flex w-full justify-between px-2'>
           <span className='text-danger-500'>
             {formState.errors.date?.message}
@@ -47,13 +41,28 @@ export default function OrderDateInput({
           {showHelpText && <HelpTooltip content='Date of purchase' />}
         </div>
       </div>
-      <Controller
-        name='date'
-        control={control}
-        render={({ field }) => (
-          <Input type='date' variant='flat' {...field} {...register('date')} />
-        )}
-      />
+      <div className='flex items-center gap-2'>
+        <Controller
+          name='date'
+          control={control}
+          render={({ field }) => (
+            <Input
+              type='date'
+              variant='flat'
+              {...field}
+              {...register('date')}
+            />
+          )}
+        />
+        <Button
+          onPress={() => handleClick(getValues, setValue, setDate)}
+          className='h-14'
+          radius='sm'
+          variant='flat'
+        >
+          {dateIsEmpty(getValues) ? 'Use Today' : 'Clear Date'}
+        </Button>
+      </div>
     </>
   );
 }

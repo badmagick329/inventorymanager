@@ -31,23 +31,32 @@ export default function SaleDate({
   return (
     <>
       <div className='flex items-center gap-2'>
-        <Button
-          onPress={() => handleClick(getValues, setValue, setDate)}
-          radius='sm'
-        >
-          {dateIsEmpty(getValues) ? 'Use Today' : 'Clear Date'}
-        </Button>
         <span className='text-danger-500'>
           {formState.errors.date?.message}
         </span>
       </div>
-      <Controller
-        name='date'
-        control={control}
-        render={({ field }) => (
-          <Input type='date' variant='flat' {...field} {...register('date')} />
-        )}
-      />
+      <div className='flex items-center gap-2'>
+        <Controller
+          name='date'
+          control={control}
+          render={({ field }) => (
+            <Input
+              type='date'
+              variant='flat'
+              {...field}
+              {...register('date')}
+            />
+          )}
+        />
+        <Button
+          className='h-14'
+          radius='sm'
+          variant='flat'
+          onPress={() => handleClick(getValues, setValue, setDate)}
+        >
+          {dateIsEmpty(getValues) ? 'Use Today' : 'Clear Date'}
+        </Button>
+      </div>
     </>
   );
 }
