@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q
 from django.db.models.functions import Lower
 from items.base_model import ModelWithLastModified
 from simple_history.models import HistoricalRecords
@@ -100,8 +101,11 @@ class Vendor(ModelWithLastModified):
         self.full_clean()
         super().save(*args, **kwargs)
 
-    def debt(self):
-        return sum([sale.debt for sale in self.sales.filter(deleted=False)])  # type: ignore
+    def debt(self, order_id: int | None = None):
+        filters = [Q(deleted=False)]
+        if order_id:
+            filters.append(Q(order__id=order_id))
+        return sum([sale.debt for sale in self.sales.filter(*filters)])  # type: ignore
 
     def __str__(self):
         username = (
@@ -112,6 +116,15 @@ class Vendor(ModelWithLastModified):
             f"location={self.location.name}, "
             f"last_modified_by={username})>"
         )
+
+    @classmethod
+    def vendors_by_order(cls, order_id: int):
+        sales = Sale.objects.filter(order_id=order_id, deleted=False)
+        vendors = Vendor.objects.filter(sales__in=sales).distinct()
+        return vendors
+
+    def is_visible_to(self, user):
+        return user.is_admin or self.location.users.filter(id=user.id).exists()
 
 
 class Order(ModelWithLastModified):

@@ -12,6 +12,7 @@ import NewFormCover from './new-form-cover';
 import OptionalErrorElement from './optional-error-element';
 import PriceFieldContent from './price-field-content';
 import ProfitContent from './profit-content';
+import SalesInfoCardField from './sales-info-card-field';
 import UpdateButton from './update-button';
 
 export {
@@ -31,4 +32,5 @@ export {
   ProfitContent,
   UpdateButton,
   Navbar,
+  SalesInfoCardField,
 };

@@ -16,6 +16,7 @@ class VendorList(APIView):
         params = request.GET
         user = request.user
         assert isinstance(user, UserAccount)
+
         if location_id := params.get("location_id"):
             location = get_object_or_404(ItemLocation, id=location_id)
             if not location.is_visible_to(user):
@@ -26,8 +27,28 @@ class VendorList(APIView):
                 l for l in ItemLocation.objects.all() if l.is_visible_to(user)
             ]
             vendors = Vendor.objects.filter(location__in=all_locations)
-        serializer = VendorSerializer(vendors, many=True)
-        return APIResponses.ok(serializer.data)
+
+        # TODO: Refactor this
+        try:
+            order_id = int(params.get("order_id", ""))
+        except (TypeError, ValueError):
+            order_id = None
+        if order_id:
+            filtered_vendors = [
+                v
+                for v in Vendor.vendors_by_order(order_id)
+                if v.is_visible_to(user)
+            ]
+            print("filtered_vendors", filtered_vendors)
+            serialized_data = [
+                VendorSerializer.to_representation_for(v, order_id)
+                for v in filtered_vendors
+            ]
+        else:
+            serializer = VendorSerializer(vendors, many=True)
+            serialized_data = serializer.data
+
+        return APIResponses.ok(serialized_data)
 
     def post(self, request: Request):
         user = request.user

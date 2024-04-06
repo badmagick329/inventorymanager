@@ -17,7 +17,7 @@ export default function PriceFieldContent({
   return (
     <div className='flex items-start gap-1'>
       <Tooltip content={formatCurrency(value)} placement='top'>
-        <span>{formatNumber(value)}</span>
+        <span className='text-sm sm:text-base'>{formatNumber(value)}</span>
       </Tooltip>
       <CalculatedValue
         value={value}

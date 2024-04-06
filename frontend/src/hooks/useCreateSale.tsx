@@ -15,6 +15,7 @@ export default function useCreateSale() {
       // Invalidating vendors in case a new vendor is created during
       // sale creation
       queryClient.invalidateQueries({ queryKey: ['vendors', locationId] });
+      queryClient.invalidateQueries({ queryKey: ['order-vendors', orderId] });
       if (!isSaleResponse(data)) {
         queryClient.invalidateQueries({ queryKey: ['sales'] });
       } else {

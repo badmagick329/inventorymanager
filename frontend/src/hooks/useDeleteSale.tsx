@@ -12,6 +12,7 @@ export default function useDeleteSale() {
     onSuccess: (_, mutationVars) => {
       const { locationId, orderId } = mutationVars;
       queryClient.invalidateQueries({ queryKey: ['vendors', locationId] });
+      queryClient.invalidateQueries({ queryKey: ['order-vendors', orderId] });
       const previousData = queryClient.getQueryData(['sales', orderId]);
       if (!isSaleResponseArray(previousData)) {
         queryClient.invalidateQueries({ queryKey: ['sales', orderId] });

@@ -8,9 +8,13 @@ const BASE_URL = process.env.BASE_URL;
 export async function GET(req: Request) {
   const reqUrl = new URL(req.url);
   const location_id = reqUrl.searchParams.get('location_id');
-  let url = `${BASE_URL}${API_VENDORS}`;
+  const order_id = reqUrl.searchParams.get('order_id');
+  const url = new URL(`${BASE_URL}${API_VENDORS}`);
   if (location_id) {
-    url = `${BASE_URL}${API_VENDORS}?location_id=${location_id}`;
+    url.searchParams.append('location_id', location_id);
+  }
+  if (order_id) {
+    url.searchParams.append('order_id', order_id);
   }
   const { Authorization, ErrorResponse } = createAuthHeader();
   if (ErrorResponse) {
@@ -18,7 +22,7 @@ export async function GET(req: Request) {
   }
   const headers = { Authorization };
   try {
-    const response = await axios.get(url, { headers });
+    const response = await axios.get(url.toString(), { headers });
     return new NextResponse(JSON.stringify(response.data), {
       status: 200,
     });
