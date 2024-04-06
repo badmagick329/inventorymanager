@@ -55,14 +55,13 @@ export default function SaleAmountPaid({
         <Controller
           name='amountPaid'
           control={control}
-          render={({ field: { onChange, ...rest } }) => (
+          render={({ field }) => (
             <Input
               type='number'
               variant='flat'
               autoComplete='off'
               label='Amount Paid'
-              onChange={onChange}
-              {...rest}
+              {...field}
             />
           )}
         />
