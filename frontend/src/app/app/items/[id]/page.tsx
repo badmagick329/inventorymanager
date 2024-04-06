@@ -25,7 +25,7 @@ export default function Orders() {
   const { error, isError, isLoading, data } = useOrders(locationId);
   const { data: locations } = useLocations();
   const [detailsHidden, setDetailsHidden] = useLocalStorage(
-    'detailsHidden',
+    'items/detailsHidden',
     true
   );
   const deleteOrder = useDeleteOrder();
