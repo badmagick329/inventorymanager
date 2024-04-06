@@ -5,6 +5,7 @@ from rest_framework import permissions, status
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 from utils.permissions import ReadOnlyUserPermission
 from utils.responses import APIResponses
@@ -15,6 +16,7 @@ from .serializers import UserAccountSerializer
 
 class LoginView(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
+    throttle_classes = [AnonRateThrottle]
 
     def post(self, request: Request, format=None):
         serializer = AuthTokenSerializer(data=request.data)
