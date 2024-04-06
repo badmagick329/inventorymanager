@@ -2,8 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-}
+body {}
 
 @layer components {
   .icon-sm {
@@ -16,4 +15,15 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
 }
