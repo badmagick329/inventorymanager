@@ -54,7 +54,7 @@ export default function VendorsInformationCard({
         data-testid='items-vendors-card-title'
         className='text-xl font-bold'
       >
-        Due Amounts
+        Amounts Due
       </span>
       <div className='flex w-full flex-col items-center divide-y-2 rounded-md bg-neutral-100 p-4 text-center dark:divide-neutral-400 dark:bg-neutral-800'>
         {vendorsInDebt.map((vendor: VendorResponse) => (
