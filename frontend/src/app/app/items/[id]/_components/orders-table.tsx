@@ -42,7 +42,7 @@ export default function OrdersTable({
   ];
 
   return (
-    <Table aria-label='Items Table'>
+    <Table data-testid='items-table' aria-label='Items Table'>
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>

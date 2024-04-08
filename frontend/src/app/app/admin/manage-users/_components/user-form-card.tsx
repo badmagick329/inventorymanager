@@ -16,7 +16,10 @@ export default function UserFormCard({ setShowForm }: FormCardProps) {
   return (
     <Card className='flex min-w-[280px] max-w-[320px] flex-col rounded-md md:min-w-[480px] md:max-w-[640px]'>
       <CardHeader className='flex w-full justify-center'>
-        <span className='text-md md:text-semibold w-full text-center capitalize md:text-base'>
+        <span
+          data-testid='user-form-title'
+          className='text-md md:text-semibold w-full text-center capitalize md:text-base'
+        >
           Create New User
         </span>
       </CardHeader>

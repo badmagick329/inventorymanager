@@ -7,6 +7,7 @@ type FormState = {
 export default function CreateButton({ formState }: { formState: FormState }) {
   return (
     <Button
+      data-testid='create-button'
       type='submit'
       color='primary'
       isLoading={formState.isSubmitting}

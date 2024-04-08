@@ -27,6 +27,7 @@ export default function OrderCostInput({
         control={control}
         render={({ field }) => (
           <Input
+            data-testid='items-order-cost-input'
             type='number'
             variant='flat'
             autoComplete='off'

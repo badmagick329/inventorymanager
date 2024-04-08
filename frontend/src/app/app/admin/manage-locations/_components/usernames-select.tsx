@@ -25,6 +25,7 @@ export default function UsernamesSelect({
 
   return (
     <Select
+      data-testid='manage-locations-usernames-select'
       label='Location Access'
       placeholder='Select User(s)'
       selectionMode='multiple'
@@ -33,7 +34,11 @@ export default function UsernamesSelect({
       {...register('usernames')}
     >
       {usernames.map((username) => (
-        <SelectItem key={username} value={username}>
+        <SelectItem
+          data-testid='manage-locations-usernames-option'
+          key={username}
+          value={username}
+        >
           {username}
         </SelectItem>
       ))}

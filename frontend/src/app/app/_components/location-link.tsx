@@ -7,13 +7,9 @@ type LocationLinkProps = {
 };
 
 export default function LocationLink({ id, name }: LocationLinkProps) {
-  if (id === undefined) {
-    <>
-      <span className='justify-center self-center p-2 md:text-xl'>{name}</span>
-    </>;
-  }
   return (
     <Button
+      data-testid='home-locations-button'
       as={Link}
       href={`${APP_ITEMS}/${id}`}
       variant='light'

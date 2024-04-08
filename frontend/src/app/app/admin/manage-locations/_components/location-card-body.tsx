@@ -11,7 +11,7 @@ export default function LocationCardBody({ users }: { users: string[] }) {
           return (
             <div key={user} className='flex gap-2'>
               <User className='pb-1' size={ICON_MD} />
-              <span>{user}</span>
+              <span data-testid='manage-locations-username'>{user}</span>
             </div>
           );
         })}

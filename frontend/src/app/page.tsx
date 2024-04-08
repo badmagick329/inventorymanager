@@ -23,7 +23,9 @@ export default function LoginPage() {
           />
         </MoveUp>
         <MoveRight>
-          <h1 className='p-2 text-xl font-semibold'>Inventory Manager</h1>
+          <h1 data-testid='login-title' className='p-2 text-xl font-semibold'>
+            Inventory Manager
+          </h1>
         </MoveRight>
       </div>
       <LoginForm />

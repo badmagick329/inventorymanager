@@ -38,14 +38,24 @@ export default function VendorsInformationCard({
   if (vendorsInDebt.length === 0) {
     return (
       <div className='flex w-full max-w-lg flex-col items-center gap-4'>
-        <span className='text-xl font-bold'>All amounts paid in full</span>
+        <span
+          data-testid='items-vendors-card-title'
+          className='text-xl font-bold'
+        >
+          All amounts paid in full
+        </span>
       </div>
     );
   }
 
   return (
     <div className='flex w-full max-w-lg flex-col items-center gap-4'>
-      <span className='text-xl font-bold'>Due Amounts</span>
+      <span
+        data-testid='items-vendors-card-title'
+        className='text-xl font-bold'
+      >
+        Due Amounts
+      </span>
       <div className='flex w-full flex-col items-center divide-y-2 rounded-md bg-neutral-100 p-4 text-center dark:divide-neutral-400 dark:bg-neutral-800'>
         {vendorsInDebt.map((vendor: VendorResponse) => (
           <CurrencyDisplay

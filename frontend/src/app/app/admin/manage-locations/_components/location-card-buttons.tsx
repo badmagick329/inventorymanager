@@ -22,6 +22,7 @@ export default function LocationCardButtons({
   return (
     <div className='flex w-full justify-center gap-4'>
       <Button
+        data-testid='manage-locations-edit-button'
         className='text-warning-600'
         variant='light'
         radius='sm'
@@ -30,6 +31,7 @@ export default function LocationCardButtons({
         <Pencil size={ICON_MD} /> Edit
       </Button>
       <Button
+        data-testid='manage-locations-delete-button'
         className='text-danger-600'
         onPress={disclosure.onOpen}
         variant='light'

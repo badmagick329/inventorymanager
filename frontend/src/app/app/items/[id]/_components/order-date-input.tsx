@@ -47,6 +47,7 @@ export default function OrderDateInput({
           control={control}
           render={({ field }) => (
             <Input
+              data-testid='items-order-date-input'
               type='date'
               variant='flat'
               {...field}

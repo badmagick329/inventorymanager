@@ -65,6 +65,7 @@ export default function Orders() {
       <Spacer y={4} />
       <div className='flex justify-center gap-8'>
         <Button
+          data-testid='items-manage-vendors-button'
           as={Link}
           href={`${APP_MANAGE_VENDORS}/${locationId}`}
           variant='flat'
@@ -76,6 +77,7 @@ export default function Orders() {
         </Button>
         <div className='flex gap-2'>
           <Button
+            data-testid='items-show-more-button'
             variant='ghost'
             color='default'
             radius='sm'

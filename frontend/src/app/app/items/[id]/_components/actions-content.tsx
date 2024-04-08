@@ -32,6 +32,7 @@ export default function ActionsContent({
         />
         <Tooltip content='Delete' color='default' delay={DELAY_500}>
           <Button
+            data-testid='items-delete-button'
             size='sm'
             variant='ghost'
             color='danger'

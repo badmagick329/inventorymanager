@@ -36,6 +36,7 @@ export default function OrderSalePriceInput({
         control={control}
         render={({ field }) => (
           <Input
+            data-testid='items-order-sale-input'
             type='number'
             variant='flat'
             autoComplete='off'

@@ -23,7 +23,12 @@ export default function ChangePassword() {
 
   return (
     <div className='flex flex-col items-center gap-2 pt-24'>
-      <span className='text-2xl font-semibold'>Change password</span>
+      <span
+        data-testid='change-password-title'
+        className='text-2xl font-semibold'
+      >
+        Change password
+      </span>
       <form
         className='flex w-64 flex-col gap-2'
         onSubmit={handleSubmit((data) =>

@@ -39,7 +39,6 @@ class VendorList(APIView):
                 for v in Vendor.vendors_by_order(order_id)
                 if v.is_visible_to(user)
             ]
-            print("filtered_vendors", filtered_vendors)
             serialized_data = [
                 VendorSerializer.to_representation_for(v, order_id)
                 for v in filtered_vendors

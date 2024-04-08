@@ -14,6 +14,7 @@ export default function UsernameInput({ register, formState }: InputProps) {
         {formState.errors.username?.message}
       </span>
       <Input
+        data-testid='login-username'
         type='text'
         variant='flat'
         label='Username'

@@ -17,6 +17,7 @@ export default function ConfirmedDelete({
     <>
       <div className='flex w-full justify-center gap-4'>
         <Button
+          data-testid='manage-users-delete-button'
           className='text-danger-600'
           onPress={disclosure.onOpen}
           variant='light'

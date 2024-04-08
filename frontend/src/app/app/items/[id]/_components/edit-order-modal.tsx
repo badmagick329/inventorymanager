@@ -21,6 +21,7 @@ export default function EditOrderModal({
     <>
       <Tooltip content='Edit' color='default' delay={DELAY_500}>
         <Button
+          data-testid='items-edit-button'
           onPress={onOpen}
           size='sm'
           variant='ghost'

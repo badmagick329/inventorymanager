@@ -33,6 +33,7 @@ export default function OrdersTableContent({
   if (columnKey === 'name') {
     return (
       <Link
+        data-testid='items-order-link'
         color='foreground'
         href={`${APP_ITEMS}/${locationId}/${rowId}`}
         className='flex justify-start gap-2 pr-4 font-semibold'

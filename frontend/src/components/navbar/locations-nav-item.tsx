@@ -21,7 +21,7 @@ export default function LocationsNavItem() {
           alt='Warehouse'
           unoptimized
         />
-        <span>Home</span>
+        <span data-testid='navbar-home'>Home</span>
       </Button>
     </>
   );
