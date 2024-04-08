@@ -54,7 +54,7 @@ export default function LoggedInDropdown() {
           variant='bordered'
         >
           <User size={ICON_SM} />
-          <span>Logged in as {username}</span>
+          <span data-testid='navbar-logged-in-as'>Logged in as {username}</span>
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label='User Actions' items={items}>
@@ -77,6 +77,7 @@ type ItemType = {
   onPress?: () => void;
   startContent?: React.ReactNode;
   variant?: VariantType;
+  'data-testid'?: string;
 };
 
 function getDropdownItems(isAdmin: boolean | null, logout: () => void) {
@@ -89,6 +90,7 @@ function getDropdownItems(isAdmin: boolean | null, logout: () => void) {
       href: APP_LOCATIONS,
       key: 'locations',
       startContent: <Warehouse size={ICON_SM} />,
+      'data-testid': 'navbar-dropdown-locations',
     },
     {
       as: Link,
@@ -98,6 +100,7 @@ function getDropdownItems(isAdmin: boolean | null, logout: () => void) {
       href: APP_CHANGE_PASSWORD,
       key: 'change-password',
       startContent: <KeyRound size={ICON_SM} />,
+      'data-testid': 'navbar-dropdown-change-password',
     },
     {
       children: 'Logout',
@@ -106,6 +109,7 @@ function getDropdownItems(isAdmin: boolean | null, logout: () => void) {
       onPress: logout,
       startContent: <LogOut size={ICON_SM} />,
       variant: 'solid' as VariantType,
+      'data-testid': 'navbar-dropdown-logout',
     },
   ];
   if (isAdmin) {
@@ -117,6 +121,7 @@ function getDropdownItems(isAdmin: boolean | null, logout: () => void) {
         href: APP_MANAGE_LOCATIONS,
         key: 'manage-locations',
         startContent: <Warehouse size={ICON_SM} />,
+        'data-testid': 'navbar-dropdown-manage-locations',
       },
       {
         as: Link,
@@ -125,6 +130,7 @@ function getDropdownItems(isAdmin: boolean | null, logout: () => void) {
         href: APP_MANAGE_USERS,
         key: 'manage-users',
         startContent: <User size={ICON_SM} />,
+        'data-testid': 'navbar-dropdown-manage-users',
       }
     );
   }

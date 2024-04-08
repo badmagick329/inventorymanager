@@ -18,7 +18,12 @@ export default function LocationInformationCard({
   }
   return (
     <div className='flex w-full max-w-lg flex-col items-center gap-4'>
-      <span className='text-xl font-bold'>Location Information</span>
+      <span
+        data-testid='items-location-card-title'
+        className='text-xl font-bold'
+      >
+        Location Information
+      </span>
       <div className='flex w-full flex-col items-center divide-y-2 rounded-md bg-neutral-100 p-4 text-center dark:divide-neutral-400 dark:bg-neutral-800'>
         <CurrencyDisplay text='Total revenue' value={revenue} />
         <CurrencyDisplay text='Total spent' value={spendings} />

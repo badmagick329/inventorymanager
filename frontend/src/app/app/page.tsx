@@ -36,9 +36,18 @@ export default function Locations() {
             View Workflow Demo
           </Button>
         </div>
-        <div className='mb-8 mt-4 text-2xl font-semibold'>Locations</div>
+        <h1
+          data-testid='home-locations-title'
+          className='mb-8 mt-4 text-2xl font-semibold'
+        >
+          Locations
+        </h1>
         {locations.map((loc: Location, idx: number) => (
-          <div key={loc.name} className='flex w-full flex-col items-center'>
+          <div
+            data-testid='home-locations-container'
+            key={loc.name}
+            className='flex w-full flex-col items-center'
+          >
             <div className='flex w-full justify-between px-6 md:w-2/3 2xl:w-1/3'>
               <LocationLink id={loc.id} name={loc.name} />
               <div className='flex justify-end gap-2 md:gap-4'>
@@ -56,7 +65,10 @@ export default function Locations() {
           </div>
         ))}
         {locations.length === 0 && (
-          <div className='flex items-center justify-center'>
+          <div
+            data-testid='home-locations-container'
+            className='flex items-center justify-center'
+          >
             No locations found. You may not have permission to view any
             locations yet.
           </div>

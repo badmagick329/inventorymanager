@@ -11,6 +11,7 @@ export default function LoginButton({
 }) {
   return (
     <Button
+      data-testid='login-submit'
       type='submit'
       className='mt-2 py-6 text-xl font-semibold'
       color='primary'

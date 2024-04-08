@@ -56,6 +56,7 @@ export default function DeleteModal({
                   Cancel
                 </Button>
                 <Button
+                  data-testid='delete-confirm-button'
                   color='danger'
                   isDisabled={mutation.isPending}
                   radius='sm'

@@ -5,7 +5,13 @@ export default function CancelButton({ onCancel }: { onCancel?: () => void }) {
     return null;
   }
   return (
-    <Button onPress={onCancel} color='danger' variant='light' radius='sm'>
+    <Button
+      data-testid='cancel-button'
+      onPress={onCancel}
+      color='danger'
+      variant='light'
+      radius='sm'
+    >
       Cancel
     </Button>
   );

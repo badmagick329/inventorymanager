@@ -31,6 +31,7 @@ export default function OrderQuantityInput({
         control={control}
         render={({ field }) => (
           <Input
+            data-testid='items-order-quantity-input'
             type='number'
             variant='flat'
             autoComplete='off'

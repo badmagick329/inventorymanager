@@ -1,6 +1,6 @@
 import { Input } from '@nextui-org/react';
-import { FormState, UseFormRegister } from 'react-hook-form';
 import React from 'react';
+import { FormState, UseFormRegister } from 'react-hook-form';
 
 type FormValues = {
   location: string;
@@ -24,6 +24,7 @@ export default function LocationInput({
         {formState.errors.location?.message}
       </span>
       <Input
+        data-testid='manage-locations-location-input'
         className='mb-2 rounded-none'
         type='text'
         variant='flat'

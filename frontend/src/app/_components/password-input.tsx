@@ -14,6 +14,7 @@ export default function PasswordInput({ register, formState }: InputProps) {
         {formState.errors.password?.message}
       </span>
       <Input
+        data-testid='login-password'
         type='password'
         variant='flat'
         label='Password'

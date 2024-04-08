@@ -16,6 +16,7 @@ export default function NewFormCover({
       </CardHeader>
       <Divider />
       <Button
+        data-testid='card-create-button'
         className='h-full w-full rounded-none'
         variant='light'
         radius='sm'

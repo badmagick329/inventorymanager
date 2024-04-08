@@ -26,6 +26,7 @@ export default function OrderNameInput({
         control={control}
         render={({ field }) => (
           <Input
+            data-testid='items-order-name-input'
             type='text'
             variant='flat'
             label='Name'

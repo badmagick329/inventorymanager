@@ -28,6 +28,7 @@ export default function UserForm({ onSuccess, onCancel }: FormProps) {
     >
       {error && <span className='self-center text-danger-500'>{error}</span>}
       <Input
+        data-testid='manage-users-username-input'
         type='text'
         variant='flat'
         label='Username'
@@ -35,6 +36,7 @@ export default function UserForm({ onSuccess, onCancel }: FormProps) {
         {...register('username', { required: 'Username is required' })}
       />
       <Input
+        data-testid='manage-users-password-input'
         type='password'
         variant='flat'
         label='Password'
@@ -42,6 +44,7 @@ export default function UserForm({ onSuccess, onCancel }: FormProps) {
         {...register('password', { required: 'Password cannot be empty' })}
       />
       <Input
+        data-testid='manage-users-password2-input'
         type='password'
         variant='flat'
         label='Confirm Password'

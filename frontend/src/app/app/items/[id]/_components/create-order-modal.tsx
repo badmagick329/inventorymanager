@@ -17,6 +17,7 @@ export default function CreateOrderModal({
   return (
     <>
       <Button
+        data-testid='items-add-item-button'
         onPress={onOpen}
         variant='ghost'
         color='default'
