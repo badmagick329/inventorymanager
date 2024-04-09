@@ -75,7 +75,10 @@ export default function LocationCard({
   }
 
   return (
-    <Card className='flex min-w-[280px] max-w-[320px] flex-col rounded-md md:min-w-[480px] md:max-w-[640px]'>
+    <Card
+      data-testid='manage-locations-location-card'
+      className='flex min-w-[280px] max-w-[320px] flex-col rounded-md md:min-w-[480px] md:max-w-[640px]'
+    >
       <CardHeader className='flex w-full items-center justify-center gap-2'>
         <LocationCardHeader name={name} locationId={locationId} />
       </CardHeader>

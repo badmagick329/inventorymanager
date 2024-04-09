@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     };
     const response = await axios.post(url, payload, { headers });
     return new NextResponse(JSON.stringify(response.data), {
-      status: 200,
+      status: 201,
     });
   } catch (error) {
     if (axios.isAxiosError(error)) {

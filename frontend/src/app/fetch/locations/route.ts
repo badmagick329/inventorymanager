@@ -37,15 +37,9 @@ export async function POST(req: Request) {
     };
     const response = await axios.post(url, payload, { headers });
     return new NextResponse(JSON.stringify(response.data), {
-      status: 200,
+      status: 201,
     });
   } catch (error) {
-    // TODO: This shouldn't be needed? test and remove
-    if (axios.isAxiosError(error)) {
-      return new NextResponse(JSON.stringify(error.response?.data), {
-        status: error.response?.status,
-      });
-    }
     return createErrorResponse(error);
   }
 }

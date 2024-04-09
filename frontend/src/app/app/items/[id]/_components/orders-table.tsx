@@ -48,7 +48,7 @@ export default function OrdersTable({
       </TableHeader>
       <TableBody emptyContent={'No items added'}>
         {tableData.map((row) => (
-          <TableRow key={row.id}>
+          <TableRow key={row.id} data-testid='items-table-row'>
             {(columnKey) => {
               const cellValue = getKeyValue(row, columnKey);
               return (
