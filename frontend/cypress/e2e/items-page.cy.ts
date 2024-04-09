@@ -1,16 +1,18 @@
-import { APP_ITEMS, APP_LOCATIONS } from '../../src/consts/urls';
+import {
+  APP_ITEMS,
+  APP_LOCATIONS,
+  NEXT_ORDER_DETAIL,
+} from '../../src/consts/urls';
 
 describe('items page', () => {
   beforeEach(() => {
     cy.adminLogin();
+    cy.visit(APP_LOCATIONS);
+    cy.dataCy('home-locations-button').click();
+    cy.url().should('include', APP_ITEMS);
   });
 
   it('is visitable', () => {
-    cy.visit(APP_LOCATIONS);
-    cy.dataCy('home-locations-container').should('exist');
-    cy.dataCy('home-locations-button').should('exist').click();
-    cy.url().should('include', APP_ITEMS);
-
     cy.dataCy('items-manage-vendors-button').should('exist');
     cy.dataCy('items-show-more-button').should('exist');
     cy.dataCy('items-add-item-button').should('exist');
@@ -18,10 +20,6 @@ describe('items page', () => {
   });
 
   it('can show more details', () => {
-    cy.visit(APP_LOCATIONS);
-    cy.dataCy('home-locations-button').click();
-    cy.url().should('include', APP_ITEMS);
-
     cy.dataCy('items-location-card-title').should('not.exist');
     cy.dataCy('items-vendors-card-title').should('not.exist');
     cy.dataCy('items-show-more-button').should('exist').click();
@@ -30,31 +28,27 @@ describe('items page', () => {
   });
 
   it('can add an item', () => {
-    addItem('cypress test item', 100, 100, 150);
-    deleteLastItem('cypress test item');
+    addItem('Cypress Test Item', 100, 100, 150);
+    deleteItem('Cypress Test Item');
   });
 
   it('can edit an item', () => {
-    addItem('cypress test item', 100, 100, 150);
-    editLastItem(
-      'cypress test item',
+    addItem('Cypress Test Item', 100, 100, 150);
+    editItem(
+      'Cypress Test Item',
       100,
       100,
       150,
-      'cypress test item edited',
+      'Cypress Test Item Edited',
       200,
       200,
       250
     );
-    deleteLastItem('cypress test item edited');
+    deleteItem('Cypress Test Item Edited');
   });
 });
 
 function addItem(name: string, quantity: number, cost: number, sale: number) {
-  cy.visit(APP_LOCATIONS);
-  cy.dataCy('home-locations-button').click();
-  cy.url().should('include', APP_ITEMS);
-
   cy.dataCy('items-order-link').contains(name).should('not.exist');
   cy.dataCy('items-add-item-button').should('exist').click();
   cy.dataCy('items-order-name-input')
@@ -75,60 +69,78 @@ function addItem(name: string, quantity: number, cost: number, sale: number) {
     .type(sale.toString())
     .should('have.value', sale.toString());
   cy.dataCy('create-button').should('exist').click();
-  cy.dataCy('items-order-link').contains(name).should('exist');
+  cy.wait(500);
+  cy.dataCy('items-order-link')
+    .contains(name)
+    .should('exist')
+    .closest('[data-testid="items-table-row"]')
+    .find('[data-testid="items-order-quantity"]')
+    .should('exist')
+    .contains(quantity);
 }
 
-function deleteLastItem(name: string) {
-  cy.visit(APP_LOCATIONS);
-  cy.dataCy('home-locations-button').click();
-  cy.url().should('include', APP_ITEMS);
-
-  cy.dataCy('items-order-link').contains(name).should('exist');
-  cy.dataCy('items-delete-button').last().should('exist').click();
+function deleteItem(name: string) {
+  cy.intercept('DELETE', `${NEXT_ORDER_DETAIL}/*`).as('deleteItem');
+  cy.dataCy('items-order-link')
+    .contains(name)
+    .should('exist')
+    .closest('[data-testid="items-table-row"]')
+    .find('[data-testid="items-delete-button"]')
+    .click();
   cy.dataCy('delete-confirm-button').should('exist').click();
+  cy.wait('@deleteItem').its('response.statusCode').should('eq', 204);
   cy.dataCy('items-order-link').contains(name).should('not.exist');
 }
 
-function editLastItem(
-  oldName: string,
-  oldQuantity: number,
-  oldCost: number,
-  oldSale: number,
+function editItem(
   name: string,
   quantity: number,
   cost: number,
-  sale: number
+  sale: number,
+  newName: string,
+  newQuantity: number,
+  newCost: number,
+  newSale: number
 ) {
-  cy.visit(APP_LOCATIONS);
-  cy.dataCy('home-locations-button').click();
-  cy.url().should('include', APP_ITEMS);
-
-  cy.dataCy('items-order-link').contains(oldName).should('exist');
-  cy.dataCy('items-edit-button').last().should('exist').click();
+  cy.dataCy('items-order-link')
+    .contains(name)
+    .should('exist')
+    .closest('[data-testid="items-table-row"]')
+    .find('[data-testid="items-edit-button"]')
+    .click();
   cy.dataCy('items-order-name-input')
     .should('exist')
-    .should('have.value', oldName)
+    .should('have.value', name)
     .clear()
-    .type(name)
-    .should('have.value', name);
+    .type(newName)
+    .should('have.value', newName);
   cy.dataCy('items-order-quantity-input')
     .should('exist')
-    .should('have.value', oldQuantity.toString())
+    .should('have.value', quantity.toString())
     .clear()
-    .type(quantity.toString())
-    .should('have.value', quantity.toString());
+    .type(newQuantity.toString())
+    .should('have.value', newQuantity.toString());
   cy.dataCy('items-order-cost-input')
     .should('exist')
-    .should('have.value', oldCost.toString())
+    .should('have.value', cost.toString())
     .clear()
-    .type(cost.toString())
-    .should('have.value', cost.toString());
+    .type(newCost.toString())
+    .should('have.value', newCost.toString());
   cy.dataCy('items-order-sale-input')
     .should('exist')
-    .should('have.value', oldSale.toString())
+    .should('have.value', sale.toString())
     .clear()
-    .type(sale.toString())
-    .should('have.value', sale.toString());
+    .type(newSale.toString())
+    .should('have.value', newSale.toString());
+  cy.intercept('PATCH', `${NEXT_ORDER_DETAIL}/*`).as('editItem');
   cy.dataCy('update-button').should('exist').click();
-  cy.dataCy('items-order-link').contains(name).should('exist');
+  cy.wait('@editItem').its('response.statusCode').should('eq', 200);
+  cy.wait(500);
+  cy.dataCy('items-order-link')
+    .contains(newName)
+    .should('exist')
+    .closest('[data-testid="items-table-row"]')
+    .find('[data-testid="items-order-quantity"]')
+    .should('exist')
+    .contains(newQuantity);
 }

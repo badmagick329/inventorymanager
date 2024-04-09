@@ -67,7 +67,7 @@ export default function OrdersTableContent({
     return <PriceFieldContent value={cellValue} quantity={quantity} />;
   }
 
-  return <span>{cellValue}</span>;
+  return <span data-testid={`items-order-${columnKey}`}>{cellValue}</span>;
 }
 
 function isProfit(
