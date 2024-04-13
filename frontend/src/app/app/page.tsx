@@ -1,5 +1,6 @@
 'use client';
 
+import { useAdminStatus } from '@/app/context/global-context-provider';
 import { Spinner } from '@/components';
 import { APP_DEMO_WORKFLOW, APP_LOGIN } from '@/consts/urls';
 import { useLocations } from '@/hooks';
@@ -13,6 +14,10 @@ import LocationOverview from './_components/location-overview';
 export default function Locations() {
   const router = useRouter();
   const { error, isError, isLoading, data: locations } = useLocations();
+  const isAdmin = useAdminStatus();
+  const nonAdminMessage = isAdmin
+    ? 'You may not have permission to view any locations yet.'
+    : '';
 
   if (isError) {
     console.error(`Received error ${error}`);
@@ -69,8 +74,7 @@ export default function Locations() {
             data-testid='home-locations-container'
             className='flex items-center justify-center'
           >
-            No locations found. You may not have permission to view any
-            locations yet.
+            No locations found.{nonAdminMessage}
           </div>
         )}
       </>
