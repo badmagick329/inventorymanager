@@ -23,6 +23,7 @@ export default function EditSaleModal({
     <>
       <Tooltip content='Edit' color='default' delay={DELAY_500}>
         <Button
+          data-testid='sales-edit-button'
           onPress={onOpen}
           size='sm'
           variant='ghost'

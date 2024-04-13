@@ -31,6 +31,7 @@ export default function ActionsContent({
       />
       <Tooltip content='Delete' color='default' delay={DELAY_500}>
         <Button
+          data-testid='sales-delete-button'
           size='sm'
           isIconOnly
           variant='ghost'

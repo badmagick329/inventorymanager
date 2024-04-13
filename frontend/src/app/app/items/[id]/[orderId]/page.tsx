@@ -85,12 +85,12 @@ export default function Sales() {
       <Spacer y={2} />
       <div className='flex justify-center gap-4'>
         <Button
+          data-testid='sales-back-to-items-button'
           as={Link}
           href={`${APP_ITEMS}/${locationId}`}
           variant='flat'
           radius='sm'
           color='default'
-          showAnchorIcon
         >
           Back to Items
         </Button>

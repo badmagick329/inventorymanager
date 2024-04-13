@@ -57,7 +57,7 @@ export default function SalesTableContent({
     );
   }
 
-  return <span>{cellValue}</span>;
+  return <span data-testid={`sales-${columnKey}`}>{cellValue}</span>;
 }
 
 function isAmountPaidDue(

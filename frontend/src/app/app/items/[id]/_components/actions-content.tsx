@@ -45,6 +45,7 @@ export default function ActionsContent({
         </Tooltip>
         <Tooltip content='View Sales' color='default' delay={DELAY_500}>
           <Button
+            data-testid='items-view-sales-button'
             as={Link}
             href={`${APP_ITEMS}/${locationId}/${rowId}`}
             size='sm'

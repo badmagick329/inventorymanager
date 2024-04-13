@@ -20,6 +20,7 @@ export default function CreateSaleModal({
   return (
     <>
       <Button
+        data-testid='sales-add-sale-button'
         onPress={onOpen}
         isDisabled={remainingStock <= 0}
         endContent={<Plus size={ICON_SM} />}
