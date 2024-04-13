@@ -16,8 +16,8 @@ export default function Locations() {
   const { error, isError, isLoading, data: locations } = useLocations();
   const isAdmin = useAdminStatus();
   const nonAdminMessage = isAdmin
-    ? 'You may not have permission to view any locations yet.'
-    : '';
+    ? ''
+    : 'You may not have permission to view any locations yet.';
 
   if (isError) {
     console.error(`Received error ${error}`);
