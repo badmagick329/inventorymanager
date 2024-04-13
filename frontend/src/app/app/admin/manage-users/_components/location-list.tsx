@@ -7,7 +7,7 @@ import Link from 'next/link';
 export default function LocationList({ locations }: { locations: Location[] }) {
   return (
     <>
-      <div className='flex flex-col items-start gap-4'>
+      <div className='flex flex-col items-center gap-4'>
         {locations.map((location) => (
           <Link
             color='foreground'
