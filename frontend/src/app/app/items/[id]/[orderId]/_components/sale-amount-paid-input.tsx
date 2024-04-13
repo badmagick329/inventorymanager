@@ -57,6 +57,7 @@ export default function SaleAmountPaid({
           control={control}
           render={({ field }) => (
             <Input
+              data-testid='sale-amount-paid-input'
               type='number'
               variant='flat'
               autoComplete='off'

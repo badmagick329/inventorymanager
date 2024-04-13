@@ -28,6 +28,7 @@ export default function SalePrice({
         control={control}
         render={({ field }) => (
           <Input
+            data-testid='sale-price-input'
             type='number'
             variant='flat'
             autoComplete='off'

@@ -71,7 +71,6 @@ export default function Orders() {
           variant='flat'
           color='default'
           radius='sm'
-          showAnchorIcon
         >
           Manage Vendors
         </Button>

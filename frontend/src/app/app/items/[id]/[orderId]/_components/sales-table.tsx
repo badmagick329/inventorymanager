@@ -43,13 +43,13 @@ export default function SalesTable({
   ];
 
   return (
-    <Table aria-label='Items Table'>
+    <Table data-testid='sales-table' aria-label='Sales Table'>
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
-      <TableBody emptyContent={'No items added'}>
+      <TableBody emptyContent={'No sales added'}>
         {tableData.map((row) => (
-          <TableRow key={row.id}>
+          <TableRow data-testid='sales-table-row' key={row.id}>
             {(columnKey) => {
               const cellValue = getKeyValue(row, columnKey);
               return (

@@ -40,7 +40,6 @@ export default function LocationVendors() {
         variant='flat'
         radius='sm'
         color='default'
-        showAnchorIcon
       >
         Back to Items
       </Button>

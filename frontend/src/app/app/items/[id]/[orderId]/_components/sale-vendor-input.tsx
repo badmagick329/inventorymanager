@@ -54,6 +54,7 @@ export default function SaleVendor({
           control={control}
           render={({ field: { onChange, value } }) => (
             <Autocomplete
+              data-testid='sale-vendor-input'
               label='Enter vendor name or select from existing vendors'
               isLoading={isLoading}
               defaultItems={data}

@@ -28,6 +28,7 @@ export default function SaleQuantity({
         control={control}
         render={({ field }) => (
           <Input
+            data-testid='sale-quantity-input'
             type='number'
             variant='flat'
             autoComplete='off'
