@@ -30,23 +30,39 @@ export default function AppDemo() {
 }
 const videosAndText = [
   {
-    video: '01_Create_Location.mp4',
-    text: 'Start by creating a new school location.',
+    video: '01_Create_Location_And_User.mp4',
+    text: 'Start by creating a location and users.',
   },
   {
-    video: '02_Create_Item.mp4',
+    video: '02_Add_Items.mp4',
     text: 'Now we can create our first item entry.',
   },
   {
-    video: '03_Create_Sale.mp4',
+    video: '03_Add_Sale.mp4',
     text: 'After creating the item we can enter sale data for this item on the sales page.',
   },
   {
-    video: '04_Create_Sale_2.mp4',
-    text: 'This item can be sold to multiple vendors.',
+    video: '04_Adding_More_Sales.mp4',
+    text: "Here's some more examples of adding sales.",
   },
   {
-    video: '05_Update_Sale.mp4',
-    text: 'Once an owed amount is paid we can update it from the sales page.',
+    video: '05_Manage_Vendors.mp4',
+    text: 'We can manage vendors from the vendors page.',
+  },
+  {
+    video: '06_Logs.mp4',
+    text: 'A history of all entries and changes can be viewed from the logs page.',
+  },
+  {
+    video: '07_Bonus_Tip_01.mp4',
+    text: 'Bonus Tip: You can hover over the price fields to view the exact amount.',
+  },
+  {
+    video: '08_Bonus_Tip_02.mp4',
+    text: 'Bonus Tip: You can click show more to view some additional location information.',
+  },
+  {
+    video: '09_Bonus_Tip_03.mp4',
+    text: 'Bonus Tip: "Mark as fully paid" button will adjust to any quantity or cost changes in the form.',
   },
 ];
