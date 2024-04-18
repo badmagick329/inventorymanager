@@ -18,7 +18,7 @@ export default function AmountPaidDueContent({
   return (
     <>
       <AmountPaid amountPaid={amountPaid} amountPaidColor={amountPaidColor} />
-      <Divider amountPaid={amountPaid} debt={debt} />
+      <Divider debt={debt} />
       <Debt debt={debt} debtColor={debtColor} />
     </>
   );
@@ -31,9 +31,6 @@ function AmountPaid({
   amountPaid: number;
   amountPaidColor: string;
 }) {
-  if (amountPaid <= 0) {
-    return null;
-  }
   return (
     <>
       <Tooltip content={formatCurrency(amountPaid)} placement='top'>
@@ -43,8 +40,8 @@ function AmountPaid({
   );
 }
 
-function Divider({ amountPaid, debt }: { amountPaid: number; debt: number }) {
-  if (amountPaid <= 0 || debt <= 0) {
+function Divider({ debt }: { debt: number }) {
+  if (debt <= 0) {
     return null;
   }
   return <span> / </span>;
