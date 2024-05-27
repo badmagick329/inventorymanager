@@ -27,9 +27,14 @@ pytest-clarity = "^1.0.1"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tools.pyright]
-include= ["./backend"]
-exclude= [ "**/node_modules", "**/__pycache__", "src/experimental", "src/typestubs" ]
+[tool.pyright]
+include = ["./backend"]
+exclude = [
+  "**/node_modules",
+  "**/__pycache__",
+  "src/experimental",
+  "src/typestubs",
+]
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "backend.settings"
