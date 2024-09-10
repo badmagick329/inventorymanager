@@ -47,6 +47,7 @@ services:
     restart: "always"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/logs/:/var/logs
       - staticfiles:/usr/src/app/staticfiles
     ports:
       - ${NGINX_PORT}:${NGINX_PORT}
