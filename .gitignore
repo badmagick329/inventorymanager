@@ -4,6 +4,7 @@ __pycache__/
 db/
 db.log
 nginx/conf.d/*
+nginx/logs/*
 !nginx/conf.d/main.conf.sample
 notes/
 deploy.sh
