@@ -40,6 +40,12 @@ services:
     restart: "on-failure"
     depends_on:
       - backend
+    environment:
+      - NODE_OPTIONS=--max_old_space_size=4096
+    deploy:
+      resources:
+        limits:
+          memory: 4g
 
   nginx:
     build:
