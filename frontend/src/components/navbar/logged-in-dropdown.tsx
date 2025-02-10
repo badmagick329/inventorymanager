@@ -20,10 +20,11 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Link,
   Skeleton,
-} from "@heroui/react";
+} from '@heroui/react';
 import { KeyRound, LogOut, User, Warehouse } from 'lucide-react';
+import Link from 'next/link';
+import React from 'react';
 
 export default function LoggedInDropdown() {
   const logout = useLogout();
@@ -69,7 +70,7 @@ export default function LoggedInDropdown() {
 
 type ItemType = {
   as?: React.ElementType;
-  children: string;
+  children: React.ReactNode;
   className?: string;
   color?: ColorType;
   href?: string;
@@ -83,21 +84,17 @@ type ItemType = {
 function getDropdownItems(isAdmin: boolean | null, logout: () => void) {
   let items: ItemType[] = [
     {
-      as: Link,
-      children: 'Locations',
+      children: <Link href={APP_LOCATIONS}>Locations</Link>,
       className: 'text-foreground',
       color: 'default' as ColorType,
-      href: APP_LOCATIONS,
       key: 'locations',
       startContent: <Warehouse size={ICON_SM} />,
       'data-testid': 'navbar-dropdown-locations',
     },
     {
-      as: Link,
-      children: 'Change password',
+      children: <Link href={APP_CHANGE_PASSWORD}>Change password</Link>,
       className: 'text-foreground',
       color: 'default' as ColorType,
-      href: APP_CHANGE_PASSWORD,
       key: 'change-password',
       startContent: <KeyRound size={ICON_SM} />,
       'data-testid': 'navbar-dropdown-change-password',
@@ -115,19 +112,15 @@ function getDropdownItems(isAdmin: boolean | null, logout: () => void) {
   if (isAdmin) {
     items.unshift(
       {
-        as: Link,
-        children: 'Manage Locations',
+        children: <Link href={APP_MANAGE_LOCATIONS}>Manage Locations</Link>,
         className: 'text-secondary-500',
-        href: APP_MANAGE_LOCATIONS,
         key: 'manage-locations',
         startContent: <Warehouse size={ICON_SM} />,
         'data-testid': 'navbar-dropdown-manage-locations',
       },
       {
-        as: Link,
-        children: 'Manage Users',
+        children: <Link href={APP_MANAGE_USERS}>Manage Users</Link>,
         className: 'text-secondary-500',
-        href: APP_MANAGE_USERS,
         key: 'manage-users',
         startContent: <User size={ICON_SM} />,
         'data-testid': 'navbar-dropdown-manage-users',

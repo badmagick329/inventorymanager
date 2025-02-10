@@ -1,5 +1,5 @@
 import { APP_LOCATIONS } from '@/consts/urls';
-import { Button, Link } from "@heroui/react";
+import { Button, Link } from '@heroui/react';
 import Image from 'next/image';
 
 import WarehouseImage from '../../../public/images/warehouse-sm.png';
@@ -8,11 +8,11 @@ export default function LocationsNavItem() {
   return (
     <>
       <Button
+        as={Link}
+        href={APP_LOCATIONS}
         className='rounded-md border-foreground-500 p-2'
         variant='bordered'
         radius='sm'
-        as={Link}
-        href={APP_LOCATIONS}
       >
         <Image
           width={30}
