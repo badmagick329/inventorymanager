@@ -1,7 +1,7 @@
 import { HelpTooltip } from '@/components';
 import { useVendors } from '@/hooks';
 import { SaleFormValues, VendorResponse } from '@/types';
-import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import {
   Control,
   Controller,

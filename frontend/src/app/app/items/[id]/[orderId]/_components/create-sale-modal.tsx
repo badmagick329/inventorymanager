@@ -1,5 +1,5 @@
 import { ICON_SM } from '@/consts';
-import { Button, Modal, useDisclosure } from '@nextui-org/react';
+import { Button, Modal, useDisclosure } from "@heroui/react";
 import { Plus } from 'lucide-react';
 import React from 'react';
 

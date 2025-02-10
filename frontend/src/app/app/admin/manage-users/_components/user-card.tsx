@@ -8,7 +8,7 @@ import {
   CardHeader,
   Divider,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import React from 'react';
 
 import ConfirmedDelete from './confirmed-delete';

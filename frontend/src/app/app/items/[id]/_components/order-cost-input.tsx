@@ -1,5 +1,5 @@
 import { OrderFormValues } from '@/types';
-import { Input } from '@nextui-org/react';
+import { Input } from "@heroui/react";
 import { Control, Controller, FormState } from 'react-hook-form';
 import { UseFormRegister } from 'react-hook-form';
 

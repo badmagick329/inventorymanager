@@ -4,7 +4,7 @@ import {
   CardFooter,
   CardHeader,
   Divider,
-} from '@nextui-org/react';
+} from "@heroui/react";
 
 import LocationForm from './location-form';
 

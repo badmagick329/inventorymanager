@@ -1,63 +1,64 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev -p 5000 -H 0.0.0.0 --turbo",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "test": "vitest"
-  },
-  "dependencies": {
-    "@nextui-org/react": "^2.2.9",
-    "@react-stately/data": "^3.11.2",
-    "@tanstack/react-query": "^5.17.19",
-    "@tanstack/react-query-devtools": "^5.17.21",
-    "@types/cookie": "^0.6.0",
-    "axios": "^1.6.7",
-    "chart.js": "^4.4.2",
-    "cookie": "^0.6.0",
-    "framer-motion": "^11.0.3",
-    "lucide-react": "^0.317.0",
-    "next": "14.1.0",
-    "next-themes": "^0.2.1",
-    "react": "^18",
-    "react-chartjs-2": "^5.2.0",
-    "react-dom": "^18",
-    "react-hook-form": "^7.49.3",
-    "sharp": "^0.33.2"
-  },
-  "devDependencies": {
-    "@testing-library/react": "^14.1.2",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "@vitejs/plugin-react": "^4.2.1",
-    "autoprefixer": "^10.0.1",
-    "cypress": "^13.7.2",
-    "jsdom": "^24.0.0",
-    "postcss": "^8",
-    "tailwindcss": "^3.3.0",
-    "typescript": "^5",
-    "vitest": "^1.2.1"
-  },
-  "prettier": {
-    "semi": true,
-    "singleQuote": true,
-    "jsxSingleQuote": true,
-    "tabWidth": 2,
-    "useTabs": false,
-    "trailingComma": "es5",
-    "printWidth": 80,
-    "importOrder": [
-      "^@core/(.*)$",
-      "<THIRD_PARTY_MODULES>",
-      "^@server/(.*)$",
-      "^@ui/(.*)$",
-      "^[./]"
-    ],
-    "importOrderSeparation": true,
-    "importOrderSortSpecifiers": true
-  }
+   "name": "frontend",
+   "version": "0.1.0",
+   "private": true,
+   "scripts": {
+      "dev": "next dev -p 5000 -H 0.0.0.0 --turbo",
+      "build": "next build",
+      "start": "next start",
+      "lint": "next lint",
+      "test": "vitest"
+   },
+   "dependencies": {
+      "@heroui/react": "2.6.14",
+      "@react-stately/data": "^3.11.2",
+      "@tanstack/react-query": "^5.17.19",
+      "@tanstack/react-query-devtools": "^5.17.21",
+      "@types/cookie": "^0.6.0",
+      "axios": "^1.6.7",
+      "chart.js": "^4.4.2",
+      "cookie": "^0.6.0",
+      "framer-motion": "^11.0.3",
+      "lucide-react": "^0.317.0",
+      "next": "14.1.0",
+      "next-themes": "^0.2.1",
+      "react": "^18",
+      "react-chartjs-2": "^5.2.0",
+      "react-dom": "^18",
+      "react-hook-form": "^7.49.3",
+      "sharp": "^0.33.2"
+   },
+   "devDependencies": {
+      "@testing-library/react": "^14.1.2",
+      "@types/node": "^20",
+      "@types/react": "^18",
+      "@types/react-dom": "^18",
+      "@vitejs/plugin-react": "^4.2.1",
+      "autoprefixer": "^10.0.1",
+      "cypress": "^13.7.2",
+      "jsdom": "^24.0.0",
+      "postcss": "^8",
+      "tailwindcss": "^3.3.0",
+      "typescript": "^5",
+      "vitest": "^1.2.1"
+   },
+   "prettier": {
+      "semi": true,
+      "singleQuote": true,
+      "jsxSingleQuote": true,
+      "tabWidth": 2,
+      "useTabs": false,
+      "trailingComma": "es5",
+      "printWidth": 80,
+      "importOrder": [
+         "^@core/(.*)$",
+         "<THIRD_PARTY_MODULES>",
+         "^@server/(.*)$",
+         "^@ui/(.*)$",
+         "^[./]"
+      ],
+      "importOrderSeparation": true,
+      "importOrderSortSpecifiers": true
+   },
+   "packageManager": "yarn@4.6.0"
 }

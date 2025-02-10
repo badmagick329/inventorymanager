@@ -5,7 +5,7 @@ import { Spinner } from '@/components';
 import { APP_DEMO_WORKFLOW, APP_LOGIN } from '@/consts/urls';
 import { useLocations } from '@/hooks';
 import { Location } from '@/types';
-import { Button, Divider, Link } from '@nextui-org/react';
+import { Button, Divider, Link } from "@heroui/react";
 import { useRouter } from 'next/navigation';
 
 import LocationLink from './_components/location-link';

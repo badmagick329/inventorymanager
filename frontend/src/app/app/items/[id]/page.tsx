@@ -12,7 +12,7 @@ import {
 import { isOrderResponseArray } from '@/predicates';
 import { Location } from '@/types';
 import { preFetchVendors as preFetchAdditionalVendorDetails } from '@/utils/requests';
-import { Button, Link, Spacer } from '@nextui-org/react';
+import { Button, Link, Spacer } from "@heroui/react";
 import { useQueryClient } from '@tanstack/react-query';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';

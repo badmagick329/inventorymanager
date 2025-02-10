@@ -1,6 +1,6 @@
 import { CancelButton, CreateButton } from '@/components';
 import { useSubmitUser } from '@/hooks';
-import { Input } from '@nextui-org/react';
+import { Input } from "@heroui/react";
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 

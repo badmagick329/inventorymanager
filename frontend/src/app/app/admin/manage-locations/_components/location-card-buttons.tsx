@@ -2,7 +2,7 @@ import { DeleteModal } from '@/components';
 import { ICON_MD } from '@/consts';
 import { useDeleteLocation } from '@/hooks';
 import { Disclosure } from '@/types';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { Pencil, Trash } from 'lucide-react';
 
 type LocationCardButtonsProps = {

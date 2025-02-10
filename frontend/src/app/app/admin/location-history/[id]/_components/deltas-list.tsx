@@ -1,6 +1,6 @@
 import { Delta } from '@/types';
 import { UTCStringtoLocalDate } from '@/utils';
-import { Accordion, AccordionItem } from '@nextui-org/react';
+import { Accordion, AccordionItem } from "@heroui/react";
 
 import ChangesDisplay from './changes-display';
 

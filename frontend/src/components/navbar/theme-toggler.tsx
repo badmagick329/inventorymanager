@@ -1,7 +1,7 @@
 'use client';
 
 import { ICON_SM } from '@/consts';
-import { Button, Switch } from '@nextui-org/react';
+import { Button, Switch } from "@heroui/react";
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';

@@ -2,7 +2,7 @@ import ItemChangeText from '@/components/item-change-text';
 import { ICON_MD } from '@/consts';
 import { OrderHistory } from '@/types';
 import { UTCStringtoLocalDate, injectDeltasWithUser } from '@/utils';
-import { Accordion, AccordionItem } from '@nextui-org/react';
+import { Accordion, AccordionItem } from "@heroui/react";
 import { ShoppingCart } from 'lucide-react';
 import React, { useMemo } from 'react';
 

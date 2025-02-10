@@ -4,7 +4,7 @@ import { OptionalErrorElement, Spinner } from '@/components';
 import { APP_ITEMS, APP_LOGIN } from '@/consts/urls';
 import { useVendors } from '@/hooks';
 import { VendorResponse } from '@/types';
-import { Button, Divider, Link } from '@nextui-org/react';
+import { Button, Divider, Link } from "@heroui/react";
 import { usePathname, useRouter } from 'next/navigation';
 
 import VendorForm from './_components/vendor-form';

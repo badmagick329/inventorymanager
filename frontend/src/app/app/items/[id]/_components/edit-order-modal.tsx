@@ -1,5 +1,5 @@
 import { DELAY_500, ICON_SM } from '@/consts';
-import { Button, Modal, Tooltip, useDisclosure } from '@nextui-org/react';
+import { Button, Modal, Tooltip, useDisclosure } from "@heroui/react";
 import { Pencil } from 'lucide-react';
 import React from 'react';
 

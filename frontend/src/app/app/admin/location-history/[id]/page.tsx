@@ -4,7 +4,7 @@ import { ConnectionError, Spinner } from '@/components';
 import { APP_LOCATIONS } from '@/consts/urls';
 import { useLocationHistory } from '@/hooks';
 import { isOrderHistoryArray } from '@/predicates';
-import { Button, Input, Link } from '@nextui-org/react';
+import { Button, Input, Link } from "@heroui/react";
 import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
 

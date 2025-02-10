@@ -1,7 +1,7 @@
 import PriceFieldContent from '@/components/price-field-content';
 import { HistoricalOrder } from '@/types';
 import { UTCStringtoLocalDate } from '@/utils';
-import { Card, CardBody, CardHeader, Divider } from '@nextui-org/react';
+import { Card, CardBody, CardHeader, Divider } from "@heroui/react";
 
 export default function OrderHistoryCard({
   order,

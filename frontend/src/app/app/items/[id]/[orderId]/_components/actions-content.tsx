@@ -1,7 +1,7 @@
 import { DeleteModal } from '@/components';
 import { DELAY_500, ICON_SM } from '@/consts';
 import { DeleteSale } from '@/types';
-import { Button, Tooltip, useDisclosure } from '@nextui-org/react';
+import { Button, Tooltip, useDisclosure } from "@heroui/react";
 import { Trash } from 'lucide-react';
 
 import { EditSaleModal } from '.';
