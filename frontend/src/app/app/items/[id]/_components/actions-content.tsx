@@ -4,7 +4,7 @@ import DeleteModal from '@/components/delete-modal';
 import { DELAY_500, ICON_SM } from '@/consts';
 import { APP_ITEMS } from '@/consts/urls';
 import { DeleteOrder } from '@/types';
-import { Button, Link, Tooltip, useDisclosure } from '@nextui-org/react';
+import { Button, Link, Tooltip, useDisclosure } from "@heroui/react";
 import { List, Trash } from 'lucide-react';
 
 import EditOrderModal from './edit-order-modal';

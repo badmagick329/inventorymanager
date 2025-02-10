@@ -2,7 +2,7 @@ import { useAdminStatus } from '@/app/context/global-context-provider';
 import { DELAY_500, ICON_MD } from '@/consts';
 import { APP_LOCATION_HISTORY } from '@/consts/urls';
 import { formatCurrency, formatNumber } from '@/utils';
-import { Button, Tooltip } from '@nextui-org/react';
+import { Button, Tooltip } from "@heroui/react";
 import { ScrollText } from 'lucide-react';
 import Link from 'next/link';
 

@@ -7,7 +7,7 @@ import {
 } from '@/components';
 import { APP_ITEMS } from '@/consts/urls';
 import { DeleteOrder, OrdersTableCellValue } from '@/types';
-import { Link } from '@nextui-org/react';
+import { Link } from "@heroui/react";
 import { Key } from 'react';
 
 import ActionsContent from './actions-content';

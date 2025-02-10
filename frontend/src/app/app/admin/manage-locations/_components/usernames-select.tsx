@@ -1,5 +1,5 @@
 import { LocationFormValues } from '@/types';
-import { Select, SelectItem } from '@nextui-org/react';
+import { Select, SelectItem } from "@heroui/react";
 import { User as UserIcon } from 'lucide-react';
 import { useEffect } from 'react';
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';

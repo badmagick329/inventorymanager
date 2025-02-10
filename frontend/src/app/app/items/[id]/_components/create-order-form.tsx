@@ -7,7 +7,7 @@ import {
 import ItemFormHeader from '@/components/item-form-header';
 import { useCreateOrder, useLocalStorage, useOrderFormDefaults } from '@/hooks';
 import { OrderFormValues } from '@/types';
-import { Checkbox, ModalContent, ModalFooter } from '@nextui-org/react';
+import { Checkbox, ModalContent, ModalFooter } from "@heroui/react";
 import axios from 'axios';
 import { useState } from 'react';
 import { UseFormSetError, useForm } from 'react-hook-form';

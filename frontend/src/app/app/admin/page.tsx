@@ -1,7 +1,7 @@
 'use client';
 
 import { APP_MANAGE_LOCATIONS, APP_MANAGE_USERS } from '@/consts/urls';
-import { Button, Link } from '@nextui-org/react';
+import { Button, Link } from "@heroui/react";
 
 export default function AdminPage() {
   return (

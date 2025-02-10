@@ -1,6 +1,6 @@
 import { ConnectionError, GenericError } from '@/components/errors';
 import { APP_LOCATIONS } from '@/consts/urls';
-import { Button, Link } from '@nextui-org/react';
+import { Button, Link } from "@heroui/react";
 
 export default function OptionalErrorElement({
   errorMessage,

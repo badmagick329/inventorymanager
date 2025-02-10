@@ -22,7 +22,7 @@ import {
   DropdownTrigger,
   Link,
   Skeleton,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { KeyRound, LogOut, User, Warehouse } from 'lucide-react';
 
 export default function LoggedInDropdown() {

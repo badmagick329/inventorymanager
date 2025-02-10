@@ -1,6 +1,6 @@
 import { ICON_MD } from '@/consts';
 import { APP_MANAGE_USERS } from '@/consts/urls';
-import { Link } from '@nextui-org/react';
+import { Link } from "@heroui/react";
 import { User } from 'lucide-react';
 
 export default function LocationCardBody({ users }: { users: string[] }) {

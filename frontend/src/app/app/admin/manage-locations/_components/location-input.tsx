@@ -1,4 +1,4 @@
-import { Input } from '@nextui-org/react';
+import { Input } from "@heroui/react";
 import React from 'react';
 import { FormState, UseFormRegister } from 'react-hook-form';
 

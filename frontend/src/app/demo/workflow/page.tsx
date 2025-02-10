@@ -1,4 +1,4 @@
-import { Spacer } from '@nextui-org/react';
+import { Spacer } from "@heroui/react";
 
 import InstructionText from './_componenets/instruction-text';
 import VideoPlayer from './_componenets/video-player';

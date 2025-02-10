@@ -1,4 +1,4 @@
-import { Input } from '@nextui-org/react';
+import { Input } from "@heroui/react";
 import { FormState, UseFormRegister } from 'react-hook-form';
 
 type FormValues = {

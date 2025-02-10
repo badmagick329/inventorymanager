@@ -1,6 +1,6 @@
 import { ICON_MD } from '@/consts';
 import { APP_ITEMS } from '@/consts/urls';
-import { Link } from '@nextui-org/react';
+import { Link } from "@heroui/react";
 import { Warehouse } from 'lucide-react';
 
 export default function LocationCardHeader({

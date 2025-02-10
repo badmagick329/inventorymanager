@@ -1,7 +1,7 @@
 'use client';
 
 import { ICON_SM } from '@/consts';
-import { Tooltip } from '@nextui-org/react';
+import { Tooltip } from "@heroui/react";
 import { AlertCircle, Check, ShoppingCart } from 'lucide-react';
 
 type StockInOutContentProps = {

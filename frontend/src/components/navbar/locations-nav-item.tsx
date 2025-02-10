@@ -1,5 +1,5 @@
 import { APP_LOCATIONS } from '@/consts/urls';
-import { Button, Link } from '@nextui-org/react';
+import { Button, Link } from "@heroui/react";
 import Image from 'next/image';
 
 import WarehouseImage from '../../../public/images/warehouse-sm.png';

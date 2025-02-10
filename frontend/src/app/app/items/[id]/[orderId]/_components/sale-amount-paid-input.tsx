@@ -1,7 +1,7 @@
 import { HelpTooltip } from '@/components';
 import { useSaleAmountPaidInput } from '@/hooks';
 import { SaleFormValues } from '@/types';
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input } from "@heroui/react";
 import {
   Control,
   Controller,

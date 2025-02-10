@@ -1,5 +1,5 @@
 import { APP_ITEMS } from '@/consts/urls';
-import { Button, Link } from '@nextui-org/react';
+import { Button, Link } from "@heroui/react";
 
 type LocationLinkProps = {
   id: number | undefined;

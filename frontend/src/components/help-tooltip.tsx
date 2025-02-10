@@ -1,5 +1,5 @@
 import { DELAY_500, ICON_SM } from '@/consts';
-import { Tooltip } from '@nextui-org/react';
+import { Tooltip } from "@heroui/react";
 import { HelpCircle } from 'lucide-react';
 
 export default function HelpTooltip({ content }: { content: string }) {

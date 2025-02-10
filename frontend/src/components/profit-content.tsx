@@ -1,7 +1,7 @@
 'use client';
 
 import { formatCurrency, formatNumber } from '@/utils';
-import { Tooltip } from '@nextui-org/react';
+import { Tooltip } from "@heroui/react";
 
 type ProfitContentProps = {
   profit: number;

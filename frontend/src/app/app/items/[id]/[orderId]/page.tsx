@@ -13,7 +13,7 @@ import {
   isSaleResponseArray,
   isVendorResponseArray,
 } from '@/predicates';
-import { Button, Link, Spacer } from '@nextui-org/react';
+import { Button, Link, Spacer } from "@heroui/react";
 import { usePathname, useRouter } from 'next/navigation';
 
 import {

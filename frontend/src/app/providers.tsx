@@ -1,6 +1,6 @@
 'use client';
 
-import { NextUIProvider } from '@nextui-org/react';
+import { HeroUIProvider } from "@heroui/react";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
@@ -11,7 +11,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
   const router = useRouter();
   return (
-    <NextUIProvider navigate={router.push}>
+    <HeroUIProvider navigate={router.push}>
       <QueryClientProvider client={queryClient}>
         <NextThemesProvider
           attribute='class'
@@ -22,6 +22,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
           {children}
         </NextThemesProvider>
       </QueryClientProvider>
-    </NextUIProvider>
+    </HeroUIProvider>
   );
 }

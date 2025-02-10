@@ -1,5 +1,5 @@
 import { LoginFormValues } from '@/types';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { FormState } from 'react-hook-form';
 
 export default function LoginButton({

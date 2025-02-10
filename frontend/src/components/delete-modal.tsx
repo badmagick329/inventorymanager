@@ -8,7 +8,7 @@ import {
   ModalContent,
   ModalHeader,
   Spacer,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { UseMutationResult } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 import React from 'react';

@@ -2,7 +2,7 @@ import DeleteModal from '@/components/delete-modal';
 import { ICON_MD } from '@/consts';
 import { useCreateVendor, useDeleteVendor } from '@/hooks';
 import { VendorResponse } from '@/types';
-import { Button, useDisclosure } from '@nextui-org/react';
+import { Button, useDisclosure } from "@heroui/react";
 import axios from 'axios';
 import { Check, Pencil, Trash } from 'lucide-react';
 import { useState } from 'react';
