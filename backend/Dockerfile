@@ -1,13 +1,28 @@
-FROM python:3.10.10-bullseye
-WORKDIR /usr/src/app
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+FROM python:3.10.10-bullseye AS builder
 
-RUN pip install --upgrade pip
+WORKDIR /usr/src/app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+RUN pip install --upgrade pip && \
+    pip install poetry==1.8.2
+
 COPY pyproject.toml poetry.lock ./
-RUN pip install poetry
-RUN poetry config virtualenvs.create false
-RUN poetry install --without dev --no-root
+RUN poetry config virtualenvs.create false && \
+    poetry install --no-root --without dev
+
+COPY ./backend .
+
+FROM python:3.10-slim-bullseye
+
+WORKDIR /usr/src/app
+
+# Copy Python packages installed in the builder stage
+COPY --from=builder /usr/local /usr/local
+
+# Copy the application code
+COPY --from=builder /usr/src/app /usr/src/app
 
 ARG USERNAME=appuser
 ARG USER_UID=1000

@@ -21,10 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_URL = os.environ["BASE_URL"]
 SECRET_KEY = os.environ["SECRET_KEY"]
 DEBUG = int(os.environ["DEBUG"])
-ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(" ")
 CONTAINERED = os.environ.get("DB_HOST", "") != "localhost"
 ENABLE_LOGGING = int(os.environ.get("ENABLE_LOGGING", 0) == 1)
 
+ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(" ") or None
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(" ") or None
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -69,9 +71,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "backend.wsgi.application"
-# CSRF_TRUSTED_ORIGINS = [
-#     os.environ["BASE_URL"],
-# ]
 
 
 DATABASES = {
