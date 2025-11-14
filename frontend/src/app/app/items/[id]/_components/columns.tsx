@@ -63,6 +63,7 @@ export const getColumns = (
     },
   },
   {
+    id: 'remaining',
     accessorKey: 'quantity',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Stock remaining' />
@@ -135,6 +136,7 @@ export const getColumns = (
     },
   },
   {
+    id: 'salePrice',
     accessorKey: 'soldQuantity',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Sale Price' />
@@ -172,9 +174,6 @@ export const getColumns = (
       if (percentPaid < 1) {
         color = 'text-warning';
       }
-      if (percentPaid < 0.5) {
-        color = 'text-destructive';
-      }
       return (
         <PriceFieldContent className={color} value={row.original.amountPaid} />
       );
@@ -189,7 +188,10 @@ export const getColumns = (
       <DataTableColumnHeader column={column} title='Amount Due' />
     ),
     cell: ({ row }) => {
-      return <PriceFieldContent value={row.original.debt} />;
+      const cost = row.original.pricePerItem * row.original.quantity;
+      const due = Math.max(cost - row.original.amountPaid, 0);
+      const color = due > 0 ? 'text-warning' : 'text-muted-foreground';
+      return <PriceFieldContent className={color} value={due} />;
     },
     sortingFn: (rowA, rowB, columnId) => {
       return rowA.original.debt - rowB.original.debt;
