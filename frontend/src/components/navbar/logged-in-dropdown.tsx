@@ -50,7 +50,7 @@ export default function LoggedInDropdown() {
       <DropdownTrigger>
         <Button
           color={userButtonColor}
-          className='rounded-md p-2 font-semibold'
+          className='rounded-md border-accent p-2 font-semibold text-accent-foreground hover:bg-foreground/20'
           radius='sm'
           variant='bordered'
         >
@@ -113,14 +113,14 @@ function getDropdownItems(isAdmin: boolean | null, logout: () => void) {
     items.unshift(
       {
         children: <Link href={APP_MANAGE_LOCATIONS}>Manage Locations</Link>,
-        className: 'text-secondary-500',
+        className: 'text-accent',
         key: 'manage-locations',
         startContent: <Warehouse size={ICON_SM} />,
         'data-testid': 'navbar-dropdown-manage-locations',
       },
       {
         children: <Link href={APP_MANAGE_USERS}>Manage Users</Link>,
-        className: 'text-secondary-500',
+        className: 'text-accent',
         key: 'manage-users',
         startContent: <User size={ICON_SM} />,
         'data-testid': 'navbar-dropdown-manage-users',

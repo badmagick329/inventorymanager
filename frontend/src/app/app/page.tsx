@@ -5,7 +5,7 @@ import { Spinner } from '@/components';
 import { APP_DEMO_WORKFLOW, APP_LOGIN } from '@/consts/urls';
 import { useLocations } from '@/hooks';
 import { Location } from '@/types';
-import { Button, Divider, Link } from "@heroui/react";
+import { Button, Divider, Link } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 
 import LocationLink from './_components/location-link';
@@ -30,20 +30,9 @@ export default function Locations() {
   if (locations) {
     return (
       <>
-        <div className='flex w-full justify-center p-6 md:w-2/3 2xl:w-1/3'>
-          <Button
-            as={Link}
-            href={APP_DEMO_WORKFLOW}
-            variant='flat'
-            radius='sm'
-            color='default'
-          >
-            View Workflow Demo
-          </Button>
-        </div>
         <h1
           data-testid='home-locations-title'
-          className='mb-8 mt-4 text-2xl font-semibold'
+          className='mb-8 mt-12 text-2xl font-semibold'
         >
           Locations
         </h1>

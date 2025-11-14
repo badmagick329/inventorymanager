@@ -12,7 +12,7 @@ import {
 import { isOrderResponseArray } from '@/predicates';
 import { Location } from '@/types';
 import { preFetchVendors as preFetchAdditionalVendorDetails } from '@/utils/requests';
-import { Button, Link, Spacer } from "@heroui/react";
+import { Button, Link, Spacer } from '@heroui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -65,6 +65,7 @@ export default function Orders() {
       <Spacer y={4} />
       <div className='flex justify-center gap-8'>
         <Button
+          className='bg-foreground/10 hover:bg-foreground/20'
           data-testid='items-manage-vendors-button'
           as={Link}
           href={`${APP_MANAGE_VENDORS}/${locationId}`}
