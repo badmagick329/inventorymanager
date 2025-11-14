@@ -13,7 +13,7 @@ import {
   isSaleResponseArray,
   isVendorResponseArray,
 } from '@/predicates';
-import { Button, Link, Spacer } from "@heroui/react";
+import { Button, Link, Spacer } from '@heroui/react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import {
@@ -85,6 +85,7 @@ export default function Sales() {
       <Spacer y={2} />
       <div className='flex justify-center gap-4'>
         <Button
+          className='bg-foreground/10 hover:bg-foreground/20'
           data-testid='sales-back-to-items-button'
           as={Link}
           href={`${APP_ITEMS}/${locationId}`}

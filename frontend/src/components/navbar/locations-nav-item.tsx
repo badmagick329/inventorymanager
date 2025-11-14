@@ -10,7 +10,7 @@ export default function LocationsNavItem() {
       <Button
         as={Link}
         href={APP_LOCATIONS}
-        className='rounded-md border-foreground-500 p-2'
+        className='rounded-md border-foreground/80 p-2 hover:bg-foreground/20'
         variant='bordered'
         radius='sm'
       >

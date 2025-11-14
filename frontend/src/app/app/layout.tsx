@@ -9,7 +9,7 @@ export default function AppLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className='foreground flex w-full flex-col items-center'>
+    <div className='foreground flex min-h-screen w-full flex-col items-center'>
       <GlobalContextProvider>
         <Navbar />
         {children}

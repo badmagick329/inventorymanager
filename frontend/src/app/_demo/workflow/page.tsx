@@ -1,4 +1,4 @@
-import { Spacer } from "@heroui/react";
+import { Spacer } from '@heroui/react';
 
 import InstructionText from './_componenets/instruction-text';
 import VideoPlayer from './_componenets/video-player';
@@ -16,7 +16,7 @@ export default function AppDemo() {
       {videosAndText.map((data, idx) => {
         return (
           <div
-            className={`flex w-full max-w-[${WIDTH}px] flex-col items-center rounded-md bg-neutral-100 p-4 dark:bg-neutral-950`}
+            className={`flex w-full max-w-[${WIDTH}px] flex-col items-center rounded-md p-4`}
             key={data.video}
           >
             <Spacer y={2} />

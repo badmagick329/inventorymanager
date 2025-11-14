@@ -17,7 +17,7 @@ export default function VendorsInformationCard({
     return (
       <div className='flex w-full max-w-lg flex-col items-center gap-4'>
         <span className='text-xl font-bold'>Loading...</span>
-        <div className='flex w-[32rem] flex-col items-center justify-center divide-y-2 rounded-md bg-neutral-100 p-4 text-center dark:divide-neutral-400 dark:bg-neutral-800'></div>
+        <div className='flex w-[32rem] flex-col items-center justify-center divide-y-2 rounded-md p-4 text-center'></div>
       </div>
     );
   }
@@ -56,7 +56,7 @@ export default function VendorsInformationCard({
       >
         Amounts Due
       </span>
-      <div className='flex w-full flex-col items-center divide-y-2 rounded-md bg-neutral-100 p-4 text-center dark:divide-neutral-400 dark:bg-neutral-800'>
+      <div className='flex w-full flex-col items-center divide-y-2 rounded-md p-4 text-center'>
         {vendorsInDebt.map((vendor: VendorResponse) => (
           <CurrencyDisplay
             key={vendor.id}
