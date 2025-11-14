@@ -48,6 +48,7 @@ export type OrderResponse = {
   name: string;
   date: string | null;
   location: string;
+  locationId: number;
   pricePerItem: number;
   quantity: number;
   soldQuantity: number;

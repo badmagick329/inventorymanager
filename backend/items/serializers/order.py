@@ -73,9 +73,7 @@ class OrderSerializer(serializers.BaseSerializer):
         }
 
     def to_representation(self, instance):
-        date_repr = (
-            instance.date.strftime("%Y-%m-%d") if instance.date else None
-        )
+        date_repr = instance.date.strftime("%Y-%m-%d") if instance.date else None
         sales = instance.sales.filter(deleted=False)
         profit_per_item = sum([sale.profit_per_item() for sale in sales])
         total_profit = sum([sale.profit() for sale in sales])
@@ -90,6 +88,7 @@ class OrderSerializer(serializers.BaseSerializer):
             "name": instance.name,
             "date": date_repr,
             "location": instance.location.name,
+            "locationId": instance.location.id,
             "pricePerItem": instance.price_per_item,
             "quantity": instance.quantity,
             "soldQuantity": sold_quantity,
@@ -102,9 +101,7 @@ class OrderSerializer(serializers.BaseSerializer):
             "vendors": vendors,
             "created": instance.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "lastModifiedBy": instance.last_modified_by.username,
-            "lastModified": instance.last_modified.strftime(
-                "%Y-%m-%d %H:%M:%S"
-            ),
+            "lastModified": instance.last_modified.strftime("%Y-%m-%d %H:%M:%S"),
         }
 
 
@@ -133,9 +130,7 @@ class OrderHistorySerializer:
             self._last = self._history.last()
 
         for i in range(1, len(self._history)):
-            self._deltas.append(
-                HistoricalDelta(self._history[i], self._history[i - 1])
-            )
+            self._deltas.append(HistoricalDelta(self._history[i], self._history[i - 1]))
 
     @property
     def data(self):
@@ -144,14 +139,10 @@ class OrderHistorySerializer:
             serialized_deltas.append(OrderDeltaSerializer(delta).data)
         return {
             "first": (
-                HistoricalOrderSerializer(self._first).data
-                if self._first
-                else None
+                HistoricalOrderSerializer(self._first).data if self._first else None
             ),
             "last": (
-                HistoricalOrderSerializer(self._last).data
-                if self._last
-                else None
+                HistoricalOrderSerializer(self._last).data if self._last else None
             ),
             "deltas": serialized_deltas,
         }
@@ -204,9 +195,7 @@ class HistoricalOrderSerializer:
     @property
     def data(self):
         date_repr = (
-            self.instance.date.strftime("%Y-%m-%d")
-            if self.instance.date
-            else None
+            self.instance.date.strftime("%Y-%m-%d") if self.instance.date else None
         )
 
         return {
@@ -219,9 +208,7 @@ class HistoricalOrderSerializer:
             "deleted": self.instance.deleted,
             "created": self.instance.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "lastModifiedBy": self.instance.last_modified_by.username,
-            "lastModified": self.instance.last_modified.strftime(
-                "%Y-%m-%d %H:%M:%S"
-            ),
+            "lastModified": self.instance.last_modified.strftime("%Y-%m-%d %H:%M:%S"),
         }
 
 
@@ -239,9 +226,7 @@ class SaleHistorySerializer:
             self._last = self._history.last()
 
         for i in range(1, len(self._history)):
-            self._deltas.append(
-                HistoricalDelta(self._history[i], self._history[i - 1])
-            )
+            self._deltas.append(HistoricalDelta(self._history[i], self._history[i - 1]))
 
     @property
     def data(self):
@@ -250,15 +235,9 @@ class SaleHistorySerializer:
             serialized_deltas.append(SaleDeltaSerializer(delta).data)
         return {
             "first": (
-                HistoricalSaleSerializer(self._first).data
-                if self._first
-                else None
+                HistoricalSaleSerializer(self._first).data if self._first else None
             ),
-            "last": (
-                HistoricalSaleSerializer(self._last).data
-                if self._last
-                else None
-            ),
+            "last": (HistoricalSaleSerializer(self._last).data if self._last else None),
             "deltas": serialized_deltas,
         }
 
@@ -317,9 +296,7 @@ class HistoricalSaleSerializer:
     @property
     def data(self):
         date_repr = (
-            self.instance.date.strftime("%Y-%m-%d")
-            if self.instance.date
-            else None
+            self.instance.date.strftime("%Y-%m-%d") if self.instance.date else None
         )
         amount_paid = self.instance.instance.amount_paid()
 
@@ -333,9 +310,7 @@ class HistoricalSaleSerializer:
             "deleted": self.instance.deleted,
             "created": self.instance.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "lastModifiedBy": self.instance.last_modified_by.username,
-            "lastModified": self.instance.last_modified.strftime(
-                "%Y-%m-%d %H:%M:%S"
-            ),
+            "lastModified": self.instance.last_modified.strftime("%Y-%m-%d %H:%M:%S"),
         }
 
 

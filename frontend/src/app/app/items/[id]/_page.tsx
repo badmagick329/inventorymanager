@@ -16,12 +16,8 @@ import { Button, Link, Spacer } from '@heroui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
-import {
-  DataTable,
-  getColumns,
-  CreateOrderModal,
-  MoreInformation,
-} from './_components';
+
+import { CreateOrderModal, MoreInformation, OrdersTable } from './_components';
 
 export default function Orders() {
   const locationId = usePathname().split('/')[3];
@@ -99,7 +95,11 @@ export default function Orders() {
         </div>
       </div>
       <Spacer y={4} />
-      <DataTable columns={getColumns(deleteOrder)} data={orders} />
+      <OrdersTable
+        locationId={locationId}
+        orders={orders}
+        deleteOrder={deleteOrder}
+      />
     </div>
   );
 }

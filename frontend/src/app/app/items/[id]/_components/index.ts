@@ -1,3 +1,4 @@
+import { DataTableColumnHeader } from '@/app/app/items/[id]/_components/data-table-column-header';
 import ActionsContent from './actions-content';
 import CreateOrderForm from './create-order-form';
 import CreateOrderModal from './create-order-modal';
@@ -15,6 +16,10 @@ import OrdersTable from './orders-table';
 import OrdersTableContent from './orders-table-content';
 import StockInOutContent from './stock-in-out-content';
 import VendorsInformationCard from './vendors-information-card';
+import { getColumns } from '@/app/app/items/[id]/_components/columns';
+import { DataTablePagination } from '@/app/app/items/[id]/_components/data-table-pagination';
+import { DataTableViewOptions } from '@/app/app/items/[id]/_components/data-table-view-options';
+import { DataTable } from '@/app/app/items/[id]/_components/data-table';
 
 export {
   ActionsContent,
@@ -34,4 +39,9 @@ export {
   OrdersTable,
   StockInOutContent,
   VendorsInformationCard,
+  getColumns,
+  DataTableColumnHeader,
+  DataTablePagination,
+  DataTableViewOptions,
+  DataTable,
 };
