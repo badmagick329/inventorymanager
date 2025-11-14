@@ -1,24 +1,29 @@
 'use client';
 
+import { cn } from '@/lib/utils';
 import { formatCurrency, formatNumber } from '@/utils';
-import { Tooltip } from "@heroui/react";
 
 type PriceFieldContentProps = {
   value: number;
   quantity?: number;
   calculatedValue?: number;
+  className?: string;
 };
 
 export default function PriceFieldContent({
   value,
   quantity,
   calculatedValue,
+  className,
 }: PriceFieldContentProps) {
   return (
-    <div className='flex items-start gap-1'>
-      <Tooltip content={formatCurrency(value)} placement='top'>
-        <span className='text-sm sm:text-base'>{formatNumber(value)}</span>
-      </Tooltip>
+    <div className={cn('flex flex-col items-end gap-1', className)}>
+      <abbr
+        className='text-sm no-underline sm:text-base'
+        title={formatCurrency(value)}
+      >
+        {formatNumber(value)}
+      </abbr>
       <CalculatedValue
         value={value}
         quantity={quantity}
@@ -38,13 +43,12 @@ function CalculatedValue({
       return null;
     }
     return (
-      <>
-        <Tooltip content={formatCurrency(value / quantity)} placement='top'>
-          <span className='text-xs text-default-500'>
-            {formatNumber(value / quantity)}ea.
-          </span>
-        </Tooltip>
-      </>
+      <abbr
+        className='text-[0.5rem] text-foreground/60 no-underline sm:text-[0.75rem]'
+        title={formatCurrency(value / quantity)}
+      >
+        {formatNumber(value / quantity)}ea.
+      </abbr>
     );
   }
   if (calculatedValue !== undefined) {
@@ -52,13 +56,12 @@ function CalculatedValue({
       return null;
     }
     return (
-      <>
-        <Tooltip content={formatCurrency(calculatedValue)} placement='top'>
-          <span className='text-xs text-default-500'>
-            {formatNumber(calculatedValue)}ea.
-          </span>
-        </Tooltip>
-      </>
+      <abbr
+        className='text-[0.5rem] text-foreground/60 no-underline sm:text-[0.75rem]'
+        title={formatCurrency(calculatedValue)}
+      >
+        {formatNumber(calculatedValue)}ea.
+      </abbr>
     );
   }
 }
