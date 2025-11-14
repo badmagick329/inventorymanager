@@ -25,7 +25,6 @@ CONTAINERED = os.environ.get("DB_HOST", "") != "localhost"
 ENABLE_LOGGING = int(os.environ.get("ENABLE_LOGGING", 0) == 1)
 
 ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(" ") or None
-CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(" ") or None
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 INSTALLED_APPS = [
