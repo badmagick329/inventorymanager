@@ -6,16 +6,16 @@ export function formatNumber(num: number) {
     return num.toFixed(0);
   }
   if (abs < 1000000) {
-    return `${(num / 1000).toFixed(1)}K`;
+    return `${(num / 1000).toFixed(0)},${(abs % 1000).toFixed(0).padStart(3, '0')}`;
   }
   if (abs < 1000000000) {
-    return `${(num / 1000000).toFixed(1)}M`;
+    return `${(num / 1000000).toFixed(2)}M`;
   }
   if (abs < 1000000000000) {
-    return `${(num / 1000000000).toFixed(1)}B`;
+    return `${(num / 1000000000).toFixed(2)}B`;
   }
   if (abs < 1000000000000000) {
-    return `${(num / 1000000000000).toFixed(1)}T`;
+    return `${(num / 1000000000000).toFixed(2)}T`;
   }
   return num.toFixed(0);
 }
