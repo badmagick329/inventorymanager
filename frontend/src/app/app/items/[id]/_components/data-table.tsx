@@ -25,34 +25,70 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { DataTablePagination } from './data-table-pagination';
 import { DataTableViewOptions } from './data-table-view-options';
+import { useLocalStorage } from '@/hooks';
+
+type TableState = {
+  sorting: SortingState;
+  columnVisibility: VisibilityState;
+  pageSize: number;
+};
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  locationId: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  locationId,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [tableState, setTableState] = useLocalStorage<TableState>(
+    `items/${locationId}/tableState`,
+    { sorting: [], columnVisibility: {}, pageSize: 10 }
+  );
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
+    onSortingChange: (updater) => {
+      const newSorting =
+        typeof updater === 'function' ? updater(tableState.sorting) : updater;
+      setTableState({ ...tableState, sorting: newSorting });
+    },
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
+    onColumnVisibilityChange: (updater) => {
+      const newVisibility =
+        typeof updater === 'function'
+          ? updater(tableState.columnVisibility)
+          : updater;
+      setTableState({ ...tableState, columnVisibility: newVisibility });
+    },
+    onPaginationChange: (updater) => {
+      const currentPagination = {
+        pageIndex: table.getState().pagination?.pageIndex ?? 0,
+        pageSize: tableState.pageSize,
+      };
+      const newPagination =
+        typeof updater === 'function' ? updater(currentPagination) : updater;
+      if (newPagination.pageSize !== tableState.pageSize) {
+        setTableState({ ...tableState, pageSize: newPagination.pageSize });
+      }
+    },
     state: {
-      sorting,
+      sorting: tableState.sorting,
       columnFilters,
-      columnVisibility,
+      columnVisibility: tableState.columnVisibility,
+      pagination: {
+        pageIndex: 0,
+        pageSize: tableState.pageSize,
+      },
     },
   });
 
