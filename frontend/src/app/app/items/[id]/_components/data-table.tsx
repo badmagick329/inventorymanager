@@ -26,11 +26,14 @@ import { Input } from '@/components/ui/input';
 import { DataTablePagination } from './data-table-pagination';
 import { DataTableViewOptions } from './data-table-view-options';
 import { useLocalStorage } from '@/hooks';
+import { Button } from '@/components/ui/button';
+import { OrderResponse } from '@/types';
 
 type TableState = {
   sorting: SortingState;
   columnVisibility: VisibilityState;
   pageSize: number;
+  hideFullyPaid: boolean;
 };
 
 interface DataTableProps<TData, TValue> {
@@ -46,12 +49,22 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [tableState, setTableState] = useLocalStorage<TableState>(
     `items/${locationId}/tableState`,
-    { sorting: [], columnVisibility: {}, pageSize: 10 }
+    { sorting: [], columnVisibility: {}, pageSize: 10, hideFullyPaid: false }
   );
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
+  const filteredData = (
+    tableState.hideFullyPaid
+      ? (data as OrderResponse[]).filter((row) => {
+          const cost = row.pricePerItem * row.quantity;
+          const due = Math.max(cost - row.amountPaid, 0);
+          return due > 0;
+        })
+      : data
+  ) as TData[];
+
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -103,6 +116,19 @@ export function DataTable<TData, TValue>({
           }
           className='max-w-sm'
         />
+        <Button
+          variant='outline'
+          size='sm'
+          onClick={() =>
+            setTableState({
+              ...tableState,
+              hideFullyPaid: !tableState.hideFullyPaid,
+            })
+          }
+          className='ml-2'
+        >
+          {tableState.hideFullyPaid ? 'Show Fully Paid' : 'Hide Fully Paid'}
+        </Button>
         <DataTableViewOptions table={table} />
       </div>
       <div className='overflow-hidden rounded-md border'>
