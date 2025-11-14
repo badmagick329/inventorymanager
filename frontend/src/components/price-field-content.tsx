@@ -17,7 +17,7 @@ export default function PriceFieldContent({
   className,
 }: PriceFieldContentProps) {
   return (
-    <div className={cn('flex flex-col items-end gap-1', className)}>
+    <div className={cn('flex items-start gap-1', className)}>
       <abbr
         className='text-sm no-underline sm:text-base'
         title={formatCurrency(value)}

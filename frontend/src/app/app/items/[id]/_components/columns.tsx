@@ -42,7 +42,11 @@ export const getColumns = (
       <DataTableColumnHeader column={column} title='Stock total' />
     ),
     cell: ({ row }) => {
-      return <span>{row.original.quantity}</span>;
+      const color =
+        row.original.soldQuantity === row.original.quantity
+          ? 'text-muted-foreground'
+          : 'text-foreground';
+      return <span className={color}>{row.original.quantity}</span>;
     },
   },
   {
@@ -51,7 +55,11 @@ export const getColumns = (
       <DataTableColumnHeader column={column} title='Stock sold' />
     ),
     cell: ({ row }) => {
-      return <span>{row.original.soldQuantity}</span>;
+      const color =
+        row.original.soldQuantity === row.original.quantity
+          ? 'text-muted-foreground'
+          : 'text-foreground';
+      return <span className={color}>{row.original.soldQuantity}</span>;
     },
   },
   {
@@ -158,7 +166,18 @@ export const getColumns = (
       <DataTableColumnHeader column={column} title='Amount Paid' />
     ),
     cell: ({ row }) => {
-      return <PriceFieldContent value={row.original.amountPaid} />;
+      const cost = row.original.pricePerItem * row.original.quantity;
+      const percentPaid = row.original.amountPaid / cost;
+      let color = 'text-success';
+      if (percentPaid < 1) {
+        color = 'text-warning';
+      }
+      if (percentPaid < 0.5) {
+        color = 'text-destructive';
+      }
+      return (
+        <PriceFieldContent className={color} value={row.original.amountPaid} />
+      );
     },
     sortingFn: (rowA, rowB, columnId) => {
       return rowA.original.amountPaid - rowB.original.amountPaid;
