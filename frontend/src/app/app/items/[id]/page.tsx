@@ -99,7 +99,11 @@ export default function Orders() {
         </div>
       </div>
       <Spacer y={4} />
-      <DataTable columns={getColumns(deleteOrder)} data={orders} />
+      <DataTable
+        columns={getColumns(deleteOrder)}
+        data={orders}
+        locationId={locationId}
+      />
     </div>
   );
 }
