@@ -138,7 +138,7 @@ export function DataTable<TData, TValue>({
               pageIndex: 0, // Reset to first page when toggling filter
             })
           }
-          className='ml-2'
+          className='ml-2 hover:bg-foreground/20 focus:bg-foreground/20'
         >
           {tableState.hideFullyPaid ? 'Show Fully Paid' : 'Hide Fully Paid'}
         </Button>
