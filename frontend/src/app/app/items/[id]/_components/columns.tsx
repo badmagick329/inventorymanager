@@ -31,12 +31,38 @@ export const getColumns = (
     ),
   },
   {
+    id: 'purchase date',
     accessorKey: 'date',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Purchase Date' />
     ),
+    cell: ({ row }) => {
+      return (
+        <span>
+          {row.original.date
+            ? new Date(row.original.date).toLocaleDateString()
+            : ''}
+        </span>
+      );
+    },
+    sortingFn: (rowA, rowB, columnId) => {
+      if (!rowA.original.date && !rowB.original.date) {
+        return 0;
+      }
+      if (!rowA.original.date) {
+        return -1;
+      }
+      if (!rowB.original.date) {
+        return 1;
+      }
+      return (
+        new Date(rowA.original.date).getTime() -
+        new Date(rowB.original.date).getTime()
+      );
+    },
   },
   {
+    id: 'stock total',
     accessorKey: 'quantity',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Stock total' />
@@ -50,6 +76,7 @@ export const getColumns = (
     },
   },
   {
+    id: 'stock sold',
     accessorKey: 'soldQuantity',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Stock sold' />
@@ -63,7 +90,7 @@ export const getColumns = (
     },
   },
   {
-    id: 'remaining',
+    id: 'stock remaining',
     accessorKey: 'quantity',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Stock remaining' />
@@ -87,6 +114,7 @@ export const getColumns = (
     },
   },
   {
+    id: 'sold to',
     accessorKey: 'vendors',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Sold to' />
@@ -109,8 +137,10 @@ export const getColumns = (
       );
     },
     enableSorting: false,
+    enableHiding: true,
   },
   {
+    id: 'cost',
     accessorKey: 'pricePerItem',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Cost' />
@@ -136,7 +166,7 @@ export const getColumns = (
     },
   },
   {
-    id: 'salePrice',
+    id: 'sale price',
     accessorKey: 'soldQuantity',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Sale Price' />
@@ -163,6 +193,7 @@ export const getColumns = (
     },
   },
   {
+    id: 'amount paid',
     accessorKey: 'amountPaid',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Amount Paid' />
@@ -174,6 +205,9 @@ export const getColumns = (
       if (percentPaid < 1) {
         color = 'text-warning';
       }
+      if (percentPaid === 0) {
+        color = 'text-destructive';
+      }
       return (
         <PriceFieldContent className={color} value={row.original.amountPaid} />
       );
@@ -183,6 +217,7 @@ export const getColumns = (
     },
   },
   {
+    id: 'amount due',
     accessorKey: 'debt',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Amount Due' />
@@ -198,6 +233,7 @@ export const getColumns = (
     },
   },
   {
+    id: 'profit',
     accessorKey: 'profit',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Profit' />
@@ -224,12 +260,14 @@ export const getColumns = (
     },
   },
   {
+    id: 'last modified by',
     accessorKey: 'lastModifiedBy',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Last Modified By' />
     ),
   },
   {
+    id: 'last modified',
     accessorKey: 'lastModified',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Last Modified' />
