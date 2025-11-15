@@ -21,6 +21,8 @@ import { APP_ITEMS } from '@/consts/urls';
 import Link from 'next/link';
 import { CreateOrderForm } from '@/app/app/items/[id]/_components';
 
+const textSizeStyle = 'text-sm md:text-base';
+
 export const getColumns = (
   deleteOrder: DeleteOrder
 ): ColumnDef<OrderResponse>[] => [
@@ -29,6 +31,16 @@ export const getColumns = (
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Name' />
     ),
+    cell: ({ row }) => {
+      return (
+        <Link
+          href={`${APP_ITEMS}/${row.original.locationId}/${row.original.id}`}
+          className={`font-semibold hover:underline ${textSizeStyle}`}
+        >
+          {row.original.name}
+        </Link>
+      );
+    },
   },
   {
     id: 'purchase date',
@@ -38,7 +50,7 @@ export const getColumns = (
     ),
     cell: ({ row }) => {
       return (
-        <span>
+        <span className={textSizeStyle}>
           {row.original.date
             ? new Date(row.original.date).toLocaleDateString()
             : ''}
@@ -72,7 +84,11 @@ export const getColumns = (
         row.original.soldQuantity === row.original.quantity
           ? 'text-muted-foreground'
           : 'text-foreground';
-      return <span className={color}>{row.original.quantity}</span>;
+      return (
+        <span className={`${color} ${textSizeStyle}`}>
+          {row.original.quantity}
+        </span>
+      );
     },
   },
   {
@@ -86,7 +102,11 @@ export const getColumns = (
         row.original.soldQuantity === row.original.quantity
           ? 'text-muted-foreground'
           : 'text-foreground';
-      return <span className={color}>{row.original.soldQuantity}</span>;
+      return (
+        <span className={`${color} ${textSizeStyle}`}>
+          {row.original.soldQuantity}
+        </span>
+      );
     },
   },
   {
@@ -97,16 +117,16 @@ export const getColumns = (
     ),
     cell: ({ row }) => {
       const remaining = row.original.quantity - row.original.soldQuantity;
-      let remainingColor = 'text-foreground';
+      let color = 'text-foreground';
       if (remaining < 0) {
-        remainingColor = 'text-destructive';
+        color = 'text-destructive';
       }
       if (remaining === 0) {
-        remainingColor = 'text-muted-foreground';
+        color = 'text-muted-foreground';
       }
 
       return (
-        <span className={remainingColor}>
+        <span className={`${color} ${textSizeStyle}`}>
           {remaining}
           {remaining < 0 && ' !!'}
         </span>
@@ -131,7 +151,10 @@ export const getColumns = (
           ? `${uniqueVendors.slice(0, 2).join(', ')}...`
           : uniqueVendors.join(', ');
       return (
-        <abbr className='no-underline' title={`${uniqueVendors.join(', ')}`}>
+        <abbr
+          className={`no-underline ${textSizeStyle}`}
+          title={`${uniqueVendors.join(', ')}`}
+        >
           {vendors}
         </abbr>
       );
@@ -150,6 +173,7 @@ export const getColumns = (
       const pricePerItem = row.original.pricePerItem;
       return (
         <PriceFieldContent
+          className={textSizeStyle}
           value={pricePerItem * quantity}
           quantity={quantity}
         />
@@ -177,6 +201,7 @@ export const getColumns = (
 
       return (
         <PriceFieldContent
+          className={textSizeStyle}
           value={pricePerItem * quantity}
           quantity={quantity}
         />
@@ -209,7 +234,10 @@ export const getColumns = (
         color = 'text-destructive';
       }
       return (
-        <PriceFieldContent className={color} value={row.original.amountPaid} />
+        <PriceFieldContent
+          className={`${color} ${textSizeStyle}`}
+          value={row.original.amountPaid}
+        />
       );
     },
     sortingFn: (rowA, rowB, columnId) => {
@@ -226,7 +254,12 @@ export const getColumns = (
       const cost = row.original.pricePerItem * row.original.quantity;
       const due = Math.max(cost - row.original.amountPaid, 0);
       const color = due > 0 ? 'text-warning' : 'text-muted-foreground';
-      return <PriceFieldContent className={color} value={due} />;
+      return (
+        <PriceFieldContent
+          className={`${color} ${textSizeStyle}`}
+          value={due}
+        />
+      );
     },
     sortingFn: (rowA, rowB, columnId) => {
       const costA = rowA.original.pricePerItem * rowA.original.quantity;
@@ -243,17 +276,17 @@ export const getColumns = (
       <DataTableColumnHeader column={column} title='Profit' />
     ),
     cell: ({ row }) => {
-      let profitColor = 'text-foreground';
+      let color = 'text-foreground';
       if (row.original.profit < 0) {
-        profitColor = 'text-destructive';
+        color = 'text-destructive';
       }
       if (row.original.profit > 0) {
-        profitColor = 'text-success';
+        color = 'text-success';
       }
 
       return (
         <PriceFieldContent
-          className={profitColor}
+          className={`${color} ${textSizeStyle}`}
           value={row.original.profit}
           quantity={row.original.quantity}
         />
@@ -269,6 +302,11 @@ export const getColumns = (
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Last Modified By' />
     ),
+    cell: ({ row }) => {
+      return (
+        <span className={textSizeStyle}>{row.original.lastModifiedBy}</span>
+      );
+    },
   },
   {
     id: 'last modified',
@@ -278,7 +316,9 @@ export const getColumns = (
     ),
     cell: ({ row }) => {
       return (
-        <span>{new Date(row.original.lastModified).toLocaleString()}</span>
+        <span className={textSizeStyle}>
+          {new Date(row.original.lastModified).toLocaleString()}
+        </span>
       );
     },
     sortingFn: (rowA, rowB, columnId) => {

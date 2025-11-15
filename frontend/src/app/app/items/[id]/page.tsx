@@ -66,7 +66,7 @@ export default function Orders() {
         <MoreInformation detailsHidden={detailsHidden} location={location} />
       </div>
       <Spacer y={4} />
-      <div className='flex justify-center gap-8'>
+      <div className='flex flex-col items-center justify-center gap-8 sm:flex-row'>
         <Button
           className='bg-foreground/10 hover:bg-foreground/20'
           data-testid='items-manage-vendors-button'
