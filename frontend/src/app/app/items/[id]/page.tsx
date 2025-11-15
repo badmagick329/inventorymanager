@@ -67,18 +67,7 @@ export default function Orders() {
       </div>
       <Spacer y={4} />
       <div className='flex flex-col items-center justify-center gap-8 sm:flex-row'>
-        <Button
-          className='bg-foreground/10 hover:bg-foreground/20'
-          data-testid='items-manage-vendors-button'
-          as={Link}
-          href={`${APP_MANAGE_VENDORS}/${locationId}`}
-          variant='flat'
-          color='default'
-          radius='sm'
-        >
-          Manage Vendors
-        </Button>
-        <div className='flex gap-2'>
+        <div className='flex w-full justify-between gap-2 md:order-2'>
           <Button
             data-testid='items-show-more-button'
             variant='ghost'
@@ -97,6 +86,17 @@ export default function Orders() {
           </Button>
           <CreateOrderModal locationId={locationId} />
         </div>
+        <Button
+          className='order-1 self-start bg-foreground/10 hover:bg-foreground/20 md:order-1'
+          data-testid='items-manage-vendors-button'
+          as={Link}
+          href={`${APP_MANAGE_VENDORS}/${locationId}`}
+          variant='flat'
+          color='default'
+          radius='sm'
+        >
+          Vendors
+        </Button>
       </div>
       <Spacer y={4} />
       <DataTable
