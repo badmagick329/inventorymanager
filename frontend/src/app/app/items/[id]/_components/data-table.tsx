@@ -21,7 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { DataTablePagination } from './data-table-pagination';
 import { DataTableViewOptions } from './data-table-view-options';
@@ -33,6 +33,7 @@ type TableState = {
   sorting: SortingState;
   columnVisibility: VisibilityState;
   pageSize: number;
+  pageIndex: number;
   hideFullyPaid: boolean;
 };
 
@@ -49,19 +50,28 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [tableState, setTableState] = useLocalStorage<TableState>(
     `items/${locationId}/tableState`,
-    { sorting: [], columnVisibility: {}, pageSize: 10, hideFullyPaid: false }
+    {
+      sorting: [],
+      columnVisibility: {},
+      pageSize: 10,
+      pageIndex: 0,
+      hideFullyPaid: false,
+    }
   );
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-  const filteredData = (
-    tableState.hideFullyPaid
-      ? (data as OrderResponse[]).filter((row) => {
-          const cost = row.pricePerItem * row.quantity;
-          const due = Math.max(cost - row.amountPaid, 0);
-          return due > 0;
-        })
-      : data
-  ) as TData[];
+  // Memoizing filtered data to prevent render loop
+  const filteredData = useMemo(
+    () =>
+      (tableState.hideFullyPaid
+        ? (data as OrderResponse[]).filter((row) => {
+            const cost = row.pricePerItem * row.quantity;
+            const due = Math.max(cost - row.amountPaid, 0);
+            return due > 0;
+          })
+        : data) as TData[],
+    [data, tableState.hideFullyPaid]
+  );
 
   const table = useReactTable({
     data: filteredData,
@@ -85,21 +95,23 @@ export function DataTable<TData, TValue>({
     },
     onPaginationChange: (updater) => {
       const currentPagination = {
-        pageIndex: table.getState().pagination?.pageIndex ?? 0,
+        pageIndex: tableState.pageIndex,
         pageSize: tableState.pageSize,
       };
       const newPagination =
         typeof updater === 'function' ? updater(currentPagination) : updater;
-      if (newPagination.pageSize !== tableState.pageSize) {
-        setTableState({ ...tableState, pageSize: newPagination.pageSize });
-      }
+      setTableState({
+        ...tableState,
+        pageSize: newPagination.pageSize,
+        pageIndex: newPagination.pageIndex,
+      });
     },
     state: {
       sorting: tableState.sorting,
       columnFilters,
       columnVisibility: tableState.columnVisibility,
       pagination: {
-        pageIndex: 0,
+        pageIndex: tableState.pageIndex,
         pageSize: tableState.pageSize,
       },
     },
@@ -123,6 +135,7 @@ export function DataTable<TData, TValue>({
             setTableState({
               ...tableState,
               hideFullyPaid: !tableState.hideFullyPaid,
+              pageIndex: 0, // Reset to first page when toggling filter
             })
           }
           className='ml-2'
