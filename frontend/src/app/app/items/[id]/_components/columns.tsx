@@ -229,7 +229,11 @@ export const getColumns = (
       return <PriceFieldContent className={color} value={due} />;
     },
     sortingFn: (rowA, rowB, columnId) => {
-      return rowA.original.debt - rowB.original.debt;
+      const costA = rowA.original.pricePerItem * rowA.original.quantity;
+      const dueA = Math.max(costA - rowA.original.amountPaid, 0);
+      const costB = rowB.original.pricePerItem * rowB.original.quantity;
+      const dueB = Math.max(costB - rowB.original.amountPaid, 0);
+      return dueA - dueB;
     },
   },
   {
