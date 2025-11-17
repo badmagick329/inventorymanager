@@ -28,7 +28,7 @@ function createLoginResponse(response: AxiosResponse<any, any>) {
     path: '/',
     httpOnly: true,
     maxAge,
-    sameSite: true,
+    sameSite: 'lax',
   });
   return new NextResponse(JSON.stringify({}), {
     status: 200,
