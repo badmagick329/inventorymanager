@@ -25,6 +25,9 @@ export async function GET(
     }
     return new NextResponse(JSON.stringify(data), {
       status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
   } catch (error) {
     return createErrorResponse(error);
