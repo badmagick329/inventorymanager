@@ -17,6 +17,9 @@ export async function GET(req: Request) {
     await axios.get(url, { headers });
     return new NextResponse(JSON.stringify({}), {
       status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
   } catch (error) {
     return createErrorResponse(error);
