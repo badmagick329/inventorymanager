@@ -51,6 +51,9 @@ export async function PATCH(
     );
     return new NextResponse(JSON.stringify(response.data), {
       status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
   } catch (error) {
     return createErrorResponse(error);

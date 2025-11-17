@@ -34,6 +34,7 @@ function createLoginResponse(response: AxiosResponse<any, any>) {
     status: 200,
     headers: {
       'Set-Cookie': authCookieSerialized,
+      'Content-Type': 'application/json',
     },
   });
 }

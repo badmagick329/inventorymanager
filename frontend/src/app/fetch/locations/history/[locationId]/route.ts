@@ -20,6 +20,9 @@ export async function GET(
     const data = response.data;
     return new NextResponse(JSON.stringify(data), {
       status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
   } catch (error) {
     return createErrorResponse(error);

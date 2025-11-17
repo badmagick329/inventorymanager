@@ -25,6 +25,9 @@ export async function GET(
     }
     return new NextResponse(JSON.stringify(data), {
       status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
   } catch (error) {
     return createErrorResponse(error);
@@ -50,6 +53,9 @@ export async function POST(
     const response = await axios.post(url, body, { headers });
     return new NextResponse(JSON.stringify(response.data), {
       status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
   } catch (error) {
     return createErrorResponse(error);

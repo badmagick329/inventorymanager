@@ -48,11 +48,17 @@ export async function PATCH(
     });
     return new NextResponse(JSON.stringify(response.data), {
       status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return new NextResponse(JSON.stringify(error.response?.data), {
         status: error.response?.status,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     }
     return createErrorResponse(error);
