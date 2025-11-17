@@ -27,7 +27,7 @@ export default function useDeleteSale() {
         });
       }
       queryClient.invalidateQueries({
-        queryKey: ['orders', locationId, orderId],
+        queryKey: ['orders', locationId],
       });
     },
     onError: (error, mutationVars) => {
@@ -35,7 +35,7 @@ export default function useDeleteSale() {
       const { locationId, orderId } = mutationVars;
       queryClient.invalidateQueries({ queryKey: ['sales', orderId] });
       queryClient.invalidateQueries({
-        queryKey: ['orders', locationId, orderId],
+        queryKey: ['orders', locationId],
       });
     },
   });
