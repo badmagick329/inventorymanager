@@ -22,6 +22,7 @@ export async function GET(req: Request) {
   }
   const headers = { Authorization };
   try {
+    const response = await axios.get(url.toString(), { headers });
     return new NextResponse(JSON.stringify(response.data), {
       status: 200,
       headers: {

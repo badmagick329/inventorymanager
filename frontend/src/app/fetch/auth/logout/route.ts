@@ -21,6 +21,7 @@ export async function POST(req: Request) {
       maxAge: 0,
       sameSite: true,
     }),
+    'Content-Type': 'application/json',
   };
   try {
     const response = await axios.post(

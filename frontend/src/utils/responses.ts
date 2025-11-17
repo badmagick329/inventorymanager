@@ -44,6 +44,9 @@ export function createAuthHeader(): {
     return {
       ErrorResponse: new NextResponse(JSON.stringify({ message: 'no token' }), {
         status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }),
     };
   }
