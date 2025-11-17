@@ -42,6 +42,7 @@ export function DataTableViewOptions<TData>({
                 className='capitalize hover:bg-foreground/20 focus:bg-foreground/20'
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                onSelect={(e) => e.preventDefault()}
               >
                 {column.id}
               </DropdownMenuCheckboxItem>
