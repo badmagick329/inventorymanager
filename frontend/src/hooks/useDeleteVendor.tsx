@@ -1,4 +1,5 @@
 import { NEXT_VENDORS } from '@/consts/urls';
+import { queryKeys } from '@/consts/queryKeys';
 import { isVendorResponseArray } from '@/predicates';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -10,28 +11,42 @@ export default function useDeleteVendor() {
     retry: false,
     onSettled: () => {},
     onSuccess: (_, mutationVars) => {
-      const { vendorId } = mutationVars;
-      const previousData = queryClient.getQueryData(['vendors']);
-      queryClient.invalidateQueries({ queryKey: ['sales'] });
-      queryClient.invalidateQueries({ queryKey: ['items'] });
+      const { vendorId, locationId } = mutationVars;
+      if (!locationId) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.vendorsRoot });
+        return;
+      }
+      const previousData = queryClient.getQueryData(
+        queryKeys.vendors(locationId)
+      );
+      queryClient.invalidateQueries({ queryKey: queryKeys.salesRoot });
       if (!isVendorResponseArray(previousData)) {
-        queryClient.invalidateQueries({ queryKey: ['vendors'] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.vendorsRoot });
         return;
       }
       queryClient.setQueryData(
-        ['vendors'],
+        queryKeys.vendors(locationId),
         previousData.filter((vendor) => vendor.id !== vendorId)
       );
-      queryClient.invalidateQueries({ queryKey: ['vendors'], exact: true });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.vendors(locationId),
+        exact: true,
+      });
     },
     onError: (error) => {
       console.error(`error during delete vendor`, error);
-      queryClient.invalidateQueries({ queryKey: ['vendors'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.vendorsRoot });
     },
   });
   return mutation;
 }
 
-async function deleteVendor({ vendorId }: { vendorId: number }) {
+async function deleteVendor({
+  vendorId,
+  locationId,
+}: {
+  vendorId: number;
+  locationId?: string;
+}) {
   return await axios.delete(`${NEXT_VENDORS}/${vendorId}`);
 }

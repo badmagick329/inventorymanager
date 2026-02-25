@@ -1,4 +1,5 @@
 import { NEXT_LOCATIONS } from '@/consts/urls';
+import { queryKeys } from '@/consts/queryKeys';
 import { isLocation } from '@/predicates';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -11,11 +12,19 @@ export default function useCreateLocation() {
     onSettled: () => {},
     onSuccess: (data) => {
       if (!isLocation(data)) {
-        queryClient.invalidateQueries({ queryKey: ['locations'] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.locations });
         return;
       }
-      queryClient.setQueryData(['locations', data.id], data);
-      queryClient.invalidateQueries({ queryKey: ['locations'], exact: true });
+      queryClient.setQueryData(queryKeys.locations, (current: unknown) => {
+        if (!Array.isArray(current)) {
+          return current;
+        }
+        return [...current, data];
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.locations,
+        exact: true,
+      });
     },
     onError: (error) => {
       console.error(`error during update/create location. ${error}`);

@@ -1,4 +1,5 @@
 import { NEXT_SALE_DETAIL } from '@/consts/urls';
+import { queryKeys } from '@/consts/queryKeys';
 import { isSaleResponseArray } from '@/predicates';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -11,31 +12,35 @@ export default function useDeleteSale() {
     onSettled: () => {},
     onSuccess: (_, mutationVars) => {
       const { locationId, orderId } = mutationVars;
-      queryClient.invalidateQueries({ queryKey: ['vendors', locationId] });
-      queryClient.invalidateQueries({ queryKey: ['order-vendors', orderId] });
-      const previousData = queryClient.getQueryData(['sales', orderId]);
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.vendors(locationId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.orderVendors(orderId),
+      });
+      const previousData = queryClient.getQueryData(queryKeys.sales(orderId));
       if (!isSaleResponseArray(previousData)) {
-        queryClient.invalidateQueries({ queryKey: ['sales', orderId] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.sales(orderId) });
       } else {
         queryClient.setQueryData(
-          ['sales', orderId],
+          queryKeys.sales(orderId),
           previousData.filter((sale) => sale.id !== mutationVars.saleId)
         );
         queryClient.invalidateQueries({
-          queryKey: ['sales', orderId],
+          queryKey: queryKeys.sales(orderId),
           exact: true,
         });
       }
       queryClient.invalidateQueries({
-        queryKey: ['orders', locationId],
+        queryKey: queryKeys.orders(locationId),
       });
     },
     onError: (error, mutationVars) => {
       console.error(`error during delete sale. ${error}`);
       const { locationId, orderId } = mutationVars;
-      queryClient.invalidateQueries({ queryKey: ['sales', orderId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.sales(orderId) });
       queryClient.invalidateQueries({
-        queryKey: ['orders', locationId],
+        queryKey: queryKeys.orders(locationId),
       });
     },
   });

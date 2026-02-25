@@ -1,11 +1,12 @@
 import { SHORT_STALE_TIME } from '@/consts';
+import { queryKeys } from '@/consts/queryKeys';
 import { NEXT_VENDORS } from '@/consts/urls';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 export default function useVendors(locationId: string) {
   const query = useQuery({
-    queryKey: ['vendors', locationId],
+    queryKey: queryKeys.vendors(locationId),
     queryFn: async () => {
       const { data } = await axios.get(
         `${NEXT_VENDORS}?location_id=${locationId}`

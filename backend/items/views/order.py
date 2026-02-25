@@ -1,6 +1,10 @@
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from items.models import ItemLocation, Order
+from items.views.helpers import (
+    forbidden_if_location_invisible,
+    forbidden_if_order_invisible,
+)
 from items.serializers.order import OrderSerializer
 from rest_framework import permissions
 from rest_framework.request import Request
@@ -16,8 +20,8 @@ class OrderDetail(APIView):
         user = request.user
         assert isinstance(user, UserAccount)
         order = get_object_or_404(Order, id=order_id, deleted=False)
-        if not order.is_visible_to(user):
-            return APIResponses.forbidden_order()
+        if forbidden_response := forbidden_if_order_invisible(order, user):
+            return forbidden_response
 
         serializer = OrderSerializer(order)
         return APIResponses.ok(serializer.data)
@@ -26,8 +30,8 @@ class OrderDetail(APIView):
         user = request.user
         assert isinstance(user, UserAccount)
         order = get_object_or_404(Order, id=order_id, deleted=False)
-        if not order.is_visible_to(user):
-            return APIResponses.forbidden_order()
+        if forbidden_response := forbidden_if_order_invisible(order, user):
+            return forbidden_response
         initial_data = {
             **request.data,
             "user": user,
@@ -41,8 +45,8 @@ class OrderDetail(APIView):
         user = request.user
         assert isinstance(user, UserAccount)
         order = get_object_or_404(Order, id=order_id, deleted=False)
-        if not order.is_visible_to(user):
-            return APIResponses.forbidden_order()
+        if forbidden_response := forbidden_if_order_invisible(order, user):
+            return forbidden_response
         order.mark_as_deleted(user)
         return APIResponses.deleted()
 
@@ -54,8 +58,10 @@ class OrderList(APIView):
         user = request.user
         assert isinstance(user, UserAccount)
         location = get_object_or_404(ItemLocation, id=location_id)
-        if not location.is_visible_to(user):
-            return APIResponses.forbidden_location()
+        if forbidden_response := forbidden_if_location_invisible(
+            location, user
+        ):
+            return forbidden_response
         orders = OrderList.filter_orders_for(user, location)
         serializer = OrderSerializer(orders, many=True)
         return APIResponses.ok(serializer.data)
@@ -65,8 +71,10 @@ class OrderList(APIView):
         assert isinstance(user, UserAccount)
 
         location = get_object_or_404(ItemLocation, id=location_id)
-        if not location.is_visible_to(user):
-            return APIResponses.forbidden_location()
+        if forbidden_response := forbidden_if_location_invisible(
+            location, user
+        ):
+            return forbidden_response
 
         initial_data = {
             **request.data,

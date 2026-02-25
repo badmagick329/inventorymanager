@@ -1,4 +1,5 @@
 import { NEXT_VENDORS } from '@/consts/urls';
+import { queryKeys } from '@/consts/queryKeys';
 import { isVendorResponse } from '@/predicates';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -10,16 +11,23 @@ export default function useCreateVendor() {
     retry: false,
     onSettled: () => {},
     onSuccess: (data, mutationVars) => {
-      queryClient.invalidateQueries({ queryKey: ['sales'] });
-      queryClient.invalidateQueries({ queryKey: ['items'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.salesRoot });
       if (!isVendorResponse(data)) {
-        queryClient.invalidateQueries({ queryKey: ['vendors'] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.vendorsRoot });
         return;
       }
       const { locationId } = mutationVars;
-      queryClient.setQueryData(['vendors', locationId, data.id], data);
+      queryClient.setQueryData(
+        queryKeys.vendors(locationId),
+        (current: unknown) => {
+          if (!Array.isArray(current)) {
+            return current;
+          }
+          return [...current, data];
+        }
+      );
       queryClient.invalidateQueries({
-        queryKey: ['vendors', locationId],
+        queryKey: queryKeys.vendors(locationId),
         exact: true,
       });
     },

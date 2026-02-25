@@ -1,7 +1,11 @@
 import { API_ORDER_DETAIL } from '@/consts/urls';
-import { createAuthHeader, createErrorResponse } from '@/utils/responses';
+import {
+  emptyResponse,
+  getAuthHeaders,
+  handleRouteError,
+  jsonResponse,
+} from '@/utils/fetch-route';
 import axios from 'axios';
-import { NextResponse } from 'next/server';
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -10,24 +14,18 @@ export async function PATCH(
   { params }: { params: { orderId: string } }
 ) {
   const url = `${BASE_URL}${API_ORDER_DETAIL}`;
-  const { Authorization, ErrorResponse } = createAuthHeader();
-  if (ErrorResponse) {
-    return ErrorResponse;
+  const { headers, errorResponse } = getAuthHeaders();
+  if (errorResponse) {
+    return errorResponse;
   }
-  const headers = { Authorization };
   try {
     const body = await req.json();
     const response = await axios.patch(`${url}/${params.orderId}`, body, {
       headers,
     });
-    return new NextResponse(JSON.stringify(response.data), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    return jsonResponse(response.data, 200);
   } catch (error) {
-    return createErrorResponse(error);
+    return handleRouteError(error);
   }
 }
 
@@ -36,18 +34,15 @@ export async function DELETE(
   { params }: { params: { orderId: string } }
 ) {
   const url = `${BASE_URL}${API_ORDER_DETAIL}`;
-  const { Authorization, ErrorResponse } = createAuthHeader();
-  if (ErrorResponse) {
-    return ErrorResponse;
+  const { headers, errorResponse } = getAuthHeaders();
+  if (errorResponse) {
+    return errorResponse;
   }
-  const headers = { Authorization };
   try {
-    const response = await axios.delete(`${url}/${params.orderId}`, {
-      headers,
-    });
-    return new NextResponse(null, { status: 204 });
+    await axios.delete(`${url}/${params.orderId}`, { headers });
+    return emptyResponse(204);
   } catch (error) {
-    return createErrorResponse(error);
+    return handleRouteError(error);
   }
 }
 
@@ -56,21 +51,15 @@ export async function GET(
   { params }: { params: { orderId: string } }
 ) {
   const url = `${BASE_URL}${API_ORDER_DETAIL}/${params.orderId}`;
-  const { Authorization, ErrorResponse } = createAuthHeader();
-  if (ErrorResponse) {
-    return ErrorResponse;
+  const { headers, errorResponse } = getAuthHeaders();
+  if (errorResponse) {
+    return errorResponse;
   }
-  const headers = { Authorization };
   try {
     const response = await axios.get(url, { headers });
     const data = response.data;
-    return new NextResponse(JSON.stringify(data), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    return jsonResponse(data, 200);
   } catch (error) {
-    return createErrorResponse(error);
+    return handleRouteError(error);
   }
 }

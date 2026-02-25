@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from items.models import Order, Sale
 from items.serializers.sale import SaleSerializer
+from items.views.helpers import forbidden_if_order_invisible
 from rest_framework import permissions
 from rest_framework.request import Request
 from rest_framework.views import APIView
@@ -16,8 +17,10 @@ class SaleDetail(APIView):
         user = request.user
         assert isinstance(user, UserAccount)
         sale = get_object_or_404(Sale, id=sale_id, deleted=False)
-        if not sale.order.is_visible_to(user):
-            return APIResponses.forbidden_order()
+        if forbidden_response := forbidden_if_order_invisible(
+            sale.order, user
+        ):
+            return forbidden_response
 
         serializer = SaleSerializer(sale)
         return APIResponses.ok(serializer.data)
@@ -26,8 +29,10 @@ class SaleDetail(APIView):
         user = request.user
         assert isinstance(user, UserAccount)
         sale = get_object_or_404(Sale, id=sale_id, deleted=False)
-        if not sale.order.is_visible_to(user):
-            return APIResponses.forbidden_order()
+        if forbidden_response := forbidden_if_order_invisible(
+            sale.order, user
+        ):
+            return forbidden_response
         initial_data = {
             **request.data,
             "user": user,
@@ -44,8 +49,10 @@ class SaleDetail(APIView):
         user = request.user
         assert isinstance(user, UserAccount)
         sale = get_object_or_404(Sale, id=sale_id, deleted=False)
-        if not sale.order.is_visible_to(user):
-            return APIResponses.forbidden_order()
+        if forbidden_response := forbidden_if_order_invisible(
+            sale.order, user
+        ):
+            return forbidden_response
         sale.mark_as_deleted(user)
         return APIResponses.deleted()
 
@@ -57,8 +64,10 @@ class SaleList(APIView):
         user = request.user
         assert isinstance(user, UserAccount)
         order = get_object_or_404(Order, id=order_id, deleted=False)
-        if not order.is_visible_to(user):
-            return APIResponses.forbidden_location()
+        if forbidden_response := forbidden_if_order_invisible(
+            order, user, use_location_message=True
+        ):
+            return forbidden_response
         sales = Sale.objects.filter(order=order, deleted=False)
         serializer = SaleSerializer(sales, many=True)
         return APIResponses.ok(serializer.data)
@@ -68,8 +77,8 @@ class SaleList(APIView):
         assert isinstance(user, UserAccount)
 
         order = get_object_or_404(Order, id=order_id)
-        if not order.is_visible_to(user):
-            return APIResponses.forbidden_order()
+        if forbidden_response := forbidden_if_order_invisible(order, user):
+            return forbidden_response
 
         initial_data = {
             **request.data,
