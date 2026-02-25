@@ -19,7 +19,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   CreateSaleModal,
   OrderCard,
-  SalesTable,
+  SalesTanStackTable,
   VendorsCard,
 } from './_components';
 
@@ -102,7 +102,7 @@ export default function Sales() {
         />
       </div>
       <Spacer y={4} />
-      <SalesTable
+      <SalesTanStackTable
         locationId={locationId}
         orderId={orderId}
         sales={sales}

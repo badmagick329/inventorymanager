@@ -1,4 +1,3 @@
-import { DataTableColumnHeader } from '@/app/app/items/[id]/_components/data-table-column-header';
 import ActionsContent from './actions-content';
 import CreateOrderForm from './create-order-form';
 import CreateOrderModal from './create-order-modal';
@@ -12,14 +11,9 @@ import OrderDateInput from './order-date-input';
 import OrderNameInput from './order-name-input';
 import OrderQuantityInput from './order-quantity-input';
 import OrderSalePriceInput from './order-sale-price-input';
-import OrdersTable from './orders-table';
-import OrdersTableContent from './orders-table-content';
+import { OrdersTanStackTable } from './orders/OrdersTanStackTable';
 import StockInOutContent from './stock-in-out-content';
 import VendorsInformationCard from './vendors-information-card';
-import { getColumns } from '@/app/app/items/[id]/_components/columns';
-import { DataTablePagination } from '@/app/app/items/[id]/_components/data-table-pagination';
-import { DataTableViewOptions } from '@/app/app/items/[id]/_components/data-table-view-options';
-import { DataTable } from '@/app/app/items/[id]/_components/data-table';
 
 export {
   ActionsContent,
@@ -35,13 +29,7 @@ export {
   OrderNameInput,
   OrderQuantityInput,
   OrderSalePriceInput,
-  OrdersTableContent,
-  OrdersTable,
+  OrdersTanStackTable,
   StockInOutContent,
   VendorsInformationCard,
-  getColumns,
-  DataTableColumnHeader,
-  DataTablePagination,
-  DataTableViewOptions,
-  DataTable,
 };
