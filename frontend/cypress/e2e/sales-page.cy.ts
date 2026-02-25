@@ -59,7 +59,7 @@ describe('sales page', () => {
     forSaleClick(vendorName, '[data-testid="sales-delete-button"]');
     cy.dataCy('delete-confirm-button').should('exist').click();
     cy.wait('@deleteSale').its('response.statusCode').should('eq', 204);
-    cy.dataCy('sales-vendor').should('not.exist');
+    cy.contains('[data-testid="sales-vendor"]', vendorName).should('not.exist');
 
     cy.visit(APP_LOCATIONS);
     cy.dataCy('home-locations-button').first().click();

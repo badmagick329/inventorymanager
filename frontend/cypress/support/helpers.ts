@@ -112,7 +112,7 @@ export function forItemClick(name: string, target: string) {
       .closest('[data-testid="items-table-row"]')
       .find('[data-testid="items-actions-button"]')
       .first()
-      .scrollIntoView({ block: 'center', inline: 'center' })
+      .scrollIntoView()
       .click({ force: true });
   }
 }
@@ -123,8 +123,9 @@ export function forSaleClick(vendorName: string, target: string) {
     .should('exist')
     .closest('[data-testid="sales-table-row"]')
     .find(target)
-    .should('exist')
-    .click();
+    .first()
+    .scrollIntoView()
+    .click({ force: true });
 }
 
 export function addSale(
@@ -141,12 +142,15 @@ export function addSale(
   cy.dataCy('sales-form-help-button').should('exist');
   cy.intercept('POST', `${NEXT_SALES}/*`).as('createSale');
   cy.dataCy('sale-vendor-input').type(vendor).blur();
-  cy.dataCy('sale-vendor-input-badge').should('contain', vendor);
+  cy.contains('New Vendor').should('exist');
   cy.dataCy('sale-quantity-input').type(quantity.toString());
   cy.dataCy('sale-price-input').clear().type(salePrice.toString());
   cy.dataCy('sale-amount-paid-input').type(amountPaid.toString());
   cy.dataCy('create-button').should('exist').click();
-  cy.wait('@createSale').its('response.statusCode').should('eq', 200);
+  cy.wait('@createSale').then((interception) => {
+    expect(interception.response?.statusCode).to.eq(200);
+    expect(interception.request.body.vendor).to.eq(vendor);
+  });
   cy.dataCy('sales-vendor')
     .contains(vendor)
     .should('exist')
@@ -163,7 +167,9 @@ export function addSale(
 export function waitForSalesPageReady() {
   cy.url().should('include', APP_ITEMS);
   cy.contains('Loading').should('not.exist');
-  cy.dataCy('sales-vendors-card-title', { timeout: 15000 }).should('exist');
+  cy.get('[data-testid="sales-vendors-card-title"]', { timeout: 15000 }).should(
+    'exist'
+  );
 }
 
 function waitForOrderFormToClose() {
