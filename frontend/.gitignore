@@ -43,5 +43,7 @@ next-env.d.ts
 /cypress/videos
 /cypress/reports
 /cypress/downloads
+cypress.env.json
+cypress.env.e2e.json
 
 docker-compose.yml

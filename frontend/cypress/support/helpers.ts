@@ -1,4 +1,9 @@
-import { APP_ITEMS, NEXT_ORDER_DETAIL } from '../../src/consts/urls';
+import {
+  APP_ITEMS,
+  NEXT_ORDER_DETAIL,
+  NEXT_ORDERS,
+  NEXT_SALES,
+} from '../../src/consts/urls';
 
 export function addItem(
   name: string,
@@ -6,6 +11,7 @@ export function addItem(
   cost: number,
   sale: number
 ) {
+  cy.intercept('POST', `${NEXT_ORDERS}/*`).as('createItem');
   cy.dataCy('items-order-link').contains(name).should('not.exist');
   cy.dataCy('items-add-item-button').should('exist').click();
   cy.dataCy('items-order-name-input')
@@ -26,7 +32,7 @@ export function addItem(
     .type(sale.toString())
     .should('have.value', sale.toString());
   cy.dataCy('create-button').should('exist').click();
-  cy.wait(500);
+  cy.wait('@createItem').its('response.statusCode').should('eq', 200);
   cy.dataCy('items-order-link')
     .contains(name)
     .should('exist')
@@ -82,7 +88,6 @@ export function editItem(
   cy.intercept('PATCH', `${NEXT_ORDER_DETAIL}/*`).as('editItem');
   cy.dataCy('update-button').should('exist').click();
   cy.wait('@editItem').its('response.statusCode').should('eq', 200);
-  cy.wait(500);
   cy.dataCy('items-order-link')
     .contains(newName)
     .should('exist')
@@ -124,14 +129,14 @@ export function addSale(
   cy.dataCy('sales-add-sale-button').should('exist').click();
   cy.dataCy('sales-form-title').should('exist');
   cy.dataCy('sales-form-help-button').should('exist');
-  cy.wait(500);
+  cy.intercept('POST', `${NEXT_SALES}/*`).as('createSale');
   cy.dataCy('sale-vendor-input').type(vendor).blur();
-  cy.wait(500);
+  cy.dataCy('sale-vendor-input-badge').should('contain', vendor);
   cy.dataCy('sale-quantity-input').type(quantity.toString());
   cy.dataCy('sale-price-input').clear().type(salePrice.toString());
   cy.dataCy('sale-amount-paid-input').type(amountPaid.toString());
   cy.dataCy('create-button').should('exist').click();
-  cy.wait(500);
+  cy.wait('@createSale').its('response.statusCode').should('eq', 200);
   cy.dataCy('sales-vendor')
     .contains(vendor)
     .should('exist')
