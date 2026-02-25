@@ -9,8 +9,7 @@ import SalePrice from './sale-price-input';
 import SaleQuantity from './sale-quantity-input';
 import SaleVendor from './sale-vendor-input';
 import VendorInputBadge from './sale-vendor-input-badge';
-import SalesTable from './sales-table';
-import SalesTableContent from './sales-table-content';
+import { SalesTanStackTable } from './sales/SalesTanStackTable';
 import VendorsCard from './vendors-card';
 
 export {
@@ -24,8 +23,7 @@ export {
   SalePrice,
   SaleQuantity,
   SaleVendor,
-  SalesTableContent,
-  SalesTable,
+  SalesTanStackTable,
   VendorInputBadge,
   VendorsCard,
 };

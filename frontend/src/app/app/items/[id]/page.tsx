@@ -17,10 +17,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  DataTable,
-  getColumns,
   CreateOrderModal,
   MoreInformation,
+  OrdersTanStackTable,
 } from './_components';
 
 export default function Orders() {
@@ -99,10 +98,10 @@ export default function Orders() {
         </Button>
       </div>
       <Spacer y={4} />
-      <DataTable
-        columns={getColumns(deleteOrder)}
-        data={orders}
+      <OrdersTanStackTable
         locationId={locationId}
+        orders={orders}
+        deleteOrder={deleteOrder}
       />
     </div>
   );
