@@ -1,8 +1,12 @@
 .env
+/.idea/
+/.vscode/
 __pycache__/
 .pytest_cache/
 db/
+db_test/
 db.log
+backend/.env.e2e
 nginx/conf.d/*
 nginx/logs/*
 !nginx/conf.d/main.conf.sample

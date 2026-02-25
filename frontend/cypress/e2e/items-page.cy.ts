@@ -1,5 +1,6 @@
 import { APP_ITEMS, APP_LOCATIONS } from '../../src/consts/urls';
 import { addItem, deleteItem, editItem } from '../support/helpers';
+import { createTestName } from '../support/test-data';
 
 describe('items page', () => {
   beforeEach(() => {
@@ -25,22 +26,25 @@ describe('items page', () => {
   });
 
   it('can add an item', () => {
-    addItem('Cypress Test Item', 100, 100, 150);
-    deleteItem('Cypress Test Item');
+    const itemName = createTestName('Cypress Test Item');
+    addItem(itemName, 100, 100, 150);
+    deleteItem(itemName);
   });
 
   it('can edit an item', () => {
-    addItem('Cypress Test Item', 100, 100, 150);
+    const itemName = createTestName('Cypress Test Item');
+    const editedItemName = createTestName('Cypress Test Item Edited');
+    addItem(itemName, 100, 100, 150);
     editItem(
-      'Cypress Test Item',
+      itemName,
       100,
       100,
       150,
-      'Cypress Test Item Edited',
+      editedItemName,
       200,
       200,
       250
     );
-    deleteItem('Cypress Test Item Edited');
+    deleteItem(editedItemName);
   });
 });

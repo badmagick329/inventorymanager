@@ -1,4 +1,8 @@
 import { APP_LOCATIONS } from '../../src/consts/urls';
+import {
+  getAdminCredentials,
+  getUserCredentials,
+} from './test-data';
 
 Cypress.Commands.add('login', (username: string, password: string) => {
   const log = Cypress.log({
@@ -34,19 +38,23 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('adminLogin', () => {
-  cy.login('admin', 'test123');
+  const { username, password } = getAdminCredentials();
+  cy.login(username, password);
 });
 
 Cypress.Commands.add('userLogin', () => {
-  cy.login('TestUser', 'test123');
+  const { username, password } = getUserCredentials();
+  cy.login(username, password);
 });
 
 Cypress.Commands.add('userLoginWithoutSession', () => {
-  cy.loginWithoutSession('TestUser', 'test123');
+  const { username, password } = getUserCredentials();
+  cy.loginWithoutSession(username, password);
 });
 
 Cypress.Commands.add('adminLoginWithoutSession', () => {
-  cy.loginWithoutSession('admin', 'test123');
+  const { username, password } = getAdminCredentials();
+  cy.loginWithoutSession(username, password);
 });
 
 Cypress.Commands.add('dataCy', (value: string) => {

@@ -1,4 +1,4 @@
-import { APP_ITEMS, APP_LOCATIONS } from '../../src/consts/urls';
+import { APP_ITEMS, APP_LOCATIONS, NEXT_SALE_DETAIL } from '../../src/consts/urls';
 import {
   addItem,
   addSale,
@@ -6,6 +6,7 @@ import {
   forItemClick,
   forSaleClick,
 } from '../support/helpers';
+import { createTestName } from '../support/test-data';
 
 describe('sales page', () => {
   beforeEach(() => {
@@ -16,10 +17,11 @@ describe('sales page', () => {
   });
 
   it('exists', () => {
-    addItem('Cypress Test Item', 100, 100, 150);
+    const itemName = createTestName('Cypress Test Item');
+    addItem(itemName, 100, 100, 150);
 
     forItemClick(
-      'Cypress Test Item',
+      itemName,
       '[data-testid="items-view-sales-button"]'
     );
     cy.url().should('include', APP_ITEMS);
@@ -32,31 +34,36 @@ describe('sales page', () => {
     cy.visit(APP_LOCATIONS);
     cy.dataCy('home-locations-button').first().click();
     cy.url().should('include', APP_ITEMS);
-    deleteItem('Cypress Test Item');
+    deleteItem(itemName);
   });
 
   it('can add a sale', () => {
-    addItem('Cypress Test Item', 100, 100, 150);
-    addSale('Cypress Test Item', 'Cypress Test Vendor', 20, 150, 150 * 20);
+    const itemName = createTestName('Cypress Test Item');
+    const vendorName = createTestName('Cypress Test Vendor');
+    addItem(itemName, 100, 100, 150);
+    addSale(itemName, vendorName, 20, 150, 150 * 20);
 
     cy.visit(APP_LOCATIONS);
     cy.dataCy('home-locations-button').first().click();
     cy.url().should('include', APP_ITEMS);
-    deleteItem('Cypress Test Item');
+    deleteItem(itemName);
   });
 
   it('can delete a sale', () => {
-    addItem('Cypress Test Item', 100, 100, 150);
-    addSale('Cypress Test Item', 'Cypress Test Vendor', 20, 150, 150 * 20);
+    const itemName = createTestName('Cypress Test Item');
+    const vendorName = createTestName('Cypress Test Vendor');
+    addItem(itemName, 100, 100, 150);
+    addSale(itemName, vendorName, 20, 150, 150 * 20);
 
-    forSaleClick('Cypress Test Vendor', '[data-testid="sales-delete-button"]');
+    cy.intercept('DELETE', `${NEXT_SALE_DETAIL}/*`).as('deleteSale');
+    forSaleClick(vendorName, '[data-testid="sales-delete-button"]');
     cy.dataCy('delete-confirm-button').should('exist').click();
-    cy.wait(500);
+    cy.wait('@deleteSale').its('response.statusCode').should('eq', 204);
     cy.dataCy('sales-vendor').should('not.exist');
 
     cy.visit(APP_LOCATIONS);
     cy.dataCy('home-locations-button').first().click();
     cy.url().should('include', APP_ITEMS);
-    deleteItem('Cypress Test Item');
+    deleteItem(itemName);
   });
 });
