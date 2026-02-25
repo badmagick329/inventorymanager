@@ -34,6 +34,7 @@ export const getColumns = (
     cell: ({ row }) => {
       return (
         <Link
+          data-testid='items-order-link'
           href={`${APP_ITEMS}/${row.original.locationId}/${row.original.id}`}
           className={`font-semibold hover:underline ${textSizeStyle}`}
         >
@@ -85,7 +86,7 @@ export const getColumns = (
           ? 'text-muted-foreground'
           : 'text-foreground';
       return (
-        <span className={`${color} ${textSizeStyle}`}>
+        <span data-testid='items-order-quantity' className={`${color} ${textSizeStyle}`}>
           {row.original.quantity}
         </span>
       );
@@ -343,6 +344,7 @@ export const getColumns = (
               asChild
             >
               <Button
+                data-testid='items-actions-button'
                 variant='ghost'
                 className='h-8 w-8 p-0'
                 disabled={deleteOrder.isPending}
@@ -355,6 +357,7 @@ export const getColumns = (
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
+                data-testid='items-edit-button'
                 className='text-warning focus:cursor-pointer focus:bg-foreground/20 focus:text-warning'
                 onSelect={editDisclosure.onOpen}
                 disabled={deleteOrder.isPending}
@@ -362,6 +365,7 @@ export const getColumns = (
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem
+                data-testid='items-delete-button'
                 className='text-destructive focus:cursor-pointer focus:bg-foreground/20 focus:text-destructive'
                 onSelect={deleteDisclosure.onOpen}
                 disabled={deleteOrder.isPending}
@@ -369,6 +373,7 @@ export const getColumns = (
                 Delete
               </DropdownMenuItem>
               <DropdownMenuItem
+                data-testid='items-view-sales-button'
                 className='text-primary focus:cursor-pointer focus:bg-foreground/20 focus:text-primary'
                 asChild
                 disabled={deleteOrder.isPending}

@@ -14,7 +14,7 @@ describe('items page', () => {
     cy.dataCy('items-manage-vendors-button').should('exist');
     cy.dataCy('items-show-more-button').should('exist');
     cy.dataCy('items-add-item-button').should('exist');
-    cy.dataCy('items-table').should('exist');
+    cy.get('input[placeholder="Filter by name..."]').should('exist');
   });
 
   it('can show more details', () => {

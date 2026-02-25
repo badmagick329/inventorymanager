@@ -12,7 +12,7 @@ export function addItem(
   sale: number
 ) {
   cy.intercept('POST', `${NEXT_ORDERS}/*`).as('createItem');
-  cy.dataCy('items-order-link').contains(name).should('not.exist');
+  assertOrderLinkAbsent(name);
   cy.dataCy('items-add-item-button').should('exist').click();
   cy.dataCy('items-order-name-input')
     .should('exist')
@@ -33,6 +33,7 @@ export function addItem(
     .should('have.value', sale.toString());
   cy.dataCy('create-button').should('exist').click();
   cy.wait('@createItem').its('response.statusCode').should('eq', 200);
+  waitForOrderFormToClose();
   cy.dataCy('items-order-link')
     .contains(name)
     .should('exist')
@@ -47,7 +48,7 @@ export function deleteItem(name: string) {
   forItemClick(name, '[data-testid="items-delete-button"]');
   cy.dataCy('delete-confirm-button').should('exist').click();
   cy.wait('@deleteItem').its('response.statusCode').should('eq', 204);
-  cy.dataCy('items-order-link').contains(name).should('not.exist');
+  assertOrderLinkAbsent(name);
 }
 
 export function editItem(
@@ -61,33 +62,18 @@ export function editItem(
   newSale: number
 ) {
   forItemClick(name, '[data-testid="items-edit-button"]');
-  cy.dataCy('items-order-name-input')
-    .should('exist')
-    .should('have.value', name)
-    .clear()
-    .type(newName)
-    .should('have.value', newName);
-  cy.dataCy('items-order-quantity-input')
-    .should('exist')
-    .should('have.value', quantity.toString())
-    .clear()
-    .type(newQuantity.toString())
-    .should('have.value', newQuantity.toString());
-  cy.dataCy('items-order-cost-input')
-    .should('exist')
-    .should('have.value', cost.toString())
-    .clear()
-    .type(newCost.toString())
-    .should('have.value', newCost.toString());
-  cy.dataCy('items-order-sale-input')
-    .should('exist')
-    .should('have.value', sale.toString())
-    .clear()
-    .type(newSale.toString())
-    .should('have.value', newSale.toString());
+  replaceInputValue('items-order-name-input', name, newName);
+  replaceInputValue(
+    'items-order-quantity-input',
+    quantity.toString(),
+    newQuantity.toString()
+  );
+  replaceInputValue('items-order-cost-input', cost.toString(), newCost.toString());
+  replaceInputValue('items-order-sale-input', sale.toString(), newSale.toString());
   cy.intercept('PATCH', `${NEXT_ORDER_DETAIL}/*`).as('editItem');
   cy.dataCy('update-button').should('exist').click();
   cy.wait('@editItem').its('response.statusCode').should('eq', 200);
+  waitForOrderFormToClose();
   cy.dataCy('items-order-link')
     .contains(newName)
     .should('exist')
@@ -98,13 +84,37 @@ export function editItem(
 }
 
 export function forItemClick(name: string, target: string) {
-  cy.dataCy('items-order-link')
-    .contains(name)
-    .should('exist')
-    .closest('[data-testid="items-table-row"]')
-    .find(target)
-    .should('exist')
-    .click();
+  waitForOrderFormToClose();
+
+  openRowActions();
+
+  cy.get('body').then(($body) => {
+    const hasVisibleTarget = $body.find(`${target}:visible`).length > 0;
+    if (!hasVisibleTarget) {
+      openRowActions();
+    }
+  });
+
+  cy.get(target, { timeout: 10000 })
+    .filter(':visible')
+    .should('have.length.at.least', 1)
+    .first()
+    .click({ force: true });
+
+  function openRowActions() {
+    cy.contains('[data-testid="items-order-link"]', name)
+      .should('exist')
+      .closest('[data-testid="items-table-row"]')
+      .scrollIntoView();
+
+    cy.contains('[data-testid="items-order-link"]', name)
+      .should('exist')
+      .closest('[data-testid="items-table-row"]')
+      .find('[data-testid="items-actions-button"]')
+      .first()
+      .scrollIntoView({ block: 'center', inline: 'center' })
+      .click({ force: true });
+  }
 }
 
 export function forSaleClick(vendorName: string, target: string) {
@@ -125,7 +135,7 @@ export function addSale(
   amountPaid: number
 ) {
   forItemClick(itemName, '[data-testid="items-view-sales-button"]');
-  cy.url().should('include', APP_ITEMS);
+  waitForSalesPageReady();
   cy.dataCy('sales-add-sale-button').should('exist').click();
   cy.dataCy('sales-form-title').should('exist');
   cy.dataCy('sales-form-help-button').should('exist');
@@ -148,4 +158,45 @@ export function addSale(
     .find('[data-testid="sales-name"]')
     .should('exist')
     .contains(itemName);
+}
+
+export function waitForSalesPageReady() {
+  cy.url().should('include', APP_ITEMS);
+  cy.contains('Loading').should('not.exist');
+  cy.dataCy('sales-vendors-card-title', { timeout: 15000 }).should('exist');
+}
+
+function waitForOrderFormToClose() {
+  cy.get('body').should(($body) => {
+    const openOrderFormCount = $body.find('[data-testid="items-order-name-input"]').length;
+    expect(openOrderFormCount).to.eq(0);
+  });
+}
+
+function replaceInputValue(
+  testId: string,
+  initialValue: string,
+  newValue: string
+) {
+  cy.dataCy(testId)
+    .should('exist')
+    .should('have.value', initialValue)
+    .click({ force: true })
+    .type('{selectall}{backspace}', { force: true })
+    .should('have.value', '')
+    .type(newValue, { force: true })
+    .should('have.value', newValue);
+}
+
+function assertOrderLinkAbsent(name: string) {
+  cy.get('body').should(($body) => {
+    const matching = $body
+      .find('[data-testid="items-order-link"]')
+      .toArray()
+      .filter((el) => {
+        const text = (el.textContent || '').replace(/\s+/g, ' ').trim();
+        return text.includes(name);
+      });
+    expect(matching.length).to.eq(0);
+  });
 }
