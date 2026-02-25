@@ -91,20 +91,24 @@ function createUser(username: string, password: string, fail: boolean = false) {
     cy.dataCy('cancel-button').click();
   } else {
     cy.wait('@createUser').its('response.statusCode').should('eq', 201);
-    cy.dataCy('manage-users-user-title').should('exist').contains(username);
+    cy.contains('[data-testid="manage-users-user-title"]', username).should(
+      'exist'
+    );
   }
 }
 
 function deleteUser(username: string) {
-  cy.dataCy('manage-users-user-title')
-    .last()
+  cy.contains('[data-testid="manage-users-user-title"]', username)
     .should('exist')
-    .contains(username);
-  cy.dataCy('manage-users-delete-button').last().click();
+    .closest('[class*="rounded-md"]')
+    .find('[data-testid="manage-users-delete-button"]')
+    .click();
   cy.intercept('DELETE', `${NEXT_USERS}/*`).as('deleteUser');
   cy.dataCy('delete-confirm-button').click();
   cy.wait('@deleteUser').its('response.statusCode').should('eq', 204);
-  cy.dataCy('manage-users-user-title').last().should('not.contain', username);
+  cy.contains('[data-testid="manage-users-user-title"]', username).should(
+    'not.exist'
+  );
 }
 
 function createLocation(
@@ -131,7 +135,9 @@ function createLocation(
     cy.dataCy('cancel-button').click();
   } else {
     cy.wait('@createLocation').its('response.statusCode').should('eq', 201);
-    cy.dataCy('manage-locations-location-link').should('exist').contains(name);
+    cy.dataCy('manage-locations-location-link')
+      .contains(new RegExp(escapeRegExp(name)))
+      .should('exist');
     if (usernames) {
       for (const username of usernames) {
         cy.dataCy('manage-locations-username').should('contain', username);
@@ -180,4 +186,8 @@ function editLocation(name: string, newName: string, fail: boolean = false) {
       .should('exist')
       .contains(newName);
   }
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

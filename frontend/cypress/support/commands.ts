@@ -5,23 +5,20 @@ import {
 } from './test-data';
 
 Cypress.Commands.add('login', (username: string, password: string) => {
-  const log = Cypress.log({
-    name: 'login',
-    displayName: 'LOGIN',
-    message: [`🔐 Authenticating | ${username}`],
-    autoEnd: false,
-  });
   cy.session(
     username,
     () => {
-      cy.visit('/');
-      cy.get('[data-testid="login-username"]').type(username);
-      cy.get('[data-testid="login-password"]').type(password);
-      cy.get('[data-testid="login-submit"]').click();
-      cy.url().should('include', APP_LOCATIONS);
+      cy.request('POST', '/fetch/auth/login', { username, password }).its(
+        'status'
+      ).should('eq', 200);
+      cy.visit(APP_LOCATIONS);
+      cy.location('pathname').should('eq', APP_LOCATIONS);
     },
     {
       cacheAcrossSpecs: true,
+      validate: () => {
+        cy.request('/fetch/users/me').its('status').should('eq', 200);
+      },
     }
   );
 });
@@ -29,11 +26,11 @@ Cypress.Commands.add('login', (username: string, password: string) => {
 Cypress.Commands.add(
   'loginWithoutSession',
   (username: string, password: string) => {
-    cy.visit('/');
-    cy.get('[data-testid="login-username"]').type(username);
-    cy.get('[data-testid="login-password"]').type(password);
-    cy.get('[data-testid="login-submit"]').click();
-    cy.url().should('include', APP_LOCATIONS);
+    cy.request('POST', '/fetch/auth/login', { username, password }).its(
+      'status'
+    ).should('eq', 200);
+    cy.visit(APP_LOCATIONS);
+    cy.location('pathname').should('eq', APP_LOCATIONS);
   }
 );
 

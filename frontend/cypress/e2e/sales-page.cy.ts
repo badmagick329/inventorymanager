@@ -5,6 +5,7 @@ import {
   deleteItem,
   forItemClick,
   forSaleClick,
+  waitForSalesPageReady,
 } from '../support/helpers';
 import { createTestName } from '../support/test-data';
 
@@ -24,9 +25,8 @@ describe('sales page', () => {
       itemName,
       '[data-testid="items-view-sales-button"]'
     );
-    cy.url().should('include', APP_ITEMS);
+    waitForSalesPageReady();
 
-    cy.dataCy('sales-vendors-card-title').should('exist');
     cy.dataCy('sales-no-sales-data').should('exist');
     cy.dataCy('sales-back-to-items-button').should('exist');
     cy.dataCy('sales-add-sale-button').should('exist');
