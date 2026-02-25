@@ -1,4 +1,5 @@
 import { NEXT_LOGIN, NEXT_VENDORS } from '@/consts/urls';
+import { queryKeys } from '@/consts/queryKeys';
 import { LoginFormValues } from '@/types';
 import { QueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -40,7 +41,7 @@ export async function preFetchVendors(
   locationId: string
 ) {
   await queryClient.prefetchQuery({
-    queryKey: ['vendors', locationId],
+    queryKey: queryKeys.vendors(locationId),
     queryFn: async () => {
       const { data } = await axios.get(
         `${NEXT_VENDORS}?location_id=${locationId}`

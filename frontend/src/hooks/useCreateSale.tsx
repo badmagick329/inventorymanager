@@ -1,4 +1,5 @@
 import { NEXT_SALES, NEXT_SALE_DETAIL } from '@/consts/urls';
+import { queryKeys } from '@/consts/queryKeys';
 import { isSaleResponse } from '@/predicates';
 import { SalePost } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -14,19 +15,28 @@ export default function useCreateSale() {
       const { locationId, orderId } = mutationVars;
       // Invalidating vendors in case a new vendor is created during
       // sale creation
-      queryClient.invalidateQueries({ queryKey: ['vendors', locationId] });
-      queryClient.invalidateQueries({ queryKey: ['order-vendors', orderId] });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.vendors(locationId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.orderVendors(orderId),
+      });
       if (!isSaleResponse(data)) {
-        queryClient.invalidateQueries({ queryKey: ['sales'] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.sales(orderId) });
       } else {
-        queryClient.setQueryData(['sales', orderId, data.id], data);
+        queryClient.setQueryData(queryKeys.sales(orderId), (current: unknown) => {
+          if (!Array.isArray(current)) {
+            return current;
+          }
+          return [...current, data];
+        });
         queryClient.invalidateQueries({
-          queryKey: ['sales', orderId],
+          queryKey: queryKeys.sales(orderId),
           exact: true,
         });
       }
       queryClient.invalidateQueries({
-        queryKey: ['orders', locationId],
+        queryKey: queryKeys.orders(locationId),
       });
     },
     onError: (error) => {

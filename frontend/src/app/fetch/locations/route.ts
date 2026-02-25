@@ -1,37 +1,33 @@
 import { API_LOCATIONS } from '@/consts/urls';
-import { createAuthHeader, createErrorResponse } from '@/utils/responses';
+import {
+  getAuthHeaders,
+  handleRouteError,
+  jsonResponse,
+} from '@/utils/fetch-route';
 import axios from 'axios';
-import { NextResponse } from 'next/server';
 
 const BASE_URL = process.env.BASE_URL;
 
 export async function GET(req: Request) {
   const url = `${BASE_URL}${API_LOCATIONS}`;
-  const { Authorization, ErrorResponse } = createAuthHeader();
-  if (ErrorResponse) {
-    return ErrorResponse;
+  const { headers, errorResponse } = getAuthHeaders();
+  if (errorResponse) {
+    return errorResponse;
   }
-  const headers = { Authorization };
   try {
     const response = await axios.get(url, { headers });
-    return new NextResponse(JSON.stringify(response.data), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    return jsonResponse(response.data, 200);
   } catch (error) {
-    return createErrorResponse(error);
+    return handleRouteError(error);
   }
 }
 
 export async function POST(req: Request) {
   const url = `${BASE_URL}${API_LOCATIONS}`;
-  const { Authorization, ErrorResponse } = createAuthHeader();
-  if (ErrorResponse) {
-    return ErrorResponse;
+  const { headers, errorResponse } = getAuthHeaders();
+  if (errorResponse) {
+    return errorResponse;
   }
-  const headers = { Authorization };
   try {
     const body = await req.json();
     const payload = {
@@ -39,13 +35,8 @@ export async function POST(req: Request) {
       users: body.usernames,
     };
     const response = await axios.post(url, payload, { headers });
-    return new NextResponse(JSON.stringify(response.data), {
-      status: 201,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    return jsonResponse(response.data, 201);
   } catch (error) {
-    return createErrorResponse(error);
+    return handleRouteError(error);
   }
 }

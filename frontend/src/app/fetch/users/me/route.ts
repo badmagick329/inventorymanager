@@ -1,39 +1,33 @@
 import { API_USERS_ME } from '@/consts/urls';
-import { createAuthHeader, createErrorResponse } from '@/utils/responses';
+import {
+  getAuthHeaders,
+  handleRouteError,
+  jsonResponse,
+} from '@/utils/fetch-route';
 import axios from 'axios';
-import { NextResponse } from 'next/server';
 
 const BASE_URL = process.env.BASE_URL;
 
 export async function GET(req: Request) {
   const url = `${BASE_URL}${API_USERS_ME}?name_only=true`;
-  const { Authorization, ErrorResponse } = createAuthHeader();
-  if (ErrorResponse) {
-    return ErrorResponse;
+  const { headers, errorResponse } = getAuthHeaders();
+  if (errorResponse) {
+    return errorResponse;
   }
-  const headers = { Authorization };
   try {
-    const response = await axios.get(url, {
-      headers,
-    });
-    return new NextResponse(JSON.stringify(response.data), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await axios.get(url, { headers });
+    return jsonResponse(response.data, 200);
   } catch (error) {
-    return createErrorResponse(error);
+    return handleRouteError(error);
   }
 }
 
 export async function PATCH(req: Request) {
   const url = `${BASE_URL}${API_USERS_ME}`;
-  const { Authorization, ErrorResponse } = createAuthHeader();
-  if (ErrorResponse) {
-    return ErrorResponse;
+  const { headers, errorResponse } = getAuthHeaders();
+  if (errorResponse) {
+    return errorResponse;
   }
-  const headers = { Authorization };
   try {
     const data = await req.json();
     const payload = {
@@ -44,13 +38,8 @@ export async function PATCH(req: Request) {
     const response = await axios.patch(url, payload, {
       headers,
     });
-    return new NextResponse(JSON.stringify(response.data), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    return jsonResponse(response.data, 200);
   } catch (error) {
-    return createErrorResponse(error);
+    return handleRouteError(error);
   }
 }

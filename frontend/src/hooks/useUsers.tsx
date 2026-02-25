@@ -2,10 +2,11 @@ import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { NEXT_USERS } from '@/consts/urls';
 import axios from 'axios';
 import { SHORT_STALE_TIME } from '@/consts';
+import { queryKeys } from '@/consts/queryKeys';
 
 export default function useUsers() {
   const query = useQuery({
-    queryKey: ['users'],
+    queryKey: queryKeys.users,
     queryFn: async () => {
       const { data } = await axios.get(NEXT_USERS);
       return data;

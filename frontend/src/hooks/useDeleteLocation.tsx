@@ -1,4 +1,5 @@
 import { NEXT_LOCATIONS } from '@/consts/urls';
+import { queryKeys } from '@/consts/queryKeys';
 import { isLocationArray } from '@/predicates';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -14,20 +15,23 @@ export default function useDeleteLocation() {
       if (!locationId) {
         return;
       }
-      const previousData = queryClient.getQueryData(['locations']);
+      const previousData = queryClient.getQueryData(queryKeys.locations);
       if (!(previousData && isLocationArray(previousData))) {
-        queryClient.invalidateQueries({ queryKey: ['locations'] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.locations });
         return;
       }
       queryClient.setQueryData(
-        ['locations'],
+        queryKeys.locations,
         previousData.filter((location) => location.id !== locationId)
       );
-      queryClient.invalidateQueries({ queryKey: ['locations'], exact: true });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.locations,
+        exact: true,
+      });
     },
     onError: (error) => {
       console.error(`error during delete location. ${error}`);
-      queryClient.invalidateQueries({ queryKey: ['locations'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.locations });
     },
   });
   return mutation;

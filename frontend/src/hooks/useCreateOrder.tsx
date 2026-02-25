@@ -1,4 +1,5 @@
 import { NEXT_ORDERS, NEXT_ORDER_DETAIL } from '@/consts/urls';
+import { queryKeys } from '@/consts/queryKeys';
 import { isOrderResponse } from '@/predicates';
 import { OrderPost } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -12,14 +13,19 @@ export default function useCreateOrder() {
     onSettled: () => {},
     onSuccess: (data, mutationVars) => {
       const { locationId } = mutationVars;
-      queryClient.invalidateQueries({ queryKey: ['locations'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.locations });
       if (!isOrderResponse(data)) {
-        queryClient.invalidateQueries({ queryKey: ['orders'] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.ordersRoot });
         return;
       }
-      queryClient.setQueryData(['orders', locationId, data.id], data);
+      queryClient.setQueryData(queryKeys.orders(locationId), (current: unknown) => {
+        if (!Array.isArray(current)) {
+          return current;
+        }
+        return [...current, data];
+      });
       queryClient.invalidateQueries({
-        queryKey: ['orders', locationId],
+        queryKey: queryKeys.orders(locationId),
         exact: true,
       });
     },

@@ -1,6 +1,10 @@
 from django.shortcuts import get_object_or_404
 from items.models import ItemLocation, Vendor
 from items.serializers.vendor import VendorSerializer
+from items.views.helpers import (
+    forbidden_if_location_invisible,
+    forbidden_if_vendor_invisible,
+)
 from rest_framework import permissions
 from rest_framework.request import Request
 from rest_framework.views import APIView
@@ -19,8 +23,10 @@ class VendorList(APIView):
 
         if location_id := params.get("location_id"):
             location = get_object_or_404(ItemLocation, id=location_id)
-            if not location.is_visible_to(user):
-                return APIResponses.forbidden_location()
+            if forbidden_response := forbidden_if_location_invisible(
+                location, user
+            ):
+                return forbidden_response
             vendors = location.vendors.all()  # type: ignore
         else:
             all_locations = [
@@ -72,8 +78,8 @@ class VendorDetail(APIView):
         user = request.user
         assert isinstance(user, UserAccount)
         vendor = get_object_or_404(Vendor, id=vendor_id)
-        if not vendor.location.is_visible_to(user):
-            return APIResponses.forbidden_location()
+        if forbidden_response := forbidden_if_vendor_invisible(vendor, user):
+            return forbidden_response
         vendor.delete()
         return APIResponses.deleted()
 
@@ -81,8 +87,8 @@ class VendorDetail(APIView):
         user = request.user
         assert isinstance(user, UserAccount)
         vendor = get_object_or_404(Vendor, id=vendor_id)
-        if not vendor.location.is_visible_to(user):
-            return APIResponses.forbidden_location()
+        if forbidden_response := forbidden_if_vendor_invisible(vendor, user):
+            return forbidden_response
         initial_data = {
             **request.data,
             "user": user,

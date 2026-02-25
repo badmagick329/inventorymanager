@@ -1,6 +1,6 @@
 import { TOKEN_KEY } from '@/consts';
 import { API_LOGIN } from '@/consts/urls';
-import { createErrorResponse } from '@/utils/responses';
+import { handleRouteError } from '@/utils/fetch-route';
 import axios, { AxiosResponse } from 'axios';
 import { serialize } from 'cookie';
 import { NextResponse } from 'next/server';
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     const response = await axios.post(url, { username, password });
     return createLoginResponse(response);
   } catch (error) {
-    return createErrorResponse(error);
+    return handleRouteError(error);
   }
 }
 

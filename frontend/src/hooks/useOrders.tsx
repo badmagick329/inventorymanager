@@ -1,4 +1,5 @@
 import { SHORT_STALE_TIME } from '@/consts';
+import { queryKeys } from '@/consts/queryKeys';
 import { NEXT_ORDERS } from '@/consts/urls';
 import { OrderResponse } from '@/types';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
@@ -6,7 +7,7 @@ import axios from 'axios';
 
 export default function useOrders(locationId: string) {
   const query = useQuery({
-    queryKey: ['orders', locationId],
+    queryKey: queryKeys.orders(locationId),
     queryFn: async () => {
       const { data } = await axios.get(`${NEXT_ORDERS}/${locationId}`);
       return data as OrderResponse[];

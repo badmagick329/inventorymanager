@@ -1,14 +1,15 @@
+import { queryKeys } from '@/consts/queryKeys';
 import { isOrderResponseArray, isSaleResponseArray } from '@/predicates';
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
 
 export async function getOrderById(locationId: number, orderId: number) {
   const queryClient = useQueryClient();
-  let orders = queryClient.getQueryData(['orders', locationId]);
+  let orders = queryClient.getQueryData(queryKeys.orders(locationId));
   if (!orders) {
     await queryClient.refetchQueries({
-      queryKey: ['orders', locationId],
+      queryKey: queryKeys.orders(locationId),
     });
-    orders = queryClient.getQueryData(['orders', locationId]);
+    orders = queryClient.getQueryData(queryKeys.orders(locationId));
   }
   if (!isOrderResponseArray(orders)) {
     return null;
@@ -25,7 +26,7 @@ export function getOrderByOrderId(
   locationId: string,
   queryClient: QueryClient
 ) {
-  let orders = queryClient.getQueryData(['orders', locationId]);
+  let orders = queryClient.getQueryData(queryKeys.orders(locationId));
   const orderIdNumber = Number(orderId);
   if (!isOrderResponseArray(orders)) {
     return null;
@@ -42,7 +43,7 @@ export function getSaleBySaleId(
   orderId: string,
   queryClient: QueryClient
 ) {
-  let sales = queryClient.getQueryData(['sales', orderId]);
+  let sales = queryClient.getQueryData(queryKeys.sales(orderId));
   const saleIdNumber = Number(saleId);
   if (!isSaleResponseArray(sales)) {
     return null;

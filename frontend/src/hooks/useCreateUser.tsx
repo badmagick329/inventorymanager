@@ -1,4 +1,5 @@
 import { NEXT_USERS } from '@/consts/urls';
+import { queryKeys } from '@/consts/queryKeys';
 import { isUser } from '@/predicates';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -11,11 +12,16 @@ export default function useCreateUser() {
     onSettled: () => {},
     onSuccess: (data) => {
       if (!isUser(data)) {
-        queryClient.invalidateQueries({ queryKey: ['users'] });
+        queryClient.invalidateQueries({ queryKey: queryKeys.users });
         return;
       }
-      queryClient.setQueryData(['users', data.id], data);
-      queryClient.invalidateQueries({ queryKey: ['users'], exact: true });
+      queryClient.setQueryData(queryKeys.users, (current: unknown) => {
+        if (!Array.isArray(current)) {
+          return current;
+        }
+        return [...current, data];
+      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.users, exact: true });
     },
     onError: (error) => {
       console.error(`error during create user. ${error}`);
