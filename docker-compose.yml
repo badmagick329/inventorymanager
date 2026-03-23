@@ -14,38 +14,23 @@ services:
       timeout: 5s
       retries: 5
   backend:
-    build:
-      context: .
-      dockerfile: ./backend/Dockerfile
+    image: inventorymanager_backend:prod
     restart: "always"
     command: sh -c "python3 manage.py migrate &&
       python3 manage.py collectstatic --no-input &&
       gunicorn backend.wsgi:application --bind 0.0.0.0:${DJANGO_PORT}"
     volumes:
-      - ./backend:/usr/src/app
       - staticfiles:/usr/src/app/staticfiles
     expose:
-      - "${DJANGO_PORT}"
-    env_file:
-      - ./.env
+      - ${DJANGO_PORT}
     depends_on:
       db:
         condition: service_healthy
   nextapp:
-    image: nextjs
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      target: deploy
-    restart: "on-failure"
+    image: inventorymanager_frontend:prod
+    restart: "unless-stopped"
     depends_on:
       - backend
-    environment:
-      - NODE_OPTIONS=--max_old_space_size=4096
-    deploy:
-      resources:
-        limits:
-          memory: 4g
 
   nginx:
     build:
