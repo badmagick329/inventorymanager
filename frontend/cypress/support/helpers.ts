@@ -118,18 +118,27 @@ export function forItemClick(name: string, target: string) {
 }
 
 export function forSaleClick(vendorName: string, target: string) {
-  const saleAction = () =>
-    cy
-      .contains('[data-testid="sales-vendor"]', vendorName)
-      .should('exist')
+  const getSaleAction = ($body: JQuery<HTMLElement>) => {
+    const vendor = $body
+      .find('[data-testid="sales-vendor"]')
+      .filter((_, element) => element.textContent?.includes(vendorName));
+    return vendor
       .closest('[data-testid="sales-table-row"]')
       .find(target)
-      .filter(':visible')
-      .should('have.length', 1)
       .first();
+  };
 
-  saleAction().scrollIntoView();
-  saleAction().should('be.visible').click();
+  cy.get('body').then(($body) => {
+    const action = getSaleAction($body);
+    expect(action).to.have.length(1);
+    return cy.wrap(action).scrollIntoView();
+  });
+
+  cy.get('body').then(($body) => {
+    const action = getSaleAction($body);
+    expect(action).to.have.length(1);
+    (action[0] as HTMLButtonElement).click();
+  });
 }
 
 export function addSale(
@@ -155,6 +164,7 @@ export function addSale(
     expect(interception.response?.statusCode).to.eq(200);
     expect(interception.request.body.vendor).to.eq(vendor);
   });
+  waitForSaleFormToClose();
   cy.dataCy('sales-vendor')
     .contains(vendor)
     .should('exist')
@@ -180,6 +190,13 @@ function waitForOrderFormToClose() {
   cy.get('body').should(($body) => {
     const openOrderFormCount = $body.find('[data-testid="items-order-name-input"]').length;
     expect(openOrderFormCount).to.eq(0);
+  });
+}
+
+function waitForSaleFormToClose() {
+  cy.get('body').should(($body) => {
+    const openSaleFormCount = $body.find('[data-testid="sales-form-title"]').length;
+    expect(openSaleFormCount).to.eq(0);
   });
 }
 
