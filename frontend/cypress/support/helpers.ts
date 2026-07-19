@@ -230,7 +230,7 @@ function waitForSaleFormToClose() {
   });
 }
 
-function replaceInputValue(
+export function replaceInputValue(
   testId: string,
   initialValue: string,
   newValue: string
@@ -239,7 +239,16 @@ function replaceInputValue(
     .should('exist')
     .should('have.value', initialValue)
     .click({ force: true })
-    .type('{selectall}{backspace}', { force: true })
+    .then(($input) => {
+      const input = $input[0] as HTMLInputElement;
+      const valueSetter = Object.getOwnPropertyDescriptor(
+        input.ownerDocument.defaultView!.HTMLInputElement.prototype,
+        'value'
+      )?.set;
+      valueSetter?.call(input, '');
+    })
+    .trigger('input', { force: true })
+    .trigger('change', { force: true })
     .should('have.value', '')
     .type(newValue, { force: true })
     .should('have.value', newValue);

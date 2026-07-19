@@ -2,12 +2,18 @@ import {
   CancelButton,
   CreateButton,
   ItemFormHeader,
+  ReportProblem,
   Spinner,
   UpdateButton,
 } from '@/components';
-import { useCreateSale, useLocalStorage, useSaleFormDefaults } from '@/hooks';
+import {
+  useCreateSale,
+  useFailureReporting,
+  useLocalStorage,
+  useSaleFormDefaults,
+} from '@/hooks';
 import { SaleFormValues } from '@/types';
-import { Checkbox, ModalContent, ModalFooter } from "@heroui/react";
+import { Checkbox, ModalContent, ModalFooter } from '@heroui/react';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { UseFormSetError, useForm } from 'react-hook-form';
@@ -57,6 +63,11 @@ export default function CreateSaleForm({
     defaultValues: fetchDefaults.mutateAsync,
   });
   const createSale = useCreateSale();
+  const { failure, recordFailure } = useFailureReporting({
+    action: saleId ? 'sale_update' : 'sale_create',
+    locationId,
+    orderId,
+  });
 
   if (formState.isLoading) {
     return <Spinner />;
@@ -76,7 +87,8 @@ export default function CreateSaleForm({
             saleId,
             createSale.mutateAsync,
             onClose,
-            setError
+            setError,
+            recordFailure
           );
         })}
       >
@@ -88,6 +100,12 @@ export default function CreateSaleForm({
                 updateValue={() => updateValue(!value)}
                 title={saleId ? 'Edit Sale' : 'Add Sale'}
               />
+              {failure && (
+                <ReportProblem
+                  frictionEventId={failure.frictionEventId}
+                  submittedData={failure.submittedData}
+                />
+              )}
               <SaleVendor
                 register={register}
                 formState={formState}
@@ -166,7 +184,11 @@ async function submitForm(
   saleId: string | undefined,
   mutateAsync: CreateSaleMutation,
   onClose: () => void,
-  setError: UseFormSetError<SaleFormValues>
+  setError: UseFormSetError<SaleFormValues>,
+  recordFailure?: (
+    error: unknown,
+    submittedData: Record<string, string | number | boolean | null>
+  ) => void
 ) {
   const date = data.date ? data.date : null;
   const quantity = Number(data.quantity);
@@ -187,6 +209,7 @@ async function submitForm(
     await mutateAsync({ locationId, orderId, saleId, sale });
     onClose();
   } catch (error) {
+    recordFailure?.(error, sale);
     handleFormError(error, setError);
   }
 }

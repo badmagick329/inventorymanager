@@ -64,3 +64,39 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):  # type: ignore
     def clean_fields(self, exclude=None):
         self.username = self.username.strip().lower()
         super().clean_fields(exclude=exclude)
+
+
+class FrictionEvent(models.Model):
+    class Action(models.TextChoices):
+        ORDER_CREATE = "order_create", "Create order"
+        ORDER_UPDATE = "order_update", "Update order"
+        SALE_CREATE = "sale_create", "Create sale"
+        SALE_UPDATE = "sale_update", "Update sale"
+
+    user = models.ForeignKey(
+        UserAccount, on_delete=models.CASCADE, related_name="friction_events"
+    )
+    action = models.CharField(max_length=20, choices=Action.choices)
+    route = models.CharField(max_length=255)
+    location_id = models.PositiveIntegerField(null=True, blank=True)
+    order_id = models.PositiveIntegerField(null=True, blank=True)
+    status_code = models.PositiveSmallIntegerField()
+    error = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:  # type: ignore
+        ordering = ["-created_at"]
+
+
+class ProblemReport(models.Model):
+    friction_event = models.OneToOneField(
+        FrictionEvent, on_delete=models.CASCADE, related_name="problem_report"
+    )
+    user = models.ForeignKey(
+        UserAccount, on_delete=models.CASCADE, related_name="problem_reports"
+    )
+    submitted_data = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:  # type: ignore
+        ordering = ["-created_at"]

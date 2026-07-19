@@ -10,6 +10,7 @@ import {
   APP_LOCATIONS,
   APP_MANAGE_LOCATIONS,
   APP_MANAGE_USERS,
+  APP_POSSIBLE_FRICTION,
 } from '@/consts/urls';
 import { useLogout } from '@/hooks';
 import { ColorType, VariantType } from '@/types';
@@ -22,7 +23,7 @@ import {
   DropdownTrigger,
   Skeleton,
 } from '@heroui/react';
-import { KeyRound, LogOut, User, Warehouse } from 'lucide-react';
+import { Activity, KeyRound, LogOut, User, Warehouse } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
@@ -117,6 +118,13 @@ function getDropdownItems(isAdmin: boolean | null, logout: () => void) {
         key: 'manage-locations',
         startContent: <Warehouse size={ICON_SM} />,
         'data-testid': 'navbar-dropdown-manage-locations',
+      },
+      {
+        children: <Link href={APP_POSSIBLE_FRICTION}>Possible Friction</Link>,
+        className: 'text-accent',
+        key: 'possible-friction',
+        startContent: <Activity size={ICON_SM} />,
+        'data-testid': 'navbar-dropdown-possible-friction',
       },
       {
         children: <Link href={APP_MANAGE_USERS}>Manage Users</Link>,
