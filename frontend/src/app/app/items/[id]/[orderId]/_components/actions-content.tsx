@@ -37,7 +37,7 @@ export default function ActionsContent({
           variant='ghost'
           color='danger'
           isDisabled={deleteSale.isPending}
-          onPress={disclosure.onOpen}
+          onClick={disclosure.onOpen}
         >
           <Trash size={ICON_SM} />
         </Button>
