@@ -5,7 +5,13 @@ from django.urls import reverse
 vendor_list_url = partial(reverse, "vendors")
 vendor_detail_url = partial(reverse, "vendor_detail")
 
-from items.tests.factories import item_location_factory, vendor_factory
+from items.models import Sale, Vendor
+from items.tests.factories import (
+    item_location_factory,
+    order_factory,
+    sale_factory,
+    vendor_factory,
+)
 from rest_framework.test import APIClient
 from users.tests.factories import user_factory
 
@@ -106,13 +112,69 @@ def test_user_can_edit_vendor(
 
 
 def test_user_can_delete_vendor(
-    api_client: APIClient, user_factory, item_location_factory, vendor_factory
+    api_client: APIClient,
+    user_factory,
+    item_location_factory,
+    vendor_factory,
+    order_factory,
+    sale_factory,
 ):
     user, _ = user_factory()
     location = item_location_factory(users=[user])
     vendor, _ = vendor_factory(location=location)
+    order = order_factory(location=location, user=user)
+    sale = sale_factory(order=order, vendor=vendor, user=user)
     api_client.force_authenticate(user=user)
     response = api_client.delete(
         vendor_detail_url(kwargs={"vendor_id": vendor.id}),
     )
     assert response.status_code == 204
+    vendor.refresh_from_db()
+    assert vendor.deleted
+    assert Sale.objects.filter(id=sale.id).exists()
+
+    response = api_client.get(f"{vendor_list_url()}?location_id={location.id}")
+    assert response.status_code == 200
+    assert response.json() == []
+
+    response = api_client.get(f"{vendor_list_url()}?order_id={order.id}")
+    assert response.status_code == 200
+    assert [item["id"] for item in response.json()] == [vendor.id]
+
+
+def test_sale_reactivates_archived_vendor(
+    api_client: APIClient,
+    user_factory,
+    item_location_factory,
+    vendor_factory,
+    order_factory,
+):
+    user, _ = user_factory()
+    location = item_location_factory(users=[user])
+    vendor, _ = vendor_factory(location=location)
+    order = order_factory(location=location, user=user)
+    vendor.mark_as_deleted(user)
+    api_client.force_authenticate(user=user)
+    data = {
+        "vendor": vendor.name,
+        "quantity": 1,
+        "date": "2021-01-01",
+        "pricePerItem": 10,
+        "amountPaid": 10,
+    }
+
+    response = api_client.post(
+        reverse("sales", kwargs={"order_id": order.id}),
+        data=data,
+        format="json",
+    )
+
+    assert response.status_code == 201, response.json()
+    vendor.refresh_from_db()
+    assert not vendor.deleted
+    assert (
+        Vendor.objects.filter(
+            name__iexact=vendor.name, location=location
+        ).count()
+        == 1
+    )

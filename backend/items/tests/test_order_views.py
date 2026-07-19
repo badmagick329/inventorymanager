@@ -5,7 +5,12 @@ from django.urls import reverse
 order_list_url = partial(reverse, "orders")
 order_detail_url = partial(reverse, "order_detail")
 
-from items.tests.factories import item_location_factory, order_factory
+from items.tests.factories import (
+    item_location_factory,
+    order_factory,
+    sale_factory,
+    vendor_factory,
+)
 from rest_framework.test import APIClient
 from users.tests.factories import user_factory
 
@@ -323,3 +328,35 @@ def test_admin_can_update_order(
     assert response.status_code == 200
     assert response.json()["id"] == order.id
     assert response.json()["name"] == "test order 3"
+
+
+def test_order_quantity_cannot_be_less_than_sold_quantity(
+    api_client: APIClient,
+    user_factory,
+    item_location_factory,
+    order_factory,
+    vendor_factory,
+    sale_factory,
+):
+    user, _ = user_factory()
+    location = item_location_factory(users=[user])
+    order = order_factory(location=location, quantity=10, user=user)
+    vendor, _ = vendor_factory(location=location)
+    sale_factory(order=order, vendor=vendor, quantity=5, user=user)
+    api_client.force_authenticate(user=user)
+    data = {
+        "name": order.name,
+        "date": "2024-01-01",
+        "pricePerItem": 0.5,
+        "quantity": 4,
+        "currentSalePrice": 200,
+    }
+
+    response = api_client.patch(
+        order_detail_url(kwargs={"order_id": order.id}), data, format="json"
+    )
+
+    assert response.status_code == 400
+    assert "quantity" in response.json()
+    order.refresh_from_db()
+    assert order.quantity == 10

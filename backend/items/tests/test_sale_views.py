@@ -1,5 +1,8 @@
+import threading
 from functools import partial
 
+import pytest
+from django.db import close_old_connections, connection
 from django.urls import reverse
 
 sale_list_url = partial(reverse, "sales")
@@ -11,7 +14,9 @@ from items.tests.factories import (
     sale_factory,
     vendor_factory,
 )
+from items.models import Sale
 from rest_framework.test import APIClient
+from users.models import UserAccount
 from users.tests.factories import user_factory
 
 
@@ -310,3 +315,149 @@ def test_user_can_update_sale(
     assert sale_response["quantity"] == 5
     assert sale_response["date"] == None
     assert sale_response["vendor"] == "Some new guy"
+
+
+def test_sale_cannot_exceed_remaining_stock(
+    api_client: APIClient,
+    user_factory,
+    item_location_factory,
+    order_factory,
+    vendor_factory,
+):
+    user, _ = user_factory()
+    location = item_location_factory(users=[user])
+    order = order_factory(location=location, quantity=10)
+    vendor, _ = vendor_factory(location=location)
+    api_client.force_authenticate(user=user)
+    data = {
+        "vendor": vendor.name,
+        "quantity": 11,
+        "date": "2021-01-01",
+        "pricePerItem": 10,
+        "amountPaid": 50,
+    }
+
+    response = api_client.post(
+        sale_list_url(kwargs={"order_id": order.id}), data=data, format="json"
+    )
+
+    assert response.status_code == 400
+    assert "quantity" in response.json()
+    assert not Sale.objects.filter(order=order).exists()
+
+
+def test_sale_update_cannot_exceed_remaining_stock(
+    api_client: APIClient,
+    user_factory,
+    item_location_factory,
+    order_factory,
+    vendor_factory,
+    sale_factory,
+):
+    user, _ = user_factory()
+    location = item_location_factory(users=[user])
+    order = order_factory(location=location, quantity=10)
+    vendor, _ = vendor_factory(location=location)
+    sale = sale_factory(order=order, vendor=vendor, quantity=5, user=user)
+    api_client.force_authenticate(user=user)
+    data = {
+        "vendor": vendor.name,
+        "quantity": 11,
+        "date": "2021-01-01",
+        "pricePerItem": 10,
+        "amountPaid": 50,
+    }
+
+    response = api_client.patch(
+        sale_detail_url(kwargs={"sale_id": sale.id}), data=data, format="json"
+    )
+
+    assert response.status_code == 400
+    assert "quantity" in response.json()
+    sale.refresh_from_db()
+    assert sale.quantity == 5
+
+
+def test_deleting_sale_frees_stock(
+    api_client: APIClient,
+    user_factory,
+    item_location_factory,
+    order_factory,
+    vendor_factory,
+    sale_factory,
+):
+    user, _ = user_factory()
+    location = item_location_factory(users=[user])
+    order = order_factory(location=location, quantity=10)
+    vendor, _ = vendor_factory(location=location)
+    sale = sale_factory(order=order, vendor=vendor, quantity=10, user=user)
+    api_client.force_authenticate(user=user)
+    data = {
+        "vendor": vendor.name,
+        "quantity": 10,
+        "date": "2021-01-01",
+        "pricePerItem": 10,
+        "amountPaid": 50,
+    }
+
+    response = api_client.delete(sale_detail_url(kwargs={"sale_id": sale.id}))
+    assert response.status_code == 204
+
+    response = api_client.post(
+        sale_list_url(kwargs={"order_id": order.id}), data=data, format="json"
+    )
+    assert response.status_code == 201, response.json()
+
+
+@pytest.mark.django_db(transaction=True)
+def test_concurrent_sales_cannot_oversell(
+    user_factory,
+    item_location_factory,
+    order_factory,
+    vendor_factory,
+):
+    if connection.vendor != "postgresql":
+        pytest.skip("This regression test requires PostgreSQL row locking")
+
+    user, _ = user_factory()
+    location = item_location_factory(users=[user])
+    order = order_factory(location=location, quantity=10, user=user)
+    vendor, _ = vendor_factory(location=location)
+    barrier = threading.Barrier(2)
+    statuses = []
+    failures = []
+    data = {
+        "vendor": vendor.name,
+        "quantity": 10,
+        "date": "2021-01-01",
+        "pricePerItem": 10,
+        "amountPaid": 50,
+    }
+
+    def create_sale():
+        close_old_connections()
+        client = APIClient()
+        thread_user = UserAccount.objects.get(id=user.id)
+        client.force_authenticate(user=thread_user)
+        try:
+            barrier.wait(timeout=5)
+            response = client.post(
+                sale_list_url(kwargs={"order_id": order.id}),
+                data=data,
+                format="json",
+            )
+            statuses.append(response.status_code)
+        except Exception as error:
+            failures.append(error)
+        finally:
+            close_old_connections()
+
+    threads = [threading.Thread(target=create_sale) for _ in range(2)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join(timeout=10)
+
+    assert not failures
+    assert sorted(statuses) == [400, 201]
+    assert Sale.objects.filter(order=order, deleted=False).count() == 1

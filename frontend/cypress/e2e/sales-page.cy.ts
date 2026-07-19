@@ -57,16 +57,7 @@ describe('sales page', () => {
 
     cy.intercept('DELETE', `${NEXT_SALE_DETAIL}/*`).as('deleteSale');
     forSaleClick(vendorName, '[data-testid="sales-delete-button"]');
-    cy.get('body').then(($body) => {
-      const confirmVisible =
-        $body.find('[data-testid="delete-confirm-button"]:visible').length > 0;
-      if (!confirmVisible) {
-        forSaleClick(vendorName, '[data-testid="sales-delete-button"]');
-      }
-    });
-    cy.get('[data-testid="delete-confirm-button"]', { timeout: 10000 })
-      .should('be.visible')
-      .click();
+    cy.dataCy('delete-confirm-button').should('be.visible').click();
     cy.wait('@deleteSale').its('response.statusCode').should('eq', 204);
     cy.contains('[data-testid="sales-vendor"]', vendorName).should('not.exist');
 

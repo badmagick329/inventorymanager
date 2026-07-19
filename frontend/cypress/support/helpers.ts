@@ -118,15 +118,18 @@ export function forItemClick(name: string, target: string) {
 }
 
 export function forSaleClick(vendorName: string, target: string) {
-  const saleRow = () =>
+  const saleAction = () =>
     cy
       .contains('[data-testid="sales-vendor"]', vendorName)
       .should('exist')
-      .closest('[data-testid="sales-table-row"]');
+      .closest('[data-testid="sales-table-row"]')
+      .find(target)
+      .filter(':visible')
+      .should('have.length', 1)
+      .first();
 
-  saleRow().scrollIntoView();
-  saleRow().find(target).first().scrollIntoView();
-  saleRow().find(target).first().click({ force: true });
+  saleAction().scrollIntoView();
+  saleAction().should('be.visible').click();
 }
 
 export function addSale(

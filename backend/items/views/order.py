@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from items.models import ItemLocation, Order
@@ -29,17 +30,20 @@ class OrderDetail(APIView):
     def patch(self, request: Request, order_id: int):
         user = request.user
         assert isinstance(user, UserAccount)
-        order = get_object_or_404(Order, id=order_id, deleted=False)
-        if forbidden_response := forbidden_if_order_invisible(order, user):
-            return forbidden_response
-        initial_data = {
-            **request.data,
-            "user": user,
-        }
-        serializer = OrderSerializer(order, data=initial_data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return APIResponses.ok(serializer.data)
+        with transaction.atomic():
+            order = get_object_or_404(
+                Order.objects.select_for_update(), id=order_id, deleted=False
+            )
+            if forbidden_response := forbidden_if_order_invisible(order, user):
+                return forbidden_response
+            initial_data = {
+                **request.data,
+                "user": user,
+            }
+            serializer = OrderSerializer(order, data=initial_data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return APIResponses.ok(serializer.data)
 
     def delete(self, request: Request, order_id: int):
         user = request.user
