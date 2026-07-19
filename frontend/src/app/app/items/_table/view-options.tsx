@@ -13,18 +13,19 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 
-export function TableViewOptions<TData>({
-  table,
-}: {
-  table: Table<TData>;
-}) {
+export function TableViewOptions<TData>({ table }: { table: Table<TData> }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
         className='hover:bg-foreground/20 focus:bg-foreground/20'
         asChild
       >
-        <Button variant='outline' size='sm' className='ml-auto flex h-8'>
+        <Button
+          data-testid='table-view-options'
+          variant='outline'
+          size='sm'
+          className='ml-auto flex h-8'
+        >
           <Settings2 />
           View
         </Button>
@@ -50,4 +51,3 @@ export function TableViewOptions<TData>({
     </DropdownMenu>
   );
 }
-

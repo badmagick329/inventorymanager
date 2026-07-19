@@ -30,7 +30,10 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
             table.setPageSize(Number(value));
           }}
         >
-          <SelectTrigger className='h-8 w-[70px] hover:bg-foreground/20 focus:bg-foreground/20'>
+          <SelectTrigger
+            data-testid='table-rows-per-page'
+            className='h-8 w-[70px] hover:bg-foreground/20 focus:bg-foreground/20'
+          >
             <SelectValue placeholder={table.getState().pagination.pageSize} />
           </SelectTrigger>
           <SelectContent side='top'>
@@ -38,6 +41,7 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
               <SelectItem
                 key={pageSize}
                 value={`${pageSize}`}
+                data-testid={`table-page-size-${pageSize}`}
                 className='hover:bg-foreground/20 focus:bg-foreground/20'
               >
                 {pageSize}
@@ -46,11 +50,16 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
           </SelectContent>
         </Select>
       </div>
-      <div className='flex w-[100px] items-center justify-center text-sm font-medium'>
-        Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+      <div
+        data-testid='table-page-status'
+        className='flex w-[100px] items-center justify-center text-sm font-medium'
+      >
+        Page {table.getState().pagination.pageIndex + 1} of{' '}
+        {table.getPageCount()}
       </div>
       <div className='flex items-center space-x-2'>
         <Button
+          data-testid='table-first-page'
           variant='outline'
           size='icon'
           className='hidden size-8 hover:bg-foreground/20 focus:bg-foreground/20 lg:flex'
@@ -61,6 +70,7 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
           <ChevronsLeft />
         </Button>
         <Button
+          data-testid='table-previous-page'
           variant='outline'
           size='icon'
           className='size-8 hover:bg-foreground/20 focus:bg-foreground/20'
@@ -71,6 +81,7 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
           <ChevronLeft />
         </Button>
         <Button
+          data-testid='table-next-page'
           variant='outline'
           size='icon'
           className='size-8 hover:bg-foreground/20 focus:bg-foreground/20'
@@ -81,6 +92,7 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
           <ChevronRight />
         </Button>
         <Button
+          data-testid='table-last-page'
           variant='outline'
           size='icon'
           className='hidden size-8 hover:bg-foreground/20 focus:bg-foreground/20 lg:flex'
@@ -94,4 +106,3 @@ export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
     </div>
   );
 }
-

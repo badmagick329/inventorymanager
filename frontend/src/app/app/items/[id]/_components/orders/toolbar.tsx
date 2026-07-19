@@ -19,6 +19,7 @@ export function OrdersTableToolbar<TData>({
       left={
         <>
           <Input
+            data-testid='table-filter-name'
             placeholder='Filter by name...'
             value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
             onChange={(event) =>
@@ -40,4 +41,3 @@ export function OrdersTableToolbar<TData>({
     />
   );
 }
-

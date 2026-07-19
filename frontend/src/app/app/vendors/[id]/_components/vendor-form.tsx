@@ -2,7 +2,7 @@ import DeleteModal from '@/components/delete-modal';
 import { ICON_MD } from '@/consts';
 import { useCreateVendor, useDeleteVendor } from '@/hooks';
 import { VendorResponse } from '@/types';
-import { Button, useDisclosure } from "@heroui/react";
+import { Button, useDisclosure } from '@heroui/react';
 import axios from 'axios';
 import { Check, Pencil, Trash } from 'lucide-react';
 import { useState } from 'react';
@@ -53,6 +53,7 @@ export default function VendorForm({
 
   return (
     <form
+      data-testid='vendor-form'
       className='flex w-full justify-between px-6 md:w-2/3'
       onSubmit={handleSubmit((data) => submitForm(data, vendor.id))}
     >
@@ -66,6 +67,7 @@ export default function VendorForm({
       <div className='flex gap-4'>
         {isEditing && (
           <Button
+            data-testid='vendor-save-button'
             className='text-success-600'
             variant='light'
             type='submit'
@@ -77,7 +79,8 @@ export default function VendorForm({
           </Button>
         )}
         <Button
-          onPress={() => setIsEditing((prev) => !prev)}
+          data-testid='vendor-edit-button'
+          onClick={() => setIsEditing((prev) => !prev)}
           className='text-warning-600'
           variant='light'
           radius='sm'
@@ -86,11 +89,12 @@ export default function VendorForm({
           <Pencil size={ICON_MD} /> {isEditing ? 'Cancel Edit' : 'Edit'}
         </Button>
         <Button
+          data-testid='vendor-delete-button'
           className='text-danger-600'
           variant='light'
           radius='sm'
           isDisabled={createVendor.isPending}
-          onPress={disclosure.onOpen}
+          onClick={disclosure.onOpen}
         >
           <Trash size={ICON_MD} /> Delete
         </Button>

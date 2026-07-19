@@ -307,7 +307,7 @@ function OrderActionsCell({
           <DropdownMenuItem
             data-testid='items-edit-button'
             className='text-warning focus:cursor-pointer focus:bg-foreground/20 focus:text-warning'
-            onSelect={editDisclosure.onOpen}
+            onClick={editDisclosure.onOpen}
             disabled={deleteOrder.isPending}
           >
             Edit
@@ -315,7 +315,7 @@ function OrderActionsCell({
           <DropdownMenuItem
             data-testid='items-delete-button'
             className='text-destructive focus:cursor-pointer focus:bg-foreground/20 focus:text-destructive'
-            onSelect={deleteDisclosure.onOpen}
+            onClick={deleteDisclosure.onOpen}
             disabled={deleteOrder.isPending}
           >
             Delete

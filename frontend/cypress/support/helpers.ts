@@ -68,8 +68,16 @@ export function editItem(
     quantity.toString(),
     newQuantity.toString()
   );
-  replaceInputValue('items-order-cost-input', cost.toString(), newCost.toString());
-  replaceInputValue('items-order-sale-input', sale.toString(), newSale.toString());
+  replaceInputValue(
+    'items-order-cost-input',
+    cost.toString(),
+    newCost.toString()
+  );
+  replaceInputValue(
+    'items-order-sale-input',
+    sale.toString(),
+    newSale.toString()
+  );
   cy.intercept('PATCH', `${NEXT_ORDER_DETAIL}/*`).as('editItem');
   cy.dataCy('update-button').should('exist').click();
   cy.wait('@editItem').its('response.statusCode').should('eq', 200);
@@ -115,6 +123,24 @@ export function forItemClick(name: string, target: string) {
       .scrollIntoView()
       .click({ force: true });
   }
+}
+
+export function deleteItemViaApi(name: string) {
+  cy.location('pathname').then((pathname) => {
+    const locationId = pathname.split('/')[3];
+    cy.request(`/fetch/orders/${locationId}`).then(({ body }) => {
+      const order = body.find(
+        (entry: { id: number; name: string }) => entry.name === name
+      );
+      expect(order, `order named ${name}`).to.exist;
+      cy.request({
+        method: 'DELETE',
+        url: `${NEXT_ORDER_DETAIL}/${order.id}`,
+      })
+        .its('status')
+        .should('eq', 204);
+    });
+  });
 }
 
 export function forSaleClick(vendorName: string, target: string) {
@@ -188,14 +214,18 @@ export function waitForSalesPageReady() {
 
 function waitForOrderFormToClose() {
   cy.get('body').should(($body) => {
-    const openOrderFormCount = $body.find('[data-testid="items-order-name-input"]').length;
+    const openOrderFormCount = $body.find(
+      '[data-testid="items-order-name-input"]'
+    ).length;
     expect(openOrderFormCount).to.eq(0);
   });
 }
 
 function waitForSaleFormToClose() {
   cy.get('body').should(($body) => {
-    const openSaleFormCount = $body.find('[data-testid="sales-form-title"]').length;
+    const openSaleFormCount = $body.find(
+      '[data-testid="sales-form-title"]'
+    ).length;
     expect(openSaleFormCount).to.eq(0);
   });
 }
