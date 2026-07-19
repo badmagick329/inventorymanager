@@ -27,12 +27,14 @@ class VendorList(APIView):
                 location, user
             ):
                 return forbidden_response
-            vendors = location.vendors.all()  # type: ignore
+            vendors = location.vendors.filter(deleted=False)  # type: ignore
         else:
             all_locations = [
                 l for l in ItemLocation.objects.all() if l.is_visible_to(user)
             ]
-            vendors = Vendor.objects.filter(location__in=all_locations)
+            vendors = Vendor.objects.filter(
+                location__in=all_locations, deleted=False
+            )
 
         # TODO: Refactor this
         try:
@@ -77,16 +79,16 @@ class VendorDetail(APIView):
     def delete(self, request: Request, vendor_id: int):
         user = request.user
         assert isinstance(user, UserAccount)
-        vendor = get_object_or_404(Vendor, id=vendor_id)
+        vendor = get_object_or_404(Vendor, id=vendor_id, deleted=False)
         if forbidden_response := forbidden_if_vendor_invisible(vendor, user):
             return forbidden_response
-        vendor.delete()
+        vendor.mark_as_deleted(user)
         return APIResponses.deleted()
 
     def patch(self, request: Request, vendor_id: int):
         user = request.user
         assert isinstance(user, UserAccount)
-        vendor = get_object_or_404(Vendor, id=vendor_id)
+        vendor = get_object_or_404(Vendor, id=vendor_id, deleted=False)
         if forbidden_response := forbidden_if_vendor_invisible(vendor, user):
             return forbidden_response
         initial_data = {

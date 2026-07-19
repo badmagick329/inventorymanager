@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.db.models.functions import Lower
 from items.base_model import ModelWithLastModified
 from simple_history.models import HistoricalRecords
@@ -64,6 +64,7 @@ class Vendor(ModelWithLastModified):
         null=True,
         related_name="vendors",
     )
+    deleted = models.BooleanField(default=False)
     history = HistoricalRecords()
 
     class Meta:  # type: ignore
@@ -81,8 +82,8 @@ class Vendor(ModelWithLastModified):
     def is_changed(self) -> bool:
         if not hasattr(self, "_loaded_values"):
             return True
-        loaded_fields = ["name", "location_id"]
-        instance_values = [self.name, self.location.id]
+        loaded_fields = ["name", "location_id", "deleted"]
+        instance_values = [self.name, self.location.id, self.deleted]
 
         return instance_values != [self._loaded_values[field] for field in loaded_fields]  # type: ignore
 
@@ -100,6 +101,20 @@ class Vendor(ModelWithLastModified):
         kwargs = super().set_last_modified_by(**kwargs)
         self.full_clean()
         super().save(*args, **kwargs)
+
+    def mark_as_deleted(self, user: UserAccount):
+        self.deleted = True
+        self.save(user=user)
+        return self.id
+
+    def delete(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+        self.deleted = True
+        if user:
+            self.save(user=user)
+        else:
+            self.save()
+        return self.id
 
     def debt(self, order_id: int | None = None):
         filters = [Q(deleted=False)]
@@ -244,11 +259,25 @@ class Order(ModelWithLastModified):
         return (self.revenue(vendor) - cost) / cost * 100
 
     def current_quantity(self):
-        sold_quantity = sum([sale.quantity for sale in self.sales.filter(deleted=False)])  # type: ignore
-        return self.quantity - sold_quantity
+        return self.quantity - self.sold_quantity()
 
-    def sold_quantity(self):
-        return sum([sale.quantity for sale in self.sales.filter(deleted=False)])  # type: ignore
+    def sold_quantity(self, exclude_sale_id: int | None = None):
+        sales = self.sales.filter(deleted=False)  # type: ignore
+        if exclude_sale_id:
+            sales = sales.exclude(id=exclude_sale_id)
+        return sales.aggregate(total=Sum("quantity"))["total"] or 0
+
+    def clean(self):
+        super().clean()
+        if self.pk and self.quantity < self.sold_quantity():
+            raise ValidationError(
+                {
+                    "quantity": (
+                        "Quantity cannot be less than the number of items "
+                        "already sold."
+                    )
+                }
+            )
 
     def is_visible_to(self, user):
         return user.is_admin or self.location.users.filter(id=user.id).exists()
@@ -385,6 +414,17 @@ class Sale(ModelWithLastModified):
                 }
             )
         super().full_clean(*args, **kwargs)
+        if self.deleted or not self.order_id:
+            return
+        sold_quantity = self.order.sold_quantity(exclude_sale_id=self.pk)
+        if sold_quantity + self.quantity > self.order.quantity:
+            raise ValidationError(
+                {
+                    "quantity": (
+                        "Sale quantity cannot exceed the remaining stock."
+                    )
+                }
+            )
 
     def cost(self):
         return self.order.price_per_item * self.quantity

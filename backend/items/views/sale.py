@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from items.models import Order, Sale
 from items.serializers.sale import SaleSerializer
@@ -28,33 +29,46 @@ class SaleDetail(APIView):
     def patch(self, request: Request, sale_id: int):
         user = request.user
         assert isinstance(user, UserAccount)
-        sale = get_object_or_404(Sale, id=sale_id, deleted=False)
-        if forbidden_response := forbidden_if_order_invisible(
-            sale.order, user
-        ):
-            return forbidden_response
-        initial_data = {
-            **request.data,
-            "user": user,
-        }
-        try:
-            serializer = SaleSerializer(sale, data=initial_data, partial=True)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-        except ValidationErrorWithMessage as e:
-            raise ValidationErrorWithMessage(e.message_dict)
-        return APIResponses.ok(serializer.data)
+        with transaction.atomic():
+            sale = get_object_or_404(Sale, id=sale_id, deleted=False)
+            order = get_object_or_404(
+                Order.objects.select_for_update(), id=sale.order_id, deleted=False
+            )
+            sale = get_object_or_404(Sale, id=sale_id, deleted=False)
+            sale.order = order
+            if forbidden_response := forbidden_if_order_invisible(order, user):
+                return forbidden_response
+            initial_data = {
+                **request.data,
+                "user": user,
+            }
+            try:
+                serializer = SaleSerializer(
+                    sale,
+                    data=initial_data,
+                    partial=True,
+                    context={"order": order},
+                )
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+            except ValidationErrorWithMessage as e:
+                raise ValidationErrorWithMessage(e.message_dict)
+            return APIResponses.ok(serializer.data)
 
     def delete(self, request: Request, sale_id: int):
         user = request.user
         assert isinstance(user, UserAccount)
-        sale = get_object_or_404(Sale, id=sale_id, deleted=False)
-        if forbidden_response := forbidden_if_order_invisible(
-            sale.order, user
-        ):
-            return forbidden_response
-        sale.mark_as_deleted(user)
-        return APIResponses.deleted()
+        with transaction.atomic():
+            sale = get_object_or_404(Sale, id=sale_id, deleted=False)
+            order = get_object_or_404(
+                Order.objects.select_for_update(), id=sale.order_id, deleted=False
+            )
+            sale = get_object_or_404(Sale, id=sale_id, deleted=False)
+            sale.order = order
+            if forbidden_response := forbidden_if_order_invisible(order, user):
+                return forbidden_response
+            sale.mark_as_deleted(user)
+            return APIResponses.deleted()
 
 
 class SaleList(APIView):
@@ -75,21 +89,25 @@ class SaleList(APIView):
     def post(self, request: Request, order_id: int):
         user = request.user
         assert isinstance(user, UserAccount)
+        with transaction.atomic():
+            order = get_object_or_404(
+                Order.objects.select_for_update(), id=order_id, deleted=False
+            )
+            if forbidden_response := forbidden_if_order_invisible(order, user):
+                return forbidden_response
 
-        order = get_object_or_404(Order, id=order_id)
-        if forbidden_response := forbidden_if_order_invisible(order, user):
-            return forbidden_response
+            initial_data = {
+                **request.data,
+                "user": user,
+                "orderId": order_id,
+            }
 
-        initial_data = {
-            **request.data,
-            "user": user,
-            "orderId": order_id,
-        }
-
-        try:
-            serializer = SaleSerializer(data=initial_data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-        except ValidationErrorWithMessage as e:
-            raise ValidationErrorWithMessage(e.message_dict)
-        return APIResponses.created(serializer.data)
+            try:
+                serializer = SaleSerializer(
+                    data=initial_data, context={"order": order}
+                )
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+            except ValidationErrorWithMessage as e:
+                raise ValidationErrorWithMessage(e.message_dict)
+            return APIResponses.created(serializer.data)

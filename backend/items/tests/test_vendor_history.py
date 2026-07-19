@@ -19,7 +19,8 @@ def test_vendor_deletion_creates_historical_record(vendor_factory):
     vendor.delete()
     history = HistoricalVendor.objects.all()
     assert history.count() == 2
-    assert history.first().history_type == ht.DELETE
+    assert history.first().history_type == ht.EDIT
+    assert history.first().deleted
     assert history.last().history_type == ht.CREATE
 
 
@@ -51,7 +52,8 @@ def test_vendor_history_tracks_for_multiple_entries(vendor_factory):
     vendor2.delete()
     history = HistoricalVendor.objects.all()
     assert history.count() == 5
-    assert history[0].history_type == ht.DELETE
+    assert history[0].history_type == ht.EDIT
+    assert history[0].deleted
 
 
 def test_vendor_history_has_user_information(vendor_factory, user_factory):

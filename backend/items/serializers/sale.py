@@ -69,6 +69,8 @@ class SaleSerializer(serializers.BaseSerializer):
         }
 
     def _get_order(self):
+        if order := self.context.get("order"):
+            return order
         order_id = self.validated_data.get("orderId")
         order = Order.objects.filter(id=order_id, deleted=False).first()
         if not order:
@@ -80,6 +82,14 @@ class SaleSerializer(serializers.BaseSerializer):
     def _get_vendor(self, location, user):
         vendor_name = self.validated_data.get("vendor")
         vendor = location.vendors.filter(name__iexact=vendor_name).first()
+        if vendor and vendor.deleted:
+            vendor.deleted = False
+            try:
+                vendor.save(user=user)
+            except IntegrityError as e:
+                raise ErrorHandler(e).error
+            except ValidationError as e:
+                raise ValidationErrorWithMessage(e.message_dict)
         if not vendor:
             vendor = Vendor(name=vendor_name, location=location)
             try:
