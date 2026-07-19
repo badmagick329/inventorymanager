@@ -1,5 +1,5 @@
 import { ChangePasswordFormValues } from '@/types';
-import { Input } from "@heroui/react";
+import { Input } from '@heroui/react';
 import { FormState, UseFormRegister } from 'react-hook-form';
 
 export default function NewPasswordInput({
@@ -15,6 +15,7 @@ export default function NewPasswordInput({
         {formState.errors.newPassword?.message}
       </span>
       <Input
+        data-testid='change-password-new-input'
         type='password'
         variant='flat'
         label='New Password'

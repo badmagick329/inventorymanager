@@ -2,7 +2,7 @@ import ItemChangeText from '@/components/item-change-text';
 import { ICON_MD } from '@/consts';
 import { OrderHistory } from '@/types';
 import { UTCStringtoLocalDate, injectDeltasWithUser } from '@/utils';
-import { Accordion, AccordionItem } from "@heroui/react";
+import { Accordion, AccordionItem } from '@heroui/react';
 import { ShoppingCart } from 'lucide-react';
 import React, { useMemo } from 'react';
 
@@ -31,7 +31,7 @@ export default function OrderHistoryAccordian({
   const totalChanges = deltas.length - orderHistory.sales.length;
 
   return (
-    <div className='flex flex-col px-4'>
+    <div data-testid='location-history-order' className='flex flex-col px-4'>
       <div className='flex flex-col rounded-md border-1 border-default-400'>
         <Accordion selectionMode='multiple'>
           <AccordionItem

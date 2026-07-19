@@ -27,7 +27,10 @@ export default function ChartsPage() {
 
   return (
     <div className='flex h-[calc(100dvh-55px)] w-full flex-col items-center gap-4'>
-      <span className='pt-6 text-2xl font-semibold tracking-wide'>
+      <span
+        data-testid='item-cost-chart-title'
+        className='pt-6 text-2xl font-semibold tracking-wide'
+      >
         Highest Item Costs
       </span>
       <div className='flex h-4/5 w-full justify-center'>

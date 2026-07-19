@@ -4,7 +4,7 @@ import { ConnectionError, Spinner } from '@/components';
 import { APP_LOCATIONS } from '@/consts/urls';
 import { useLocationHistory } from '@/hooks';
 import { isOrderHistoryArray } from '@/predicates';
-import { Button, Input, Link } from "@heroui/react";
+import { Button, Input, Link } from '@heroui/react';
 import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
 
@@ -44,7 +44,10 @@ export default function LocationHistory() {
   }
 
   return (
-    <div className='flex w-full flex-col gap-4'>
+    <div
+      data-testid='location-history-page'
+      className='flex w-full flex-col gap-4'
+    >
       <div className='self-center pt-4'>
         <Button
           as={Link}
@@ -58,6 +61,7 @@ export default function LocationHistory() {
       </div>
       <div className='flex w-full justify-center'>
         <Input
+          data-testid='location-history-search'
           className='max-w-[540px]'
           type='search'
           placeholder='Search by item name'

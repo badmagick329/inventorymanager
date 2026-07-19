@@ -2,7 +2,7 @@
 
 import { NEXT_USERS_ME } from '@/consts/urls';
 import { ChangePasswordFormValues } from '@/types';
-import { Button } from "@heroui/react";
+import { Button } from '@heroui/react';
 import axios from 'axios';
 import { useState } from 'react';
 import { UseFormReset, UseFormSetError, useForm } from 'react-hook-form';
@@ -39,6 +39,7 @@ export default function ChangePassword() {
         <NewPasswordInput formState={formState} register={register} />
         <NewPassword2Input formState={formState} register={register} />
         <Button
+          data-testid='change-password-submit'
           type='submit'
           className='mt-2 py-6 text-xl font-semibold'
           color='primary'

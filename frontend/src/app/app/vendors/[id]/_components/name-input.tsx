@@ -1,4 +1,4 @@
-import { Input } from "@heroui/react";
+import { Input } from '@heroui/react';
 import { FormState, UseFormRegister } from 'react-hook-form';
 
 type FormValues = {
@@ -40,7 +40,9 @@ export default function NameInput({
   }
   return (
     <div className='flex w-full flex-col'>
-      <span className='text-xl'>{name}</span>
+      <span data-testid='vendor-name' className='text-xl'>
+        {name}
+      </span>
     </div>
   );
 }

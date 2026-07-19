@@ -31,6 +31,7 @@ export function TableColumnHeader<TData, TValue>({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
+            data-testid={`table-sort-${column.id}`}
             variant='ghost'
             size='sm'
             className='-ml-3 h-8 hover:bg-foreground/20 focus:bg-foreground/20 data-[state=open]:bg-foreground/10'
@@ -73,4 +74,3 @@ export function TableColumnHeader<TData, TValue>({
     </div>
   );
 }
-
