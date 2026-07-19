@@ -1,13 +1,19 @@
 import {
   CancelButton,
   CreateButton,
+  ReportProblem,
   Spinner,
   UpdateButton,
 } from '@/components';
 import ItemFormHeader from '@/components/item-form-header';
-import { useCreateOrder, useLocalStorage, useOrderFormDefaults } from '@/hooks';
+import {
+  useCreateOrder,
+  useFailureReporting,
+  useLocalStorage,
+  useOrderFormDefaults,
+} from '@/hooks';
 import { OrderFormValues } from '@/types';
-import { Checkbox, ModalContent, ModalFooter } from "@heroui/react";
+import { Checkbox, ModalContent, ModalFooter } from '@heroui/react';
 import axios from 'axios';
 import { useState } from 'react';
 import { UseFormSetError, useForm } from 'react-hook-form';
@@ -53,6 +59,11 @@ export default function CreateOrderForm({
     defaultValues: fetchDefaults.mutateAsync,
   });
   const createOrder = useCreateOrder();
+  const { failure, recordFailure } = useFailureReporting({
+    action: orderId ? 'order_update' : 'order_create',
+    locationId,
+    orderId,
+  });
 
   if (formState.isLoading) {
     return <Spinner />;
@@ -72,7 +83,8 @@ export default function CreateOrderForm({
             createOrder.mutateAsync,
             onClose,
             setError,
-            orderId
+            orderId,
+            recordFailure
           );
         })}
       >
@@ -84,6 +96,12 @@ export default function CreateOrderForm({
                 updateValue={() => updateValue(!value)}
                 title={orderId ? 'Edit Item' : 'Add Item'}
               />
+              {failure && (
+                <ReportProblem
+                  frictionEventId={failure.frictionEventId}
+                  submittedData={failure.submittedData}
+                />
+              )}
               <OrderNameInput
                 control={control}
                 register={register}
@@ -155,7 +173,11 @@ async function submitForm(
   mutateAsync: CreateOrderMutation,
   onClose: () => void,
   setError: UseFormSetError<OrderFormValues>,
-  orderId?: string
+  orderId?: string,
+  recordFailure?: (
+    error: unknown,
+    submittedData: Record<string, string | number | boolean | null>
+  ) => void
 ) {
   const quantity = parseInt(data.quantity);
   const cost = parseInt(data.cost);
@@ -176,6 +198,7 @@ async function submitForm(
     });
     onClose();
   } catch (error) {
+    recordFailure?.(error, order);
     handleFormError(error, setError);
   }
 }

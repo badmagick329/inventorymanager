@@ -11,11 +11,13 @@ import useDeleteUser from './useDeleteUser';
 import useDeleteVendor from './useDeleteVendor';
 import useLocalStorage from './useLocalStorage';
 import useLocationHistory from './useLocationHistory';
+import useFailureReporting from './useFailureReporting';
 import useLocations from './useLocations';
 import useLogout from './useLogout';
 import useOrderDetail from './useOrderDetail';
 import useOrderFormDefaults from './useOrderFormDefaults';
 import useOrderVendors from './useOrderVendors';
+import usePossibleFriction from './usePossibleFriction';
 import useOrders from './useOrders';
 import useSaleFormDefaults from './useSaleFormDefaults';
 import useSales from './useSales';
@@ -47,9 +49,11 @@ export {
   useSaleFormDefaults,
   useVendors,
   useLocationHistory,
+  useFailureReporting,
   useLocalStorage,
   useDeleteVendor,
   useCreateVendor,
   useSaleAmountPaidInput,
   useOrderVendors,
+  usePossibleFriction,
 };

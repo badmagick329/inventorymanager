@@ -5,7 +5,11 @@ export const queryKeys = {
   orders: (locationId: string | number) =>
     ['orders', String(locationId)] as const,
   orderDetail: (locationId: string | number, orderId?: string | number) =>
-    ['orders', String(locationId), orderId ? String(orderId) : undefined] as const,
+    [
+      'orders',
+      String(locationId),
+      orderId ? String(orderId) : undefined,
+    ] as const,
   salesRoot: ['sales'] as const,
   sales: (orderId: string | number) => ['sales', String(orderId)] as const,
   vendorsRoot: ['vendors'] as const,
@@ -17,5 +21,6 @@ export const queryKeys = {
   historyRoot: ['history'] as const,
   history: (locationId: string | number) =>
     ['history', String(locationId)] as const,
+  feedback: ['feedback'] as const,
   logout: ['logout'] as const,
 };

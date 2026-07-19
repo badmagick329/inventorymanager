@@ -143,6 +143,45 @@ export type ChangePasswordFormValues = {
   newPassword2: string;
 };
 
+export type FrictionAction =
+  | 'order_create'
+  | 'order_update'
+  | 'sale_create'
+  | 'sale_update';
+
+export type FrictionError = {
+  field: string;
+  message: string;
+};
+
+export type FrictionEvent = {
+  id: number;
+  action: FrictionAction;
+  route: string;
+  location_id: number | null;
+  order_id: number | null;
+  status_code: number;
+  error: FrictionError;
+  created_at: string;
+};
+
+export type ProblemReport = {
+  id: number;
+  user: string;
+  friction_event: FrictionEvent;
+  submitted_data: Record<string, string | number | boolean | null>;
+  created_at: string;
+};
+
+export type PossibleFrictionSummary = {
+  action: FrictionAction;
+  route: string;
+  error: FrictionError;
+  failure_count: number;
+  affected_user_count: number;
+  last_occurred: string;
+};
+
 export type OrdersTableRow = ReturnType<typeof createOrdersTableData>[0];
 
 export type DeleteOrder = ReturnType<typeof useDeleteOrder>;

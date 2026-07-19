@@ -1,7 +1,10 @@
 import {
   APP_ITEMS,
   APP_LOCATIONS,
+  APP_POSSIBLE_FRICTION,
+  NEXT_FRICTION_EVENTS,
   NEXT_ORDER_DETAIL,
+  NEXT_PROBLEM_REPORTS,
   NEXT_SALE_DETAIL,
   NEXT_SALES,
 } from '../../src/consts/urls';
@@ -11,6 +14,7 @@ import {
   deleteItemViaApi,
   forItemClick,
   forSaleClick,
+  replaceInputValue,
   waitForSalesPageReady,
 } from '../support/helpers';
 import { createTestName } from '../support/test-data';
@@ -61,6 +65,47 @@ describe('inventory integrity', () => {
     deleteItemViaApi(itemName);
   });
 
+  it('reports a failed sale save to the admin friction view', () => {
+    const itemName = createTestName('Reported Friction Item');
+    const firstVendor = createTestName('Reported Friction Vendor');
+    const secondVendor = createTestName('Reported Error Vendor');
+    addItem(itemName, 10, 100, 150);
+    addSale(itemName, firstVendor, 9, 150, 1350);
+
+    cy.dataCy('sales-add-sale-button').click();
+    cy.intercept('POST', `${NEXT_SALES}/*`).as('oversell');
+    cy.intercept('POST', NEXT_FRICTION_EVENTS).as('recordFriction');
+    cy.dataCy('sale-vendor-input').type(secondVendor).blur();
+    cy.dataCy('sale-quantity-input').type('2');
+    cy.dataCy('sale-price-input').clear().type('150');
+    cy.dataCy('sale-amount-paid-input').type('150');
+    cy.dataCy('create-button').click();
+    cy.wait('@oversell').its('response.statusCode').should('eq', 400);
+    cy.wait('@recordFriction').its('response.statusCode').should('eq', 201);
+    cy.intercept('POST', NEXT_PROBLEM_REPORTS).as('reportProblem');
+    cy.dataCy('report-problem-button').click();
+    cy.wait('@reportProblem').its('response.statusCode').should('eq', 201);
+    cy.contains('Problem reported.').should('exist');
+
+    cy.visit(APP_POSSIBLE_FRICTION);
+    cy.dataCy('possible-friction-title').should('exist');
+    cy.dataCy('reported-problem')
+      .should('contain', secondVendor)
+      .and('contain', 'Sale quantity cannot exceed the remaining stock.');
+    cy.dataCy('friction-summary').should(
+      'contain',
+      'Sale quantity cannot exceed the remaining stock.'
+    );
+
+    cy.visit(APP_LOCATIONS);
+    cy.dataCy('home-locations-button').first().click();
+    forItemClick(itemName, '[data-testid="items-view-sales-button"]');
+    waitForSalesPageReady();
+    deleteSale(firstVendor);
+    returnToItems();
+    deleteItemViaApi(itemName);
+  });
+
   it('rejects reducing an order below its sold quantity', () => {
     const itemName = createTestName('Order Stock Item');
     const vendorName = createTestName('Order Stock Vendor');
@@ -69,7 +114,7 @@ describe('inventory integrity', () => {
     returnToItems();
 
     forItemClick(itemName, '[data-testid="items-edit-button"]');
-    cy.dataCy('items-order-quantity-input').clear().type('5');
+    replaceInputValue('items-order-quantity-input', '10', '5');
     cy.intercept('PATCH', `${NEXT_ORDER_DETAIL}/*`).as('reduceOrder');
     cy.dataCy('update-button').click();
     cy.wait('@reduceOrder').its('response.statusCode').should('eq', 400);
