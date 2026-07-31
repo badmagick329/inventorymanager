@@ -10,6 +10,8 @@ from .views import (
     ProblemReportsList,
     UserAccountsDetail,
     UserAccountsList,
+    AssistantConversationView,
+    AssistantMessageView,
 )
 
 urlpatterns = [
@@ -39,4 +41,6 @@ urlpatterns = [
     path("", UserAccountsList.as_view(), name="user_accounts"),
     path("/<int:user_id>", UserAccountsDetail.as_view(), name="user_account"),
     path("/me", MeView.as_view(), name="me"),
+    path("/assistant", AssistantConversationView.as_view(), name="assistant"),
+    path("/assistant/messages", AssistantMessageView.as_view(), name="assistant_messages"),
 ]
