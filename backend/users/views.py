@@ -1,6 +1,7 @@
 from django.contrib.auth import login
 from datetime import timedelta
 
+from django.db import transaction
 from django.db.models import Count, Max
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -14,7 +15,13 @@ from rest_framework.views import APIView
 from utils.permissions import ReadOnlyUserPermission
 from utils.responses import APIResponses
 
-from .models import FrictionEvent, ProblemReport, UserAccount
+import json
+
+from django.http import StreamingHttpResponse
+from items.models import ItemLocation
+
+from .assistant import configuration, estimated_cost, stream_answer
+from .models import AssistantConversation, AssistantDailyUsage, AssistantMessage, FrictionEvent, ProblemReport, UserAccount
 from .serializers import (
     FrictionEventSerializer,
     ProblemReportCreateSerializer,
@@ -181,3 +188,110 @@ class PossibleFriction(APIView):
             .order_by("-failure_count", "-last_occurred")
         )
         return APIResponses.ok(list(summary))
+
+
+ASSISTANT_DAILY_LIMIT = 50
+
+
+def assistant_quota(user):
+    usage, _ = AssistantDailyUsage.objects.get_or_create(user=user, date=timezone.localdate())
+    return {"used": usage.requests, "limit": ASSISTANT_DAILY_LIMIT, "remaining": max(0, ASSISTANT_DAILY_LIMIT - usage.requests), "reset": str(timezone.localdate() + timedelta(days=1))}
+
+
+def assistant_location(user, location_id):
+    if not str(location_id).isdigit():
+        return None
+    location = ItemLocation.objects.filter(id=location_id).first()
+    if not location or not location.is_visible_to(user):
+        return None
+    return location
+
+
+class AssistantConversationView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request: Request):
+        user = request.user
+        assert isinstance(user, UserAccount)
+        location = assistant_location(user, request.GET.get("location_id"))
+        if not location:
+            return Response({"error": "Open the assistant from a school page."}, status=status.HTTP_400_BAD_REQUEST)
+        conversation_id = request.GET.get("conversation_id")
+        conversations = AssistantConversation.objects.filter(user=user, location=location)
+        conversation = conversations.filter(id=conversation_id).first() if conversation_id else conversations.order_by("-updated_at").first()
+        messages = [] if not conversation else [{"id": item.id, "role": item.role, "text": item.content, "model": item.model or None, "usage": item.usage, "estimatedCostUsd": item.estimated_cost_usd} for item in conversation.messages.all()]
+        return APIResponses.ok({"conversationId": conversation.id if conversation else None, "messages": messages, "quota": assistant_quota(user), "model": __import__("os").environ.get("OPENAI_MODEL", "gpt-5.6-luna"), "reasoningEffort": __import__("os").environ.get("OPENAI_REASONING_EFFORT", "high")})
+
+    def delete(self, request: Request):
+        user = request.user
+        assert isinstance(user, UserAccount)
+        AssistantConversation.objects.filter(id=request.GET.get("conversation_id"), user=user).delete()
+        return APIResponses.deleted()
+
+
+class AssistantMessageView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request: Request):
+        user = request.user
+        assert isinstance(user, UserAccount)
+        location = assistant_location(user, request.data.get("locationId"))
+        if not location:
+            return Response({"error": "Open the assistant from a school page."}, status=status.HTTP_400_BAD_REQUEST)
+        message = request.data.get("message", "").strip()
+        if not message:
+            return APIResponses.bad_request({"message": ["A message is required."]})
+        try:
+            configuration()
+        except RuntimeError as error:
+            return Response({"error": str(error), "quota": assistant_quota(user)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        with transaction.atomic():
+            conversation_id = request.data.get("conversationId")
+            if conversation_id:
+                conversation = AssistantConversation.objects.filter(id=conversation_id, user=user, location=location).first()
+                if not conversation:
+                    return Response({"error": "That chat is not available for this school."}, status=status.HTTP_404_NOT_FOUND)
+            usage, _ = AssistantDailyUsage.objects.select_for_update().get_or_create(user=user, date=timezone.localdate())
+            if usage.requests >= ASSISTANT_DAILY_LIMIT:
+                return Response({"error": "Daily assistant limit reached.", "quota": assistant_quota(user)}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+            usage.requests += 1
+            usage.save()
+            if not conversation_id:
+                conversation = AssistantConversation.objects.create(user=user, location=location)
+            AssistantMessage.objects.create(conversation=conversation, role=AssistantMessage.Role.USER, content=message)
+        history = [{"role": item.role, "content": item.content} for item in conversation.messages.order_by("-created_at")[1:21]][::-1]
+
+        def sse(event, data):
+            return "event: %s\ndata: %s\n\n" % (event, json.dumps(data, default=str))
+
+        def generate():
+            text = ""
+            started = False
+            try:
+                yield sse("conversation", {"conversationId": conversation.id, "quota": assistant_quota(user)})
+                for event, data in stream_answer(user, location.id, message, history):
+                    started = True
+                    if event == "delta":
+                        text += data
+                        yield sse("delta", {"delta": data})
+                    else:
+                        if not text:
+                            text = "I couldn’t produce a response. Please try again."
+                            yield sse("delta", {"delta": text})
+                        model = data["model"]
+                        usage = data["usage"]
+                        cost = estimated_cost(usage, model)
+                        saved = AssistantMessage.objects.create(conversation=conversation, role=AssistantMessage.Role.ASSISTANT, content=text, model=model, usage=usage, estimated_cost_usd=cost)
+                        yield sse("complete", {"id": saved.id, "usage": usage, "estimatedCostUsd": cost, "quota": assistant_quota(user)})
+            except Exception as error:
+                if not started:
+                    with transaction.atomic():
+                        usage = AssistantDailyUsage.objects.select_for_update().get(user=user, date=timezone.localdate())
+                        usage.requests = max(0, usage.requests - 1)
+                        usage.save(update_fields=["requests"])
+                yield sse("error", {"error": str(error) if isinstance(error, RuntimeError) else "The assistant could not complete that request.", "quota": assistant_quota(user)})
+
+        response = StreamingHttpResponse(generate(), content_type="text/event-stream")
+        response["Cache-Control"] = "no-cache"
+        response["X-Accel-Buffering"] = "no"
+        return response

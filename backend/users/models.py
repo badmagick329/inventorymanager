@@ -5,6 +5,7 @@ from django.contrib.auth.models import (
 )
 from django.contrib.auth.password_validation import validate_password
 from django.db import models
+from django.conf import settings
 
 
 class UserAccountManager(BaseUserManager):
@@ -100,3 +101,45 @@ class ProblemReport(models.Model):
 
     class Meta:  # type: ignore
         ordering = ["-created_at"]
+
+
+class AssistantConversation(models.Model):
+    user = models.ForeignKey(
+        UserAccount, on_delete=models.CASCADE, related_name="assistant_chats"
+    )
+    location = models.ForeignKey(
+        "items.ItemLocation", on_delete=models.CASCADE,
+        related_name="assistant_chats", null=True, blank=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class AssistantMessage(models.Model):
+    class Role(models.TextChoices):
+        USER = "user"
+        ASSISTANT = "assistant"
+
+    conversation = models.ForeignKey(
+        AssistantConversation, on_delete=models.CASCADE, related_name="messages"
+    )
+    role = models.CharField(max_length=10, choices=Role.choices)
+    content = models.TextField()
+    model = models.CharField(max_length=100, blank=True)
+    usage = models.JSONField(null=True, blank=True)
+    estimated_cost_usd = models.FloatField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:  # type: ignore
+        ordering = ["created_at"]
+
+
+class AssistantDailyUsage(models.Model):
+    user = models.ForeignKey(
+        UserAccount, on_delete=models.CASCADE, related_name="assistant_usage"
+    )
+    date = models.DateField()
+    requests = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:  # type: ignore
+        constraints = [models.UniqueConstraint(fields=["user", "date"], name="unique_assistant_usage_per_day")]

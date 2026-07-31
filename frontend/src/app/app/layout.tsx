@@ -2,6 +2,7 @@
 
 import { GlobalContextProvider } from '@/app/context/global-context-provider';
 import { Navbar } from '@/components';
+import AssistantChat from '@/components/assistant-chat';
 
 export default function AppLayout({
   children,
@@ -13,6 +14,7 @@ export default function AppLayout({
       <GlobalContextProvider>
         <Navbar />
         {children}
+        <AssistantChat />
       </GlobalContextProvider>
     </div>
   );
