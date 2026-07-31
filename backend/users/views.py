@@ -218,7 +218,7 @@ class AssistantConversationView(APIView):
             return Response({"error": "Open the assistant from a school page."}, status=status.HTTP_400_BAD_REQUEST)
         conversation_id = request.GET.get("conversation_id")
         conversations = AssistantConversation.objects.filter(user=user, location=location)
-        conversation = conversations.filter(id=conversation_id).first() if conversation_id else conversations.order_by("-updated_at").first()
+        conversation = conversations.filter(id=conversation_id).first() if conversation_id else None
         messages = [] if not conversation else [{"id": item.id, "role": item.role, "text": item.content, "model": item.model or None, "usage": item.usage, "estimatedCostUsd": item.estimated_cost_usd} for item in conversation.messages.all()]
         return APIResponses.ok({"conversationId": conversation.id if conversation else None, "messages": messages, "quota": assistant_quota(user), "model": __import__("os").environ.get("OPENAI_MODEL", "gpt-5.6-luna"), "reasoningEffort": __import__("os").environ.get("OPENAI_REASONING_EFFORT", "high")})
 
