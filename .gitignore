@@ -6,6 +6,7 @@ __pycache__/
 db/
 db_test/
 db.log
+docker_tars/
 backend/.env.e2e
 nginx/conf.d/*
 nginx/logs/*
