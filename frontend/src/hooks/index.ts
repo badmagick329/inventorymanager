@@ -18,6 +18,7 @@ import useOrderDetail from './useOrderDetail';
 import useOrderFormDefaults from './useOrderFormDefaults';
 import useOrderVendors from './useOrderVendors';
 import usePossibleFriction from './usePossibleFriction';
+import useAssistantActivity from './useAssistantActivity';
 import useOrders from './useOrders';
 import useSaleFormDefaults from './useSaleFormDefaults';
 import useSales from './useSales';
@@ -56,4 +57,5 @@ export {
   useSaleAmountPaidInput,
   useOrderVendors,
   usePossibleFriction,
+  useAssistantActivity,
 };

@@ -1,6 +1,6 @@
 'use client';
 
-import { APP_MANAGE_LOCATIONS, APP_MANAGE_USERS } from '@/consts/urls';
+import { APP_ASSISTANT_ACTIVITY, APP_MANAGE_LOCATIONS, APP_MANAGE_USERS } from '@/consts/urls';
 import { Button, Link } from "@heroui/react";
 
 export default function AdminPage() {
@@ -26,6 +26,16 @@ export default function AdminPage() {
         size='lg'
       >
         Manage Users
+      </Button>
+      <Button
+        as={Link}
+        href={APP_ASSISTANT_ACTIVITY}
+        className='w-64 rounded-md font-semibold'
+        color='secondary'
+        variant='ghost'
+        size='lg'
+      >
+        Assistant Activity
       </Button>
     </div>
   );

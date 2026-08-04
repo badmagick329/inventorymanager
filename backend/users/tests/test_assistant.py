@@ -1,8 +1,9 @@
 from decimal import Decimal
+from types import SimpleNamespace
 
 from django.utils import timezone
 from items.models import ItemLocation
-from users.assistant import financial_lookup
+from users.assistant import combined_usage, financial_lookup
 from users.models import (
     AssistantConversation,
     AssistantDailyUsage,
@@ -39,6 +40,55 @@ def test_lookup_is_limited_to_active_school(
     assert result["outstanding_debt"] == [{
         "vendor__name": "Ali", "order__location__name": "FGS",
         "due_rs": Decimal("10"),
+    }]
+
+
+def test_combined_usage_includes_lookup_and_answer_requests():
+    lookup = SimpleNamespace(
+        input_tokens=10,
+        output_tokens=4,
+        total_tokens=14,
+        input_tokens_details=SimpleNamespace(cached_tokens=3),
+        output_tokens_details=SimpleNamespace(reasoning_tokens=2),
+    )
+    answer = SimpleNamespace(
+        input_tokens=6,
+        output_tokens=8,
+        total_tokens=14,
+        input_tokens_details=SimpleNamespace(cached_tokens=1),
+        output_tokens_details=SimpleNamespace(reasoning_tokens=5),
+    )
+
+    assert combined_usage(lookup, answer) == {
+        "input_tokens": 16,
+        "cached_input_tokens": 4,
+        "output_tokens": 12,
+        "reasoning_tokens": 7,
+        "total_tokens": 28,
+    }
+
+
+def test_debt_summary_totals_all_debt_but_limits_returned_rows(
+    user_factory, item_location_factory, vendor_factory, order_factory, sale_factory
+):
+    user, _ = user_factory()
+    location = item_location_factory(users=[user])
+    first_vendor, _ = vendor_factory(name="First", location=location)
+    second_vendor, _ = vendor_factory(name="Second", location=location)
+    first_order = order_factory(name="First item", location=location, user=user)
+    second_order = order_factory(name="Second item", location=location, user=user)
+    sale_factory(order=first_order, vendor=first_vendor, debt=Decimal("10"), user=user)
+    sale_factory(order=second_order, vendor=second_vendor, debt=Decimal("20"), user=user)
+
+    result = financial_lookup(user, location.id, {
+        "query_type": "debt_summary", "location_name": None,
+        "vendor_name": None, "order_name": None, "limit": 1,
+    })
+
+    assert result["total_due_rs"] == Decimal("30")
+    assert result["outstanding_debt"] == [{
+        "vendor__name": "Second", "order__location__name": location.name,
+        "due_rs": Decimal("20"),
     }]
 
 
@@ -113,3 +163,55 @@ def test_sse_emits_delta_and_complete(
     assert response["Content-Type"] == "text/event-stream"
     assert "event: delta" in body
     assert "event: complete" in body
+
+
+def test_sse_explains_when_openai_account_has_no_credits(
+    api_client, monkeypatch, user_factory, item_location_factory
+):
+    user, _ = user_factory()
+    location = item_location_factory(users=[user])
+    monkeypatch.setattr("users.views.configuration", lambda: ("gpt-5.6-luna", "high"))
+
+    def no_credits(*args):
+        raise Exception("You have no credits remaining.")
+        yield
+
+    monkeypatch.setattr("users.views.stream_answer", no_credits)
+    api_client.force_authenticate(user)
+
+    response = api_client.post(
+        "/api/users/assistant/messages",
+        {"locationId": location.id, "message": "Hello"}, format="json",
+    )
+    body = b"".join(response.streaming_content).decode()
+
+    assert "The OpenAI API account has no credits remaining." in body
+
+
+def test_only_admin_can_view_assistant_activity(
+    api_client, user_factory, item_location_factory
+):
+    user, _ = user_factory(username="teacher")
+    admin, _ = user_factory(is_admin=True)
+    location = item_location_factory(name="FGS", users=[user])
+    conversation = AssistantConversation.objects.create(user=user, location=location)
+    AssistantMessage.objects.create(conversation=conversation, role="user", content="Who owes us money?")
+    AssistantMessage.objects.create(
+        conversation=conversation, role="assistant", content="Ali owes Rs 10.",
+        model="gpt-5.6-luna", usage={"total_tokens": 12}, estimated_cost_usd=0.01,
+    )
+
+    api_client.force_authenticate(user)
+    assert api_client.get("/api/users/assistant/activity").status_code == 403
+
+    api_client.force_authenticate(admin)
+    response = api_client.get("/api/users/assistant/activity?q=owes&location_id=" + str(location.id))
+
+    assert response.status_code == 200
+    assert response.data["pagination"]["total"] == 1
+    activity = response.data["results"][0]
+    assert activity["user"]["username"] == "teacher"
+    assert activity["location"]["name"] == "FGS"
+    assert activity["status"] == "completed"
+    assert activity["totalTokens"] == 12
+    assert activity["totalCostUsd"] == 0.01

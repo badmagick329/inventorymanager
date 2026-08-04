@@ -10,8 +10,6 @@ import { usePathname } from 'next/navigation';
 type Usage = Record<string, number | null> | null;
 type Message = { id: number; role: 'user' | 'assistant'; text: string; usage?: Usage; estimatedCostUsd?: number | null };
 type Quota = { remaining: number };
-type SavedConversation = { id: number; lastActiveAt: number };
-const CHAT_IDLE_TIMEOUT_MS = 8 * 60 * 60 * 1000;
 
 function parseBlock(block: string): { event: string; data: unknown } | null {
   const lines = block.replace(/\r/g, '').split('\n');
@@ -24,31 +22,22 @@ function parseBlock(block: string): { event: string; data: unknown } | null {
 export default function AssistantChat() {
   const pathname = usePathname();
   const locationId = pathname.match(/^\/app\/(?:items|vendors)\/(\d+)/)?.[1] ?? null;
-  const storageKey = locationId ? `inventory-assistant-conversation-${locationId}` : null;
   const [open, setOpen] = useState(false); const [conversationId, setConversationId] = useState<number | null>(null); const [messages, setMessages] = useState<Message[]>([]); const [text, setText] = useState(''); const [remaining, setRemaining] = useState<number | null>(null); const [busy, setBusy] = useState(false); const [error, setError] = useState('');
   useEffect(() => {
-    if (!open || !locationId || !storageKey) return;
-    const saved = localStorage.getItem(storageKey);
-    let conversationId: number | null = null;
-    try {
-      const parsed = saved ? JSON.parse(saved) as SavedConversation : null;
-      if (parsed && Date.now() - parsed.lastActiveAt < CHAT_IDLE_TIMEOUT_MS) conversationId = parsed.id;
-      else localStorage.removeItem(storageKey);
-    } catch { localStorage.removeItem(storageKey); }
-    const query = `?location_id=${locationId}${conversationId ? `&conversation_id=${conversationId}` : ''}`;
-    axios.get(`/fetch/assistant${query}`).then(({ data }) => {
-      setConversationId(data.conversationId);
-      setMessages(data.messages || []);
+    if (!open || !locationId) return;
+    setConversationId(null);
+    setMessages([]);
+    setError('');
+    axios.get(`/fetch/assistant?location_id=${locationId}`).then(({ data }) => {
       setRemaining(data.quota.remaining);
-      if (!data.conversationId) localStorage.removeItem(storageKey);
     }).catch(() => setRemaining(50));
-  }, [locationId, open, storageKey]);
+  }, [locationId, open]);
   async function send() {
     if (!text.trim() || busy || remaining === 0) return;
     const message = text.trim(); const userId = Date.now(); const placeholderId = userId + 1;
     setText(''); setBusy(true); setError(''); setMessages((items) => [...items, { id: userId, role: 'user', text: message }, { id: placeholderId, role: 'assistant', text: '' }]);
     try {
-      if (!locationId || !storageKey) throw new Error('Open a school first.');
+      if (!locationId) throw new Error('Open a school first.');
       const response = await fetch('/fetch/assistant/messages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message, conversationId, locationId: Number(locationId) }) });
       if (!response.ok || !response.body) {
         const body = await response.json().catch(() => ({})); throw new Error(body.error || 'The assistant request failed.');
@@ -57,7 +46,7 @@ export default function AssistantChat() {
       const handle = (block: string) => {
         const parsed = parseBlock(block); if (!parsed || typeof parsed.data !== 'object' || parsed.data === null) return;
         const data = parsed.data as Record<string, unknown>;
-        if (parsed.event === 'conversation') { const id = data.conversationId as number; setConversationId(id); if (storageKey) localStorage.setItem(storageKey, JSON.stringify({ id, lastActiveAt: Date.now() })); setRemaining((data.quota as Quota).remaining); }
+        if (parsed.event === 'conversation') { const id = data.conversationId as number; setConversationId(id); setRemaining((data.quota as Quota).remaining); }
         if (parsed.event === 'delta' && typeof data.delta === 'string') setMessages((items) => items.map((item) => item.id === placeholderId ? { ...item, text: item.text + data.delta } : item));
         if (parsed.event === 'complete') { setRemaining((data.quota as Quota).remaining); setMessages((items) => items.map((item) => item.id === placeholderId ? { ...item, id: data.id as number, usage: (data.usage as Usage), estimatedCostUsd: data.estimatedCostUsd as number | null } : item)); }
         if (parsed.event === 'error') { setMessages((items) => items.filter((item) => item.id !== placeholderId)); setError(typeof data.error === 'string' ? data.error : 'The assistant request failed.'); if (data.quota) setRemaining((data.quota as Quota).remaining); }
@@ -67,7 +56,7 @@ export default function AssistantChat() {
     } catch (caught) { setMessages((items) => items.filter((item) => item.id !== placeholderId)); setError(caught instanceof Error ? caught.message : 'The assistant request failed.'); }
     finally { setBusy(false); }
   }
-  function newChat() { if (storageKey) localStorage.removeItem(storageKey); setConversationId(null); setMessages([]); setError(''); }
+  function newChat() { setConversationId(null); setMessages([]); setError(''); }
   const totalCost = messages.reduce((total, item) => total + (item.estimatedCostUsd || 0), 0);
   if (!locationId) return null;
   if (!open) return <Button isIconOnly className='fixed bottom-5 right-5 z-50 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-500' onPress={() => setOpen(true)} aria-label='Open financial assistant'><MessageCircle /></Button>;
