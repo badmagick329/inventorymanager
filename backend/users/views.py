@@ -227,7 +227,7 @@ class AssistantActivityView(APIView):
                 "location": None if not conversation.location else {"id": conversation.location_id, "name": conversation.location.name},
                 "createdAt": conversation.created_at,
                 "updatedAt": conversation.updated_at,
-                "status": "completed" if messages and messages[-1].role == AssistantMessage.Role.ASSISTANT else "no_response",
+                "status": "failed" if messages and messages[-1].error_message else ("completed" if messages and messages[-1].role == AssistantMessage.Role.ASSISTANT else "no_response"),
                 "totalTokens": sum((message.usage or {}).get("total_tokens") or 0 for message in assistant_messages),
                 "totalCostUsd": sum(message.estimated_cost_usd or 0 for message in assistant_messages),
                 "messages": [{
@@ -238,6 +238,7 @@ class AssistantActivityView(APIView):
                     "model": message.model or None,
                     "usage": message.usage,
                     "estimatedCostUsd": message.estimated_cost_usd,
+                    "errorMessage": message.error_message or None,
                 } for message in messages],
             }
 
@@ -358,6 +359,12 @@ class AssistantMessageView(APIView):
                     error_text = "The OpenAI API account has no credits remaining. Add API billing credits and try again."
                 elif not isinstance(error, RuntimeError):
                     error_text = "The assistant could not complete that request."
+                AssistantMessage.objects.create(
+                    conversation=conversation,
+                    role=AssistantMessage.Role.ASSISTANT,
+                    content="",
+                    error_message=error_text,
+                )
                 yield sse("error", {"error": error_text, "quota": assistant_quota(user)})
 
         response = StreamingHttpResponse(generate(), content_type="text/event-stream")

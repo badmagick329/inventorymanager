@@ -4,18 +4,15 @@ import {
   Control,
   Controller,
   FormState,
-  UseFormRegister,
 } from 'react-hook-form';
 
 type SalePriceProps = {
   control: Control<SaleFormValues, any>;
-  register: UseFormRegister<SaleFormValues>;
   formState: FormState<SaleFormValues>;
 };
 
 export default function SalePrice({
   control,
-  register,
   formState,
 }: SalePriceProps) {
   return (
@@ -26,18 +23,19 @@ export default function SalePrice({
       <Controller
         name='salePrice'
         control={control}
-        render={({ field }) => (
+        rules={{ required: 'Sale price is required', validate: (value) => Number.isFinite(Number(value)) && Number(value) >= 1 || 'Please enter a number of at least 1.' }}
+        render={({ field, fieldState }) => (
           <Input
             data-testid='sale-price-input'
             type='number'
             variant='flat'
             autoComplete='off'
             label='Sale Price'
+            labelPlacement='outside'
+            placeholder=' '
+            validationBehavior='aria'
+            isInvalid={Boolean(fieldState.error)}
             {...field}
-            {...register('salePrice', {
-              required: 'Sale price is required',
-              min: 1,
-            })}
           />
         )}
       />

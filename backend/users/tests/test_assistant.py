@@ -186,6 +186,8 @@ def test_sse_explains_when_openai_account_has_no_credits(
     body = b"".join(response.streaming_content).decode()
 
     assert "The OpenAI API account has no credits remaining." in body
+    failure = AssistantMessage.objects.get(conversation__user=user, role="assistant")
+    assert failure.error_message == "The OpenAI API account has no credits remaining. Add API billing credits and try again."
 
 
 def test_only_admin_can_view_assistant_activity(

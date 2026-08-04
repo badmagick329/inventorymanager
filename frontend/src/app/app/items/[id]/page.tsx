@@ -86,11 +86,11 @@ export default function Orders() {
           <CreateOrderModal locationId={locationId} />
         </div>
         <Button
-          className='order-1 self-start bg-foreground/10 hover:bg-foreground/20 md:order-1'
+          className='order-1 self-start md:order-1'
           data-testid='items-manage-vendors-button'
           as={Link}
           href={`${APP_MANAGE_VENDORS}/${locationId}`}
-          variant='flat'
+          variant='bordered'
           color='default'
           radius='sm'
         >

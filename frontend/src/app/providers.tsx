@@ -16,7 +16,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <NextThemesProvider
           attribute='class'
           defaultTheme='dark'
-          themes={['dark', 'light', 'modern']}
+          themes={['dark', 'light']}
         >
           {/* <ReactQueryDevtools initialIsOpen={false} /> */}
           {children}

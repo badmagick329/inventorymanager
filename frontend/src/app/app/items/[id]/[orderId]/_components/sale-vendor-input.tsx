@@ -7,14 +7,12 @@ import {
   Controller,
   FormState,
   UseFormGetValues,
-  UseFormRegister,
 } from 'react-hook-form';
 
 import { VendorInputBadge } from '.';
 
 type SaleVendorProps = {
   control: Control<SaleFormValues, any>;
-  register: UseFormRegister<SaleFormValues>;
   formState: FormState<SaleFormValues>;
   showHelpText: boolean;
   locationId: string;
@@ -23,7 +21,6 @@ type SaleVendorProps = {
 
 export default function SaleVendor({
   control,
-  register,
   formState,
   showHelpText,
   locationId,
@@ -52,22 +49,26 @@ export default function SaleVendor({
         <Controller
           name='vendor'
           control={control}
-          render={({ field: { onChange, value } }) => (
+          rules={{ required: 'Vendor name is required' }}
+          render={({ field: { onChange, value }, fieldState }) => (
             <Autocomplete
               data-testid='sale-vendor-input'
               label='Enter vendor name or select from existing vendors'
+              labelPlacement='outside'
+              placeholder=' '
               isLoading={isLoading}
               defaultItems={data}
               onInputChange={onChange}
               inputValue={value}
               allowsCustomValue
+              validationBehavior='aria'
+              isInvalid={Boolean(fieldState.error)}
               endContent={
                 <VendorInputBadge
                   getValue={() => getValues('vendor')}
                   existingNames={existingNames}
                 />
               }
-              {...register('vendor', { required: 'Vendor name is required' })}
               // Fix for Autocomplete throwing the following error:
               // "stopPropagation is now the default behavior for events in
               // React Spectrum. You can use continuePropagation() to revert

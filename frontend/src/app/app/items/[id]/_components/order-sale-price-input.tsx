@@ -5,19 +5,16 @@ import {
   Control,
   Controller,
   FormState,
-  UseFormRegister,
 } from 'react-hook-form';
 
 type OrderSalePriceInputProps = {
   control: Control<OrderFormValues, any>;
-  register: UseFormRegister<OrderFormValues>;
   formState: FormState<OrderFormValues>;
   showHelpText?: boolean;
 };
 
 export default function OrderSalePriceInput({
   control,
-  register,
   formState,
   showHelpText,
 }: OrderSalePriceInputProps) {
@@ -34,18 +31,19 @@ export default function OrderSalePriceInput({
       <Controller
         name='salePrice'
         control={control}
-        render={({ field }) => (
+        rules={{ required: 'Sale price is required', validate: (value) => Number.isFinite(Number(value)) && Number(value) >= 1 || 'Please enter a number of at least 1.' }}
+        render={({ field, fieldState }) => (
           <Input
             data-testid='items-order-sale-input'
             type='number'
             variant='flat'
             autoComplete='off'
             label='Sale Price'
+            labelPlacement='outside'
+            placeholder=' '
+            validationBehavior='aria'
+            isInvalid={Boolean(fieldState.error)}
             {...field}
-            {...register('salePrice', {
-              required: 'Sale price is required',
-              min: 1,
-            })}
           />
         )}
       />

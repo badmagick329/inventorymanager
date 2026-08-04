@@ -23,6 +23,7 @@ export default function useAssistantActivity(filters: AssistantActivityFilters) 
   return useQuery({
     queryKey: ['assistant-activity', params.toString()],
     queryFn: async () => (await axios.get<AssistantActivityResponse>(`${NEXT_ASSISTANT_ACTIVITY}?${params}`)).data,
+    placeholderData: (previousData) => previousData,
     retry: false,
   });
 }

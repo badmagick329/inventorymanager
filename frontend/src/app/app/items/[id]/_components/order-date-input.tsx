@@ -8,13 +8,11 @@ import {
   Controller,
   FormState,
   UseFormGetValues,
-  UseFormRegister,
   UseFormSetValue,
 } from 'react-hook-form';
 
 type OrderDateInputProps = {
   control: Control<OrderFormValues, any>;
-  register: UseFormRegister<OrderFormValues>;
   formState: FormState<OrderFormValues>;
   setValue: UseFormSetValue<OrderFormValues>;
   getValues: UseFormGetValues<OrderFormValues>;
@@ -23,7 +21,6 @@ type OrderDateInputProps = {
 
 export default function OrderDateInput({
   control,
-  register,
   formState,
   setValue,
   getValues,
@@ -51,7 +48,6 @@ export default function OrderDateInput({
               type='date'
               variant='flat'
               {...field}
-              {...register('date')}
             />
           )}
         />

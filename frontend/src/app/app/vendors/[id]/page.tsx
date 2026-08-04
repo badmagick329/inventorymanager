@@ -35,10 +35,9 @@ export default function LocationVendors() {
     <div className='flex w-full flex-col items-center gap-4 pt-6'>
       <span className='text-2xl font-black'>Manage Vendors</span>
       <Button
-        className='bg-foreground/10 hover:bg-foreground/20'
         as={Link}
         href={`${APP_ITEMS}/${locationId}`}
-        variant='flat'
+        variant='bordered'
         radius='sm'
         color='default'
       >

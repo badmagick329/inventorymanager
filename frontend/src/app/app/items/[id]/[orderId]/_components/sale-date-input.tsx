@@ -7,13 +7,11 @@ import {
   Controller,
   FormState,
   UseFormGetValues,
-  UseFormRegister,
   UseFormSetValue,
 } from 'react-hook-form';
 
 type SaleDateProps = {
   control: Control<SaleFormValues, any>;
-  register: UseFormRegister<SaleFormValues>;
   formState: FormState<SaleFormValues>;
   setValue: UseFormSetValue<SaleFormValues>;
   getValues: UseFormGetValues<SaleFormValues>;
@@ -21,7 +19,6 @@ type SaleDateProps = {
 
 export default function SaleDate({
   control,
-  register,
   formState,
   setValue,
   getValues,
@@ -44,7 +41,6 @@ export default function SaleDate({
               type='date'
               variant='flat'
               {...field}
-              {...register('date')}
             />
           )}
         />
