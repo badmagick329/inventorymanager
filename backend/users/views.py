@@ -2,7 +2,7 @@ from django.contrib.auth import login
 from datetime import timedelta
 
 from django.db import transaction
-from django.db.models import Count, Max
+from django.db.models import Count, Max, Prefetch
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from knox.views import LoginView as KnoxLoginView
@@ -20,7 +20,7 @@ import json
 from django.http import StreamingHttpResponse
 from items.models import ItemLocation
 
-from .assistant import configuration, estimated_cost, stream_answer
+from .assistant import CHAT_HISTORY_LIMIT, configuration, estimated_cost, stream_answer
 from .models import AssistantConversation, AssistantDailyUsage, AssistantMessage, FrictionEvent, ProblemReport, UserAccount
 from .serializers import (
     FrictionEventSerializer,
@@ -190,6 +190,70 @@ class PossibleFriction(APIView):
         return APIResponses.ok(list(summary))
 
 
+class AssistantActivityView(APIView):
+    permission_classes = (permissions.IsAdminUser,)
+
+    def get(self, request: Request):
+        params = request.GET
+        conversations = AssistantConversation.objects.select_related("user", "location").prefetch_related(
+            Prefetch("messages", queryset=AssistantMessage.objects.order_by("created_at"))
+        )
+        if params.get("user_id", "").isdigit():
+            conversations = conversations.filter(user_id=params["user_id"])
+        if params.get("location_id", "").isdigit():
+            conversations = conversations.filter(location_id=params["location_id"])
+        if query := params.get("q", "").strip():
+            conversations = conversations.filter(messages__content__icontains=query)
+        if date_from := params.get("date_from"):
+            conversations = conversations.filter(updated_at__date__gte=date_from)
+        if date_to := params.get("date_to"):
+            conversations = conversations.filter(updated_at__date__lte=date_to)
+        conversations = conversations.distinct().order_by("-updated_at")
+
+        try:
+            page = max(int(params.get("page", 1) or 1), 1)
+            page_size = min(max(int(params.get("page_size", 25) or 25), 1), 100)
+        except ValueError:
+            return APIResponses.bad_request({"page": ["Page and page size must be whole numbers."]})
+        total = conversations.count()
+        page_conversations = list(conversations[(page - 1) * page_size: page * page_size])
+
+        def conversation_data(conversation):
+            messages = list(conversation.messages.all())
+            assistant_messages = [message for message in messages if message.role == AssistantMessage.Role.ASSISTANT]
+            return {
+                "id": conversation.id,
+                "user": {"id": conversation.user_id, "username": conversation.user.username},
+                "location": None if not conversation.location else {"id": conversation.location_id, "name": conversation.location.name},
+                "createdAt": conversation.created_at,
+                "updatedAt": conversation.updated_at,
+                "status": "completed" if messages and messages[-1].role == AssistantMessage.Role.ASSISTANT else "no_response",
+                "totalTokens": sum((message.usage or {}).get("total_tokens") or 0 for message in assistant_messages),
+                "totalCostUsd": sum(message.estimated_cost_usd or 0 for message in assistant_messages),
+                "messages": [{
+                    "id": message.id,
+                    "role": message.role,
+                    "content": message.content,
+                    "createdAt": message.created_at,
+                    "model": message.model or None,
+                    "usage": message.usage,
+                    "estimatedCostUsd": message.estimated_cost_usd,
+                } for message in messages],
+            }
+
+        options = AssistantConversation.objects.select_related("user", "location")
+        users = list(options.values("user_id", "user__username").distinct().order_by("user__username"))
+        locations = list(options.exclude(location__isnull=True).values("location_id", "location__name").distinct().order_by("location__name"))
+        return APIResponses.ok({
+            "results": [conversation_data(conversation) for conversation in page_conversations],
+            "pagination": {"page": page, "pageSize": page_size, "total": total, "hasNext": page * page_size < total},
+            "filterOptions": {
+                "users": [{"id": user["user_id"], "username": user["user__username"]} for user in users],
+                "locations": [{"id": location["location_id"], "name": location["location__name"]} for location in locations],
+            },
+        })
+
+
 ASSISTANT_DAILY_LIMIT = 50
 
 
@@ -259,7 +323,7 @@ class AssistantMessageView(APIView):
             if not conversation_id:
                 conversation = AssistantConversation.objects.create(user=user, location=location)
             AssistantMessage.objects.create(conversation=conversation, role=AssistantMessage.Role.USER, content=message)
-        history = [{"role": item.role, "content": item.content} for item in conversation.messages.order_by("-created_at")[1:21]][::-1]
+        history = [{"role": item.role, "content": item.content} for item in conversation.messages.order_by("-created_at")[1:CHAT_HISTORY_LIMIT + 1]][::-1]
 
         def sse(event, data):
             return "event: %s\ndata: %s\n\n" % (event, json.dumps(data, default=str))
@@ -289,7 +353,12 @@ class AssistantMessageView(APIView):
                         usage = AssistantDailyUsage.objects.select_for_update().get(user=user, date=timezone.localdate())
                         usage.requests = max(0, usage.requests - 1)
                         usage.save(update_fields=["requests"])
-                yield sse("error", {"error": str(error) if isinstance(error, RuntimeError) else "The assistant could not complete that request.", "quota": assistant_quota(user)})
+                error_text = str(error)
+                if "no credits remaining" in error_text.lower():
+                    error_text = "The OpenAI API account has no credits remaining. Add API billing credits and try again."
+                elif not isinstance(error, RuntimeError):
+                    error_text = "The assistant could not complete that request."
+                yield sse("error", {"error": error_text, "quota": assistant_quota(user)})
 
         response = StreamingHttpResponse(generate(), content_type="text/event-stream")
         response["Cache-Control"] = "no-cache"

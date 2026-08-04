@@ -11,6 +11,7 @@ from .views import (
     UserAccountsDetail,
     UserAccountsList,
     AssistantConversationView,
+    AssistantActivityView,
     AssistantMessageView,
 )
 
@@ -42,5 +43,6 @@ urlpatterns = [
     path("/<int:user_id>", UserAccountsDetail.as_view(), name="user_account"),
     path("/me", MeView.as_view(), name="me"),
     path("/assistant", AssistantConversationView.as_view(), name="assistant"),
+    path("/assistant/activity", AssistantActivityView.as_view(), name="assistant_activity"),
     path("/assistant/messages", AssistantMessageView.as_view(), name="assistant_messages"),
 ]

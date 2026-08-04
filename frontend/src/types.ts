@@ -182,6 +182,37 @@ export type PossibleFrictionSummary = {
   last_occurred: string;
 };
 
+export type AssistantActivityMessage = {
+  id: number;
+  role: 'user' | 'assistant';
+  content: string;
+  createdAt: string;
+  model: string | null;
+  usage: Record<string, number | null> | null;
+  estimatedCostUsd: number | null;
+};
+
+export type AssistantActivityConversation = {
+  id: number;
+  user: { id: number; username: string };
+  location: { id: number; name: string } | null;
+  createdAt: string;
+  updatedAt: string;
+  status: 'completed' | 'no_response';
+  totalTokens: number;
+  totalCostUsd: number;
+  messages: AssistantActivityMessage[];
+};
+
+export type AssistantActivityResponse = {
+  results: AssistantActivityConversation[];
+  pagination: { page: number; pageSize: number; total: number; hasNext: boolean };
+  filterOptions: {
+    users: { id: number; username: string }[];
+    locations: { id: number; name: string }[];
+  };
+};
+
 export type OrdersTableRow = ReturnType<typeof createOrdersTableData>[0];
 
 export type DeleteOrder = ReturnType<typeof useDeleteOrder>;

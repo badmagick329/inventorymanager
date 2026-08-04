@@ -8,6 +8,9 @@ from openai import OpenAI
 
 VALID_MODELS = {"gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol"}
 VALID_EFFORTS = {"none", "low", "medium", "high", "xhigh", "max"}
+CHAT_HISTORY_LIMIT = 6
+DEFAULT_RESULT_LIMIT = 10
+MAX_RESULT_LIMIT = 25
 
 TOOL = {
     "type": "function",
@@ -22,7 +25,7 @@ TOOL = {
             "location_name": {"type": ["string", "null"]},
             "vendor_name": {"type": ["string", "null"]},
             "order_name": {"type": ["string", "null"]},
-            "limit": {"type": "integer", "minimum": 1, "maximum": 50},
+            "limit": {"type": "integer", "minimum": 1, "maximum": MAX_RESULT_LIMIT},
         },
     },
 }
@@ -66,7 +69,8 @@ def financial_lookup(user, active_location_id, arguments):
             sales = sales.filter(vendor__in=vendors)
         if kind == "unpaid_sales":
             return {"unpaid_sales": [{"vendor": sale.vendor.name, "school": sale.order.location.name, "item": sale.order.name, "quantity": sale.quantity, "due_rs": sale.debt} for sale in sales.order_by("-debt")[:arguments["limit"]]]}
-        return {"outstanding_debt": list(sales.values("vendor__name", "order__location__name").annotate(due_rs=Sum("debt")).order_by("-due_rs")), "total_due_rs": sales.aggregate(total=Sum("debt"))["total"] or Decimal("0")}
+        debt_rows = sales.values("vendor__name", "order__location__name").annotate(due_rs=Sum("debt")).order_by("-due_rs")
+        return {"outstanding_debt": list(debt_rows[:arguments["limit"]]), "total_due_rs": sales.aggregate(total=Sum("debt"))["total"] or Decimal("0")}
     orders = Order.objects.filter(location__in=locations, deleted=False).prefetch_related("sales", "location")
     if arguments.get("order_name"):
         orders = orders.filter(name__iexact=arguments["order_name"])
@@ -79,7 +83,13 @@ def financial_lookup(user, active_location_id, arguments):
         potential = sum((sale.potential_profit() for sale in sales), Decimal("0"))
         rows.append({"school": order.location.name, "item": order.name, "profit_rs": profit, "potential_profit_rs": potential, "margin_percent": (profit / order.total_price * 100) if order.total_price else Decimal("0"), "remaining_stock": order.current_quantity()})
     if kind == "financial_summary":
-        return {"orders": rows, "total_profit_rs": sum((r["profit_rs"] for r in rows), Decimal("0")), "total_potential_profit_rs": sum((r["potential_profit_rs"] for r in rows), Decimal("0"))}
+        rows.sort(key=lambda row: row["profit_rs"])
+        return {
+            "total_profit_rs": sum((r["profit_rs"] for r in rows), Decimal("0")),
+            "total_potential_profit_rs": sum((r["potential_profit_rs"] for r in rows), Decimal("0")),
+            "loss_making_orders": rows[:arguments["limit"]],
+            "most_profitable_orders": rows[-arguments["limit"]:][::-1],
+        }
     rows.sort(key=lambda row: row["profit_rs"])
     return {"orders": rows[:arguments["limit"]] if kind == "loss_making_orders" else rows[-arguments["limit"]:][::-1]}
 
@@ -87,12 +97,17 @@ def financial_lookup(user, active_location_id, arguments):
 def stream_answer(user, active_location_id, message, history):
     model, effort = configuration()
     client = OpenAI()
-    prompt = "You are a read-only school inventory financial assistant. Focus on debt, unpaid sales, profit, potential profit, and margins. Amounts are rupees. Never claim to edit data. Use the lookup tool before answering. Only discuss returned tool data. Ask a concise clarification when tool data asks you to."
-    response = client.responses.create(model=model, reasoning={"effort": effort}, tools=[TOOL], tool_choice="required", stream=True, input=[{"role": "system", "content": prompt}, *history, {"role": "user", "content": message}])
+    prompt = f"You are a read-only school inventory financial assistant. Amounts are rupees. Use the lookup tool before answering and only discuss returned data. Never claim to edit data. Request {DEFAULT_RESULT_LIMIT} rows unless the user explicitly asks for more."
+    response = client.responses.create(model=model, reasoning={"effort": "low"}, tools=[TOOL], tool_choice="required", stream=True, input=[{"role": "system", "content": prompt}, *history, {"role": "user", "content": message}])
     calls = []
+    lookup_usage = None
+    lookup_response_id = None
     for event in response:
         if event.type == "response.output_item.done" and getattr(event.item, "type", None) == "function_call":
             calls.append(event.item)
+        elif event.type == "response.completed":
+            lookup_usage = getattr(event.response, "usage", None)
+            lookup_response_id = event.response.id
         elif event.type == "error":
             raise RuntimeError(getattr(event, "message", "The assistant service returned an error."))
     if not calls:
@@ -104,14 +119,16 @@ def stream_answer(user, active_location_id, message, history):
         except (TypeError, json.JSONDecodeError):
             raise RuntimeError("The assistant returned an invalid lookup request.")
         outputs.append({"type": "function_call_output", "call_id": call.call_id, "output": json.dumps(financial_lookup(user, active_location_id, arguments), default=str)})
-    final_stream = client.responses.create(model=model, previous_response_id=event.response.id, stream=True, input=outputs)
+    if not lookup_response_id:
+        raise RuntimeError("The assistant did not complete the inventory lookup request.")
+    final_stream = client.responses.create(model=model, reasoning={"effort": effort}, previous_response_id=lookup_response_id, stream=True, input=outputs)
     usage = None
     for event in final_stream:
         if event.type == "response.output_text.delta":
             yield "delta", event.delta
         elif event.type == "response.completed":
             usage = getattr(event.response, "usage", None)
-    yield "complete", {"model": model, "usage": usage_to_dict(usage)}
+    yield "complete", {"model": model, "usage": combined_usage(lookup_usage, usage)}
 
 
 def usage_to_dict(usage):
@@ -126,6 +143,17 @@ def usage_to_dict(usage):
         "reasoning_tokens": getattr(output_details, "reasoning_tokens", None),
         "total_tokens": getattr(usage, "total_tokens", None),
     }
+
+
+def combined_usage(*usages):
+    totals = {"input_tokens": 0, "cached_input_tokens": 0, "output_tokens": 0, "reasoning_tokens": 0, "total_tokens": 0}
+    for usage in usages:
+        values = usage_to_dict(usage)
+        if not values:
+            continue
+        for key in totals:
+            totals[key] += values[key] or 0
+    return totals
 
 
 def estimated_cost(usage, model):
