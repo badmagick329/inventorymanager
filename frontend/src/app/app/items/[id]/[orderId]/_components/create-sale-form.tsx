@@ -50,7 +50,6 @@ export default function CreateSaleForm({
   });
 
   const {
-    register,
     handleSubmit,
     formState,
     setError,
@@ -61,6 +60,8 @@ export default function CreateSaleForm({
   } = useForm({
     // @ts-ignore
     defaultValues: fetchDefaults.mutateAsync,
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
   });
   const createSale = useCreateSale();
   const { failure, recordFailure } = useFailureReporting({
@@ -107,7 +108,6 @@ export default function CreateSaleForm({
                 />
               )}
               <SaleVendor
-                register={register}
                 formState={formState}
                 control={control}
                 showHelpText={value}
@@ -115,21 +115,18 @@ export default function CreateSaleForm({
                 getValues={getValues}
               />
               <SaleDate
-                register={register}
                 formState={formState}
                 control={control}
                 setValue={setValue}
                 getValues={getValues}
               />
               <SaleQuantity
-                register={register}
                 formState={formState}
                 control={control}
               />
               <div className='flex flex-col gap-2'>
                 <SalePrice
                   control={control}
-                  register={register}
                   formState={formState}
                 />
                 <Checkbox

@@ -11,8 +11,8 @@ export default function AdminPage() {
         as={Link}
         href={APP_MANAGE_LOCATIONS}
         className='w-64 rounded-md font-semibold'
-        color='secondary'
-        variant='ghost'
+        color='default'
+        variant='bordered'
         size='lg'
       >
         Manage Locations
@@ -21,8 +21,8 @@ export default function AdminPage() {
         as={Link}
         href={APP_MANAGE_USERS}
         className='w-64 rounded-md font-semibold'
-        color='secondary'
-        variant='ghost'
+        color='default'
+        variant='bordered'
         size='lg'
       >
         Manage Users
@@ -31,8 +31,8 @@ export default function AdminPage() {
         as={Link}
         href={APP_ASSISTANT_ACTIVITY}
         className='w-64 rounded-md font-semibold'
-        color='secondary'
-        variant='ghost'
+        color='default'
+        variant='bordered'
         size='lg'
       >
         Assistant Activity

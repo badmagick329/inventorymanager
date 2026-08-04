@@ -1,21 +1,14 @@
 import { OrderFormValues } from '@/types';
 import { Input } from "@heroui/react";
-import {
-  Control,
-  Controller,
-  FormState,
-  UseFormRegister,
-} from 'react-hook-form';
+import { Control, Controller, FormState } from 'react-hook-form';
 
 type OrderNameInputProps = {
   control: Control<OrderFormValues, any>;
-  register: UseFormRegister<OrderFormValues>;
   formState: FormState<OrderFormValues>;
 };
 
 export default function OrderNameInput({
   control,
-  register,
   formState,
 }: OrderNameInputProps) {
   return (
@@ -24,15 +17,19 @@ export default function OrderNameInput({
       <Controller
         name='name'
         control={control}
-        render={({ field }) => (
+        rules={{ required: 'Name is required' }}
+        render={({ field, fieldState }) => (
           <Input
             data-testid='items-order-name-input'
             type='text'
             variant='flat'
             label='Name'
+            labelPlacement='outside'
+            placeholder=' '
             autoComplete='off'
+            validationBehavior='aria'
+            isInvalid={Boolean(fieldState.error)}
             {...field}
-            {...register('name', { required: 'Name is required' })}
           />
         )}
       />

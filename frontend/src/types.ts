@@ -190,6 +190,7 @@ export type AssistantActivityMessage = {
   model: string | null;
   usage: Record<string, number | null> | null;
   estimatedCostUsd: number | null;
+  errorMessage: string | null;
 };
 
 export type AssistantActivityConversation = {
@@ -198,7 +199,7 @@ export type AssistantActivityConversation = {
   location: { id: number; name: string } | null;
   createdAt: string;
   updatedAt: string;
-  status: 'completed' | 'no_response';
+  status: 'completed' | 'failed' | 'no_response';
   totalTokens: number;
   totalCostUsd: number;
   messages: AssistantActivityMessage[];

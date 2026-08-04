@@ -47,7 +47,6 @@ export default function CreateOrderForm({
   });
 
   const {
-    register,
     handleSubmit,
     formState,
     control,
@@ -57,6 +56,8 @@ export default function CreateOrderForm({
   } = useForm({
     // @ts-ignore
     defaultValues: fetchDefaults.mutateAsync,
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
   });
   const createOrder = useCreateOrder();
   const { failure, recordFailure } = useFailureReporting({
@@ -104,12 +105,10 @@ export default function CreateOrderForm({
               )}
               <OrderNameInput
                 control={control}
-                register={register}
                 formState={formState}
               />
               <OrderDateInput
                 control={control}
-                register={register}
                 formState={formState}
                 setValue={setValue}
                 getValues={getValues}
@@ -117,13 +116,11 @@ export default function CreateOrderForm({
               />
               <OrderQuantityInput
                 control={control}
-                register={register}
                 formState={formState}
               />
               <div className='flex flex-col gap-2'>
                 <OrderCostInput
                   control={control}
-                  register={register}
                   formState={formState}
                 />
                 <Checkbox
@@ -137,7 +134,6 @@ export default function CreateOrderForm({
               <div className='flex flex-col gap-2'>
                 <OrderSalePriceInput
                   control={control}
-                  register={register}
                   formState={formState}
                   showHelpText={value}
                 />

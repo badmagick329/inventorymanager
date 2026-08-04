@@ -128,6 +128,7 @@ class AssistantMessage(models.Model):
     model = models.CharField(max_length=100, blank=True)
     usage = models.JSONField(null=True, blank=True)
     estimated_cost_usd = models.FloatField(null=True, blank=True)
+    error_message = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:  # type: ignore

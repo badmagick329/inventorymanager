@@ -55,13 +55,17 @@ export default function SaleAmountPaid({
         <Controller
           name='amountPaid'
           control={control}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <Input
               data-testid='sale-amount-paid-input'
               type='number'
               variant='flat'
               autoComplete='off'
               label='Amount Paid'
+              labelPlacement='outside'
+              placeholder=' '
+              validationBehavior='aria'
+              isInvalid={Boolean(fieldState.error)}
               {...field}
             />
           )}
