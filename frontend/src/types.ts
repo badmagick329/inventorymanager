@@ -208,6 +208,7 @@ export type AssistantActivityConversation = {
 export type AssistantActivityResponse = {
   results: AssistantActivityConversation[];
   pagination: { page: number; pageSize: number; total: number; hasNext: boolean };
+  summary: { totalCostUsd: number };
   filterOptions: {
     users: { id: number; username: string }[];
     locations: { id: number; name: string }[];

@@ -2,7 +2,7 @@ from django.contrib.auth import login
 from datetime import timedelta
 
 from django.db import transaction
-from django.db.models import Count, Max, Prefetch
+from django.db.models import Count, Max, Prefetch, Sum
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from knox.views import LoginView as KnoxLoginView
@@ -205,10 +205,20 @@ class AssistantActivityView(APIView):
         if query := params.get("q", "").strip():
             conversations = conversations.filter(messages__content__icontains=query)
         if date_from := params.get("date_from"):
-            conversations = conversations.filter(updated_at__date__gte=date_from)
+            conversations = conversations.filter(messages__created_at__date__gte=date_from)
         if date_to := params.get("date_to"):
-            conversations = conversations.filter(updated_at__date__lte=date_to)
+            conversations = conversations.filter(messages__created_at__date__lte=date_to)
         conversations = conversations.distinct().order_by("-updated_at")
+
+        cost_messages = AssistantMessage.objects.filter(
+            conversation__in=conversations,
+            role=AssistantMessage.Role.ASSISTANT,
+        )
+        if date_from := params.get("date_from"):
+            cost_messages = cost_messages.filter(created_at__date__gte=date_from)
+        if date_to := params.get("date_to"):
+            cost_messages = cost_messages.filter(created_at__date__lte=date_to)
+        total_cost_usd = cost_messages.aggregate(total=Sum("estimated_cost_usd"))["total"] or 0
 
         try:
             page = max(int(params.get("page", 1) or 1), 1)
@@ -248,6 +258,7 @@ class AssistantActivityView(APIView):
         return APIResponses.ok({
             "results": [conversation_data(conversation) for conversation in page_conversations],
             "pagination": {"page": page, "pageSize": page_size, "total": total, "hasNext": page * page_size < total},
+            "summary": {"totalCostUsd": total_cost_usd},
             "filterOptions": {
                 "users": [{"id": user["user_id"], "username": user["user__username"]} for user in users],
                 "locations": [{"id": location["location_id"], "name": location["location__name"]} for location in locations],

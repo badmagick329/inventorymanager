@@ -3,7 +3,7 @@ from types import SimpleNamespace
 
 from django.utils import timezone
 from items.models import ItemLocation
-from users.assistant import combined_usage, financial_lookup
+from users.assistant import combined_usage, financial_lookup, stream_answer
 from users.models import (
     AssistantConversation,
     AssistantDailyUsage,
@@ -66,6 +66,35 @@ def test_combined_usage_includes_lookup_and_answer_requests():
         "reasoning_tokens": 7,
         "total_tokens": 28,
     }
+
+
+def test_greeting_uses_one_low_reasoning_call_without_inventory_lookup(monkeypatch):
+    usage = SimpleNamespace(
+        input_tokens=10,
+        output_tokens=4,
+        total_tokens=14,
+        input_tokens_details=SimpleNamespace(cached_tokens=0),
+        output_tokens_details=SimpleNamespace(reasoning_tokens=0),
+    )
+    requests = []
+
+    class FakeResponses:
+        def create(self, **kwargs):
+            requests.append(kwargs)
+            return iter((
+                SimpleNamespace(type="response.output_text.delta", delta="Hi! How can I help?"),
+                SimpleNamespace(type="response.completed", response=SimpleNamespace(id="response-1", usage=usage)),
+            ))
+
+    monkeypatch.setattr("users.assistant.configuration", lambda: ("gpt-5.6-luna", "high"))
+    monkeypatch.setattr("users.assistant.OpenAI", lambda: SimpleNamespace(responses=FakeResponses()))
+
+    assert list(stream_answer(None, 1, "hi", [])) == [
+        ("delta", "Hi! How can I help?"),
+        ("complete", {"model": "gpt-5.6-luna", "usage": combined_usage(usage)}),
+    ]
+    assert requests[0]["tool_choice"] == "auto"
+    assert requests[0]["reasoning"] == {"effort": "low"}
 
 
 def test_debt_summary_totals_all_debt_but_limits_returned_rows(
@@ -163,6 +192,7 @@ def test_sse_emits_delta_and_complete(
     assert response["Content-Type"] == "text/event-stream"
     assert "event: delta" in body
     assert "event: complete" in body
+    assert AssistantConversation.objects.get().user_id == user.id
 
 
 def test_sse_explains_when_openai_account_has_no_credits(
@@ -217,3 +247,4 @@ def test_only_admin_can_view_assistant_activity(
     assert activity["status"] == "completed"
     assert activity["totalTokens"] == 12
     assert activity["totalCostUsd"] == 0.01
+    assert response.data["summary"]["totalCostUsd"] == 0.01
