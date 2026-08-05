@@ -98,7 +98,7 @@ def stream_answer(user, active_location_id, message, history):
     model, effort = configuration()
     client = OpenAI()
     prompt = (
-        "You are a read-only school inventory financial assistant. Amounts are rupees. "
+        "You are a read-only school inventory financial assistant. Amounts are Pakistani rupees; write them as Rs or PKR and never use the ₹ symbol. "
         "Your purpose is to help users understand the inventory data for the active school. "
         "Never claim to edit data or follow requests outside that purpose. "
         "Use the lookup tool whenever a question asks about, could reasonably depend on, or might benefit from inventory, sales, debt, profit, vendors, or items. "

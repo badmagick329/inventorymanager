@@ -69,13 +69,14 @@ function Conversation({ conversation }: { conversation: AssistantActivityConvers
     <Card className='bg-content1'>
       <CardBody className='gap-3'>
         <div className='flex flex-wrap justify-between gap-2 text-sm text-foreground'>
-          <div><span className='font-semibold'>{conversation.user.username}</span> · {conversation.location?.name ?? 'No school'} · {formatDate(conversation.updatedAt)}</div>
+          <div><span className='font-semibold'>{conversation.user.username}</span> · user #{conversation.user.id} · {conversation.location?.name ?? 'No school'} · {formatDate(conversation.updatedAt)}</div>
           <div className={conversation.status === 'completed' ? 'text-success' : 'text-danger'}>{status}</div>
         </div>
         <div className='space-y-2'>
           {conversation.messages.map((message) => <section key={message.id} className={message.role === 'user' ? 'rounded-lg bg-message-user p-3 text-message-user-foreground' : 'rounded-lg bg-message-assistant p-3 text-message-assistant-foreground'}>
             <div className='mb-1 text-xs font-semibold uppercase text-muted-foreground'>{message.role} · {formatDate(message.createdAt)}</div>
             {message.errorMessage ? <p className='text-danger'>{message.errorMessage}</p> : message.role === 'assistant' ? <div className='prose prose-sm max-w-none text-message-assistant-foreground dark:prose-invert'><ReactMarkdown>{message.content}</ReactMarkdown></div> : <p className='whitespace-pre-wrap'>{message.content}</p>}
+            {message.role === 'user' && <p className='mt-2 break-words text-xs text-muted-foreground'>Source: user #{conversation.user.id} · IP: {message.clientIp ?? 'not recorded'} · Device: {message.userAgent ?? 'not recorded'}</p>}
             {message.role === 'assistant' && !message.errorMessage && <p className='mt-2 text-xs text-muted-foreground'>{message.model ?? 'Unknown model'} · {message.usage?.total_tokens ?? 0} tokens · {message.estimatedCostUsd === null ? 'cost unavailable' : `$${message.estimatedCostUsd.toFixed(4)}`}</p>}
           </section>)}
         </div>

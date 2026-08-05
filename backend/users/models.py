@@ -129,6 +129,8 @@ class AssistantMessage(models.Model):
     usage = models.JSONField(null=True, blank=True)
     estimated_cost_usd = models.FloatField(null=True, blank=True)
     error_message = models.TextField(blank=True)
+    client_ip = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.CharField(max_length=512, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:  # type: ignore

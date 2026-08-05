@@ -95,6 +95,8 @@ def test_greeting_uses_one_low_reasoning_call_without_inventory_lookup(monkeypat
     ]
     assert requests[0]["tool_choice"] == "auto"
     assert requests[0]["reasoning"] == {"effort": "low"}
+    assert "Pakistani rupees" in requests[0]["input"][0]["content"]
+    assert "never use the ₹ symbol" in requests[0]["input"][0]["content"]
 
 
 def test_debt_summary_totals_all_debt_but_limits_returned_rows(
@@ -186,6 +188,8 @@ def test_sse_emits_delta_and_complete(
     response = api_client.post(
         "/api/users/assistant/messages",
         {"locationId": location.id, "message": "Hello"}, format="json",
+        HTTP_X_FORWARDED_FOR="203.0.113.10, 10.0.0.1",
+        HTTP_USER_AGENT="Inventory Assistant test browser",
     )
     body = b"".join(response.streaming_content).decode()
 
@@ -193,6 +197,9 @@ def test_sse_emits_delta_and_complete(
     assert "event: delta" in body
     assert "event: complete" in body
     assert AssistantConversation.objects.get().user_id == user.id
+    request_message = AssistantMessage.objects.get(conversation__user=user, role="user")
+    assert request_message.client_ip == "203.0.113.10"
+    assert request_message.user_agent == "Inventory Assistant test browser"
 
 
 def test_sse_explains_when_openai_account_has_no_credits(
@@ -227,7 +234,13 @@ def test_only_admin_can_view_assistant_activity(
     admin, _ = user_factory(is_admin=True)
     location = item_location_factory(name="FGS", users=[user])
     conversation = AssistantConversation.objects.create(user=user, location=location)
-    AssistantMessage.objects.create(conversation=conversation, role="user", content="Who owes us money?")
+    AssistantMessage.objects.create(
+        conversation=conversation,
+        role="user",
+        content="Who owes us money?",
+        client_ip="203.0.113.10",
+        user_agent="Inventory Assistant test browser",
+    )
     AssistantMessage.objects.create(
         conversation=conversation, role="assistant", content="Ali owes Rs 10.",
         model="gpt-5.6-luna", usage={"total_tokens": 12}, estimated_cost_usd=0.01,
@@ -248,3 +261,5 @@ def test_only_admin_can_view_assistant_activity(
     assert activity["totalTokens"] == 12
     assert activity["totalCostUsd"] == 0.01
     assert response.data["summary"]["totalCostUsd"] == 0.01
+    assert activity["messages"][0]["clientIp"] == "203.0.113.10"
+    assert activity["messages"][0]["userAgent"] == "Inventory Assistant test browser"

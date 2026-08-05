@@ -191,6 +191,8 @@ export type AssistantActivityMessage = {
   usage: Record<string, number | null> | null;
   estimatedCostUsd: number | null;
   errorMessage: string | null;
+  clientIp: string | null;
+  userAgent: string | null;
 };
 
 export type AssistantActivityConversation = {

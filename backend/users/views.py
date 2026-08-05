@@ -249,6 +249,8 @@ class AssistantActivityView(APIView):
                     "usage": message.usage,
                     "estimatedCostUsd": message.estimated_cost_usd,
                     "errorMessage": message.error_message or None,
+                    "clientIp": message.client_ip,
+                    "userAgent": message.user_agent or None,
                 } for message in messages],
             }
 
@@ -281,6 +283,13 @@ def assistant_location(user, location_id):
     if not location or not location.is_visible_to(user):
         return None
     return location
+
+
+def assistant_client_ip(request: Request):
+    forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR", "")
+    if forwarded_for:
+        return forwarded_for.split(",", 1)[0].strip() or None
+    return request.META.get("REMOTE_ADDR") or None
 
 
 class AssistantConversationView(APIView):
@@ -334,7 +343,13 @@ class AssistantMessageView(APIView):
             usage.save()
             if not conversation_id:
                 conversation = AssistantConversation.objects.create(user=user, location=location)
-            AssistantMessage.objects.create(conversation=conversation, role=AssistantMessage.Role.USER, content=message)
+            AssistantMessage.objects.create(
+                conversation=conversation,
+                role=AssistantMessage.Role.USER,
+                content=message,
+                client_ip=assistant_client_ip(request),
+                user_agent=request.META.get("HTTP_USER_AGENT", "")[:512],
+            )
         history = [{"role": item.role, "content": item.content} for item in conversation.messages.order_by("-created_at")[1:CHAT_HISTORY_LIMIT + 1]][::-1]
 
         def sse(event, data):
