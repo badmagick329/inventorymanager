@@ -49,7 +49,10 @@ export default function AssistantActivityPage() {
           <div className='flex items-end'><Button color='default' variant='flat' onPress={() => setFilters(initialFilters)}>Clear filters</Button></div>
         </CardBody>
       </Card>
-      <p className='text-sm text-muted-foreground'>{data.pagination.total} conversations</p>
+      <div className='flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground'>
+        <p>{data.pagination.total} conversations</p>
+        <p>Filtered total cost: ${data.summary.totalCostUsd.toFixed(4)}</p>
+      </div>
       {data.results.length === 0 ? <p className='text-sm text-muted-foreground'>No assistant activity matches these filters.</p> : data.results.map((conversation) => <Conversation key={conversation.id} conversation={conversation} />)}
       <div className='flex items-center justify-between'>
         <Button color='default' variant='flat' isDisabled={filters.page === 1} onPress={() => update({ page: filters.page - 1 })}>Previous</Button>
@@ -71,7 +74,7 @@ function Conversation({ conversation }: { conversation: AssistantActivityConvers
         </div>
         <div className='space-y-2'>
           {conversation.messages.map((message) => <section key={message.id} className={message.role === 'user' ? 'rounded-lg bg-message-user p-3 text-message-user-foreground' : 'rounded-lg bg-message-assistant p-3 text-message-assistant-foreground'}>
-            <div className='mb-1 text-xs font-semibold uppercase text-muted-foreground'>{message.role}</div>
+            <div className='mb-1 text-xs font-semibold uppercase text-muted-foreground'>{message.role} · {formatDate(message.createdAt)}</div>
             {message.errorMessage ? <p className='text-danger'>{message.errorMessage}</p> : message.role === 'assistant' ? <div className='prose prose-sm max-w-none text-message-assistant-foreground dark:prose-invert'><ReactMarkdown>{message.content}</ReactMarkdown></div> : <p className='whitespace-pre-wrap'>{message.content}</p>}
             {message.role === 'assistant' && !message.errorMessage && <p className='mt-2 text-xs text-muted-foreground'>{message.model ?? 'Unknown model'} · {message.usage?.total_tokens ?? 0} tokens · {message.estimatedCostUsd === null ? 'cost unavailable' : `$${message.estimatedCostUsd.toFixed(4)}`}</p>}
           </section>)}

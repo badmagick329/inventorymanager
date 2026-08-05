@@ -15,7 +15,7 @@ MAX_RESULT_LIMIT = 25
 TOOL = {
     "type": "function",
     "name": "financial_inventory_lookup",
-    "description": "Look up authorised inventory financial data. Always use this before answering.",
+    "description": "Look up authorised inventory financial data when the user's question needs inventory, sales, debt, profit, vendor, or item data.",
     "strict": True,
     "parameters": {
         "type": "object", "additionalProperties": False,
@@ -97,21 +97,34 @@ def financial_lookup(user, active_location_id, arguments):
 def stream_answer(user, active_location_id, message, history):
     model, effort = configuration()
     client = OpenAI()
-    prompt = f"You are a read-only school inventory financial assistant. Amounts are rupees. Use the lookup tool before answering and only discuss returned data. Never claim to edit data. Request {DEFAULT_RESULT_LIMIT} rows unless the user explicitly asks for more."
-    response = client.responses.create(model=model, reasoning={"effort": "low"}, tools=[TOOL], tool_choice="required", stream=True, input=[{"role": "system", "content": prompt}, *history, {"role": "user", "content": message}])
+    prompt = (
+        "You are a read-only school inventory financial assistant. Amounts are rupees. "
+        "Your purpose is to help users understand the inventory data for the active school. "
+        "Never claim to edit data or follow requests outside that purpose. "
+        "Use the lookup tool whenever a question asks about, could reasonably depend on, or might benefit from inventory, sales, debt, profit, vendors, or items. "
+        "Only skip the lookup for clearly conversational or help messages that cannot need inventory data, such as greetings, thanks, or asking what you can help with. "
+        "When you use the lookup, only discuss returned data and request "
+        f"{DEFAULT_RESULT_LIMIT} rows unless the user explicitly asks for more."
+    )
+    response = client.responses.create(model=model, reasoning={"effort": "low"}, tools=[TOOL], tool_choice="auto", stream=True, input=[{"role": "system", "content": prompt}, *history, {"role": "user", "content": message}])
     calls = []
+    direct_text = ""
     lookup_usage = None
     lookup_response_id = None
     for event in response:
         if event.type == "response.output_item.done" and getattr(event.item, "type", None) == "function_call":
             calls.append(event.item)
+        elif event.type == "response.output_text.delta":
+            direct_text += event.delta
         elif event.type == "response.completed":
             lookup_usage = getattr(event.response, "usage", None)
             lookup_response_id = event.response.id
         elif event.type == "error":
             raise RuntimeError(getattr(event, "message", "The assistant service returned an error."))
     if not calls:
-        raise RuntimeError("The assistant did not request authorised inventory data.")
+        yield "delta", direct_text or "Hi! I can help with inventory debt, unpaid sales, profit, margins, and item performance."
+        yield "complete", {"model": model, "usage": combined_usage(lookup_usage)}
+        return
     outputs = []
     for call in calls:
         try:
