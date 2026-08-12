@@ -19,8 +19,8 @@ export const queryKeys = {
   orderVendors: (orderId: string | number) =>
     ['order-vendors', String(orderId)] as const,
   historyRoot: ['history'] as const,
-  history: (locationId: string | number) =>
-    ['history', String(locationId)] as const,
+  history: (locationId: string | number, page: number, query: string) =>
+    ['history', String(locationId), page, query] as const,
   feedback: ['feedback'] as const,
   logout: ['logout'] as const,
 };

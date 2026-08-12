@@ -83,18 +83,35 @@ class ItemLocationsHistory(APIView):
     def get(self, request: Request, location_id: int):
         location = get_object_or_404(ItemLocation, id=location_id)
 
-        orders = location.orders.all().order_by("-id")  # type: ignore
+        try:
+            page = max(int(request.GET.get("page", 1)), 1)
+            page_size = min(max(int(request.GET.get("page_size", 10)), 1), 25)
+        except ValueError:
+            return APIResponses.bad_request({"page": ["Page and page size must be whole numbers."]})
+
+        orders = location.orders.prefetch_related("sales").order_by("-id")  # type: ignore
+        if query := request.GET.get("q", "").strip():
+            orders = orders.filter(name__icontains=query)
+        total = orders.count()
+        orders = orders[(page - 1) * page_size:page * page_size]
 
         serialized_orders = list()
         for order in orders:
             serialized_order = OrderHistorySerializer(order).data
 
-            sales = Sale.objects.filter(order=order)
             serialized_sales = list()
-            for sale in sales:
+            for sale in order.sales.all():
                 serialized_sales.append(SaleHistorySerializer(sale).data)
 
             serialized_order["sales"] = serialized_sales
             serialized_orders.append(serialized_order)
 
-        return APIResponses.ok(serialized_orders)
+        return APIResponses.ok({
+            "results": serialized_orders,
+            "pagination": {
+                "page": page,
+                "pageSize": page_size,
+                "total": total,
+                "hasNext": page * page_size < total,
+            },
+        })

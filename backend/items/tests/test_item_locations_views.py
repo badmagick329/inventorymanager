@@ -15,6 +15,7 @@ from users.tests.factories import user_factory
 
 LOCATIONS = reverse("locations")
 location_url = partial(reverse, "location")
+location_history_url = partial(reverse, "location_history")
 
 
 def raise_with(test_name, response, exception):
@@ -206,3 +207,33 @@ def test_users_cant_see_item_location_without_permission(
     item_location = item_location_factory(name="test location")
     response = api_client.get(location_url(kwargs={"id": item_location.id}))
     assert response.status_code == 404
+
+
+def test_location_history_is_paginated_and_searchable(
+    api_client: APIClient,
+    user_factory,
+    item_location_factory,
+    order_factory,
+):
+    admin, _ = user_factory(is_admin=True)
+    location = item_location_factory(name="FGHS")
+    for index in range(12):
+        order_factory(name=f"Item {index}", location=location, user=admin)
+    api_client.force_authenticate(user=admin)
+
+    response = api_client.get(location_history_url(args=[location.id]), {"page": 2})
+
+    assert response.status_code == 200
+    assert response.json()["pagination"] == {
+        "page": 2,
+        "pageSize": 10,
+        "total": 12,
+        "hasNext": False,
+    }
+    assert len(response.json()["results"]) == 2
+
+    response = api_client.get(location_history_url(args=[location.id]), {"q": "Item 11"})
+
+    assert response.status_code == 200
+    assert response.json()["pagination"]["total"] == 1
+    assert response.json()["results"][0]["first"]["name"] == "Item 11"

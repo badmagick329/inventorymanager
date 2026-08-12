@@ -5,6 +5,7 @@ import {
   HistoricalSale,
   Location,
   OrderHistory,
+  LocationHistoryResponse,
   OrderPost,
   OrderResponse,
   SaleHistory,
@@ -225,6 +226,12 @@ export function isOrderHistory(body: any): body is OrderHistory {
 
 export function isOrderHistoryArray(body: any): body is OrderHistory[] {
   return Array.isArray(body) && body.every(isOrderHistory);
+}
+
+export function isLocationHistoryResponse(body: any): body is LocationHistoryResponse {
+  return body && typeof body === 'object' && isOrderHistoryArray(body.results) &&
+    body.pagination && typeof body.pagination.page === 'number' &&
+    typeof body.pagination.total === 'number' && typeof body.pagination.hasNext === 'boolean';
 }
 
 export function isSaleHistoryArray(body: any): body is SaleHistory[] {

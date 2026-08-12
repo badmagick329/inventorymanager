@@ -236,6 +236,11 @@ export type OrderHistory = {
   sales: SaleHistory[];
 };
 
+export type LocationHistoryResponse = {
+  results: OrderHistory[];
+  pagination: { page: number; pageSize: number; total: number; hasNext: boolean };
+};
+
 export type Delta = {
   changes: Change[] | [];
   lastModified: string;

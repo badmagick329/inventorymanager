@@ -3,10 +3,10 @@
 import { ConnectionError, Spinner } from '@/components';
 import { APP_LOCATIONS } from '@/consts/urls';
 import { useLocationHistory } from '@/hooks';
-import { isOrderHistoryArray } from '@/predicates';
+import { isLocationHistoryResponse } from '@/predicates';
 import { Button, Input, Link } from '@heroui/react';
 import { usePathname } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useDeferredValue, useState } from 'react';
 
 import OrderHistoryAccordian from './_components/order-history-accordian';
 
@@ -14,6 +14,8 @@ export default function LocationHistory() {
   const pathname = usePathname();
   const locationId = pathname.split('/').pop();
   const [searchValue, setSearchValue] = useState('');
+  const [page, setPage] = useState(1);
+  const deferredSearchValue = useDeferredValue(searchValue);
 
   if (!locationId) {
     return <ConnectionError message={'Invalid URL'} />;
@@ -22,8 +24,8 @@ export default function LocationHistory() {
   const {
     isError,
     isLoading,
-    data: orderHistories,
-  } = useLocationHistory(locationId);
+    data: history,
+  } = useLocationHistory(locationId, page, deferredSearchValue);
 
   if (isError) {
     return <ConnectionError />;
@@ -33,7 +35,7 @@ export default function LocationHistory() {
     return <Spinner />;
   }
 
-  if (!isOrderHistoryArray(orderHistories)) {
+  if (!isLocationHistoryResponse(history)) {
     return (
       <ConnectionError
         message={
@@ -67,18 +69,26 @@ export default function LocationHistory() {
           placeholder='Search by item name'
           radius='sm'
           fullWidth
+          value={searchValue}
           onChange={(e) => {
             setSearchValue(e.target.value);
+            setPage(1);
           }}
         />
       </div>
-      {orderHistories.map((order, index) => (
+      <p className='px-4 text-sm text-muted-foreground'>{history.pagination.total} items</p>
+      {history.results.map((order, index) => (
         <OrderHistoryAccordian
           key={index}
           orderHistory={order}
           searchValue={searchValue}
         />
       ))}
+      <div className='flex items-center justify-between px-4 pb-4'>
+        <Button variant='flat' color='default' isDisabled={page === 1} onPress={() => setPage((current) => current - 1)}>Previous</Button>
+        <span className='text-sm text-muted-foreground'>Page {history.pagination.page}</span>
+        <Button variant='flat' color='default' isDisabled={!history.pagination.hasNext} onPress={() => setPage((current) => current + 1)}>Next</Button>
+      </div>
     </div>
   );
 }

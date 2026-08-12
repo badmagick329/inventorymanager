@@ -12,7 +12,8 @@ export async function GET(
   req: Request,
   { params }: { params: { locationId: string } }
 ) {
-  const url = `${BASE_URL}${API_LOCATION_HISTORY}/${params.locationId}`;
+  const query = new URL(req.url).searchParams.toString();
+  const url = `${BASE_URL}${API_LOCATION_HISTORY}/${params.locationId}${query ? `?${query}` : ''}`;
   const { headers, errorResponse } = getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
