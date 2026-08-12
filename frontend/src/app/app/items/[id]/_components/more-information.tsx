@@ -9,18 +9,15 @@ export default function MoreInformation({
   detailsHidden: boolean;
   location?: Location;
 }) {
-  if (detailsHidden) {
-    return null;
-  }
-
   return (
-    <div className='flex w-full flex-wrap justify-center gap-4'>
+    <div className='flex w-full flex-col gap-4'>
       <LocationInformationCard
         revenue={location?.revenue}
         spendings={location?.spendings}
         profit={location?.profit}
+        debt={location?.debt}
       />
-      <VendorsInformationCard locationId={location?.id} />
+      {!detailsHidden && <VendorsInformationCard locationId={location?.id} />}
     </div>
   );
 }

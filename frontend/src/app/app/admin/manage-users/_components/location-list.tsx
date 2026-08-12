@@ -7,16 +7,16 @@ import Link from 'next/link';
 export default function LocationList({ locations }: { locations: Location[] }) {
   return (
     <>
-      <div className='flex flex-col items-center gap-4'>
+      <div className='flex flex-wrap gap-2'>
         {locations.map((location) => (
           <Link
             color='foreground'
             href={`${APP_ITEMS}/${location.id}`}
             key={location.id}
-            className='flex justify-start gap-2 pr-4'
+            className='flex items-center gap-2 rounded-md bg-muted px-3 py-2 text-sm text-foreground'
           >
             <Warehouse className='pb-1' size={ICON_MD} />
-            <p className='text-center' key={location.name}>
+            <p key={location.name}>
               {location.name}
             </p>
           </Link>
@@ -25,7 +25,7 @@ export default function LocationList({ locations }: { locations: Location[] }) {
           <Link
             color='foreground'
             href={APP_MANAGE_LOCATIONS}
-            className='text-md md:text-semibold flex w-full justify-center underline md:text-base'
+            className='text-sm text-primary'
           >
             Assign Locations
           </Link>

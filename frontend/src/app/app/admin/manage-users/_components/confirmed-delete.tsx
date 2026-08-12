@@ -15,13 +15,13 @@ export default function ConfirmedDelete({
   const deleteUser = useDeleteUser();
   return (
     <>
-      <div className='flex w-full justify-center gap-4'>
+      <div className='flex w-full justify-end gap-2'>
         <Button
           data-testid='manage-users-delete-button'
           className='text-danger-600'
           onPress={disclosure.onOpen}
           variant='light'
-          size='lg'
+          size='md'
         >
           <Trash size={ICON_MD} /> Delete
         </Button>

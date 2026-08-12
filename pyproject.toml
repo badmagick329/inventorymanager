@@ -1,3 +1,32 @@
+[project]
+name = "inventorymanager"
+version = "0.1.0"
+description = "School inventory and sales manager"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "django==5.0.8",
+  "django-rest-knox>=4.2.0,<5.0.0",
+  "django-simple-history>=3.4.0,<4.0.0",
+  "djangorestframework>=3.14.0,<4.0.0",
+  "djangorestframework-types>=0.8.0,<0.9.0",
+  "gunicorn>=22.0.0,<23.0.0",
+  "openai>=2.52.0,<3.0.0",
+  "psycopg2-binary>=2.9.9,<3.0.0",
+  "python-dotenv>=1.0.1,<2.0.0",
+]
+
+[dependency-groups]
+dev = [
+  "django-stubs>=4.2.7,<5.0.0",
+  "djangorestframework-stubs>=3.14.5,<4.0.0",
+  "pytest-clarity>=1.0.1,<2.0.0",
+  "pytest-django>=4.7.0,<5.0.0",
+]
+
+[tool.uv]
+package = false
+
 [tool.poetry]
 name = "inventorymanager"
 version = "0.1.0"
@@ -6,7 +35,7 @@ authors = ["badmagick"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.10,<3.13"
 djangorestframework = "^3.14.0"
 django = "5.0.8"
 python-dotenv = "^1.0.1"

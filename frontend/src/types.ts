@@ -35,6 +35,7 @@ export type Location = {
   spendings?: number;
   revenue?: number;
   profit?: number;
+  debt?: number;
 };
 
 export type User = {

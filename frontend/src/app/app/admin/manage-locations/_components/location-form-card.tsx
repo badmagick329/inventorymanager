@@ -22,11 +22,11 @@ export default function LocationFormCard({
   locationId,
 }: FormCardProps) {
   return (
-    <Card className='flex min-w-[280px] max-w-[320px] flex-col rounded-md md:min-w-[480px] md:max-w-[640px]'>
-      <CardHeader className='flex w-full justify-center'>
+    <Card className='flex min-h-52 w-full flex-col rounded-lg border border-border bg-card shadow-none'>
+      <CardHeader className='flex w-full justify-start px-5 py-4'>
         <span
           data-testid='location-form-title'
-          className='text-md md:text-semibold w-full text-center capitalize md:text-base'
+          className='w-full font-semibold'
         >
           {locationId ? 'Edit Location' : 'Create New Location'}
         </span>

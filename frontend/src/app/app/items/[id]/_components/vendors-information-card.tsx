@@ -1,7 +1,7 @@
 import { useVendors } from '@/hooks';
 import { VendorResponse } from '@/types';
-
-import { CurrencyDisplay } from '.';
+import { formatCurrency } from '@/utils';
+import { HandCoins } from 'lucide-react';
 
 export default function VendorsInformationCard({
   locationId,
@@ -15,9 +15,8 @@ export default function VendorsInformationCard({
 
   if (isLoading) {
     return (
-      <div className='flex w-full max-w-lg flex-col items-center gap-4'>
-        <span className='text-xl font-bold'>Loading...</span>
-        <div className='flex w-[32rem] flex-col items-center justify-center divide-y-2 rounded-md p-4 text-center'></div>
+      <div className='rounded-lg border border-border bg-card p-5'>
+        <span className='text-sm text-muted-foreground'>Loading amounts due…</span>
       </div>
     );
   }
@@ -37,10 +36,10 @@ export default function VendorsInformationCard({
 
   if (vendorsInDebt.length === 0) {
     return (
-      <div className='flex w-full max-w-lg flex-col items-center gap-4'>
+      <div className='rounded-lg border border-border bg-card p-5'>
         <span
           data-testid='items-vendors-card-title'
-          className='text-xl font-bold'
+          className='text-sm font-medium text-success-600 dark:text-success-500'
         >
           All amounts paid in full
         </span>
@@ -49,23 +48,39 @@ export default function VendorsInformationCard({
   }
 
   return (
-    <div className='flex w-full max-w-lg flex-col items-center gap-4'>
-      <span
-        data-testid='items-vendors-card-title'
-        className='text-xl font-bold'
-      >
-        Amounts Due
-      </span>
-      <div className='flex w-full flex-col items-center divide-y-2 rounded-md p-4 text-center'>
-        {vendorsInDebt.map((vendor: VendorResponse) => (
-          <CurrencyDisplay
-            key={vendor.id}
-            text={vendor.name}
-            value={vendor.debt}
-          />
-        ))}
-        <CurrencyDisplay text='Total Due' value={totalDebt} />
+    <section className='overflow-hidden rounded-lg border border-border bg-card'>
+      <div className='flex flex-col gap-2 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between'>
+        <div className='flex items-center gap-2'>
+          <HandCoins className='text-warning-600 dark:text-warning-500' size={18} />
+          <div>
+            <h2
+              data-testid='items-vendors-card-title'
+              className='font-semibold'
+            >
+              Amounts due by vendor
+            </h2>
+            <p className='text-xs text-muted-foreground'>
+              Unpaid balances for this location
+            </p>
+          </div>
+        </div>
+        <div className='text-sm font-semibold tabular-nums text-warning-600 dark:text-warning-500'>
+          Total {formatCurrency(totalDebt)}
+        </div>
       </div>
-    </div>
+      <div className='grid divide-y divide-border sm:grid-cols-2 sm:divide-y-0'>
+        {vendorsInDebt.map((vendor: VendorResponse) => (
+          <div
+            key={vendor.id}
+            className='flex items-center justify-between gap-4 border-b border-border px-5 py-3 sm:odd:border-r'
+          >
+            <span className='truncate text-sm'>{vendor.name}</span>
+            <span className='shrink-0 text-sm font-medium tabular-nums'>
+              {formatCurrency(vendor.debt)}
+            </span>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }

@@ -9,3 +9,7 @@ Keep answers tightly scoped to the user's actual question.
 - Optimize for directness: answer first, stop when the user's question has been satisfied.
 - Sacrifice grammar for concision.
 - No motivational fluff.
+
+## Interface Work
+
+Read and follow `STYLE.md` before changing frontend UI.

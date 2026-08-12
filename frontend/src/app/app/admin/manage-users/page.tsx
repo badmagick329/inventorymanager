@@ -3,6 +3,7 @@
 import { ConnectionError, Spinner } from '@/components';
 import { useUsers } from '@/hooks';
 import { User } from '@/types';
+import { Chip } from '@heroui/react';
 import React from 'react';
 
 import NewForm from './_components/new-form';
@@ -19,20 +20,30 @@ export default function ManageUsers() {
 
   if (users) {
     return (
-      <div className='flex h-full w-full flex-grow flex-col items-center gap-4 p-4'>
-        <div
-          data-testid='manage-users-title'
-          className='flex text-2xl font-semibold'
-        >
-          Manage Users
-        </div>
-        <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8 2xl:grid-cols-3'>
+      <section className='mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:py-12'>
+        <header className='mb-8 flex items-end justify-between gap-4'>
+          <div>
+            <h1
+              data-testid='manage-users-title'
+              className='text-3xl font-semibold tracking-tight'
+            >
+              Manage Users
+            </h1>
+            <p className='mt-1 text-sm text-muted-foreground'>
+              Manage accounts and the locations available to each person.
+            </p>
+          </div>
+          <Chip variant='flat' radius='sm'>
+            {users.length} {users.length === 1 ? 'user' : 'users'}
+          </Chip>
+        </header>
+        <div className='grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3'>
           {users.map((user: User) => {
             return <UserCard key={user.username} user={user} />;
           })}
           <NewForm />
         </div>
-      </div>
+      </section>
     );
   }
 }

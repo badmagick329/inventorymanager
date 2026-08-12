@@ -13,7 +13,9 @@ export default function AppLayout({
     <div className='foreground flex min-h-screen w-full flex-col items-center'>
       <GlobalContextProvider>
         <Navbar />
-        <main className='w-full pb-24'>{children}</main>
+        <main className='flex w-full flex-1 flex-col items-center pb-24'>
+          {children}
+        </main>
         <AssistantChat />
       </GlobalContextProvider>
     </div>

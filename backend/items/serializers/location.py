@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
+from django.db.models import Sum
 from django.db.utils import IntegrityError
-from items.models import ItemLocation
+from items.models import ItemLocation, Sale
 from rest_framework import serializers
 from users.models import UserAccount
 from utils.errors import ErrorHandler, ValidationErrorWithMessage
@@ -82,6 +83,13 @@ class ItemLocationSerializer(serializers.ModelSerializer):
         spendings = ItemLocation.spendings(orders)
         revenue = ItemLocation.revenue(orders)
         profit = revenue - spendings
+        debt = (
+            Sale.objects.filter(
+                order__location=instance,
+                deleted=False,
+            ).aggregate(total=Sum("debt"))["total"]
+            or 0
+        )
         return {
             "id": instance.id,
             "name": instance.name,
@@ -89,4 +97,5 @@ class ItemLocationSerializer(serializers.ModelSerializer):
             "spendings": spendings,
             "revenue": revenue,
             "profit": profit,
+            "debt": debt,
         }

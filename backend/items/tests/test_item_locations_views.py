@@ -9,7 +9,12 @@ from items.tests.cases import (
     LOCATION_PATCH_LABELS,
     LOCATION_PATCH_VALUES,
 )
-from items.tests.factories import item_location_factory
+from items.tests.factories import (
+    item_location_factory,
+    order_factory,
+    sale_factory,
+    vendor_factory,
+)
 from rest_framework.test import APIClient
 from users.tests.factories import user_factory
 
@@ -72,6 +77,27 @@ def test_admin_can_see_all_item_locations(
     assert "id" in locations[0]
     assert locations[1]["name"] == "test item location 2"
     assert "id" in locations[1]
+
+
+def test_admin_location_summary_includes_outstanding_debt(
+    api_client: APIClient,
+    item_location_factory,
+    order_factory,
+    sale_factory,
+    vendor_factory,
+    user_factory,
+):
+    admin, _ = user_factory(is_admin=True)
+    location = item_location_factory(name="FGS")
+    order = order_factory(location=location, user=admin)
+    vendor, _ = vendor_factory(location=location)
+    sale_factory(order, vendor, debt=250, user=admin)
+    api_client.force_authenticate(user=admin)
+
+    response = api_client.get(LOCATIONS)
+
+    assert response.status_code == 200
+    assert response.json()[0]["debt"] == 250
 
 
 @pytest.mark.parametrize(LOCATION_LIST_POST_LABELS, LOCATION_LIST_POST_VALUES)

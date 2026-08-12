@@ -14,7 +14,7 @@ import { Location } from '@/types';
 import { preFetchVendors as preFetchAdditionalVendorDetails } from '@/utils/requests';
 import { Button, Link, Spacer } from '@heroui/react';
 import { useQueryClient } from '@tanstack/react-query';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Store } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   CreateOrderModal,
@@ -55,21 +55,39 @@ export default function Orders() {
   preFetchAdditionalVendorDetails(queryClient, locationId);
 
   return (
-    <div className='flex w-full flex-col justify-center p-4'>
-      <Spacer y={2} />
-      <span className='text-center text-2xl font-semibold'>
-        {location?.name}
-      </span>
-      <Spacer y={2} />
-      <div className='flex justify-center gap-4'>
+    <div className='flex w-full flex-col justify-center p-4 lg:px-6'>
+      <header className='mx-auto flex w-full max-w-6xl items-center gap-3 py-5'>
+        <span className='flex h-11 w-11 items-center justify-center rounded-md bg-primary/10 text-primary'>
+          <Store size={22} />
+        </span>
+        <div>
+          <h1 className='text-2xl font-semibold tracking-tight'>
+            {location?.name}
+          </h1>
+          <p className='text-sm text-muted-foreground'>
+            Inventory, sales, and receivables
+          </p>
+        </div>
+      </header>
+      <div className='mx-auto flex w-full max-w-6xl justify-center'>
         <MoreInformation detailsHidden={detailsHidden} location={location} />
       </div>
       <Spacer y={4} />
-      <div className='flex flex-col items-center justify-center gap-8 sm:flex-row'>
-        <div className='flex w-full justify-between gap-2 md:order-2'>
+      <div className='flex flex-col items-center justify-center gap-3 sm:flex-row sm:justify-between'>
+        <div className='flex w-full flex-wrap gap-2 sm:w-auto'>
+          <Button
+            data-testid='items-manage-vendors-button'
+            as={Link}
+            href={`${APP_MANAGE_VENDORS}/${locationId}`}
+            variant='bordered'
+            color='default'
+            radius='sm'
+          >
+            Vendors
+          </Button>
           <Button
             data-testid='items-show-more-button'
-            variant='ghost'
+            variant='light'
             color='default'
             radius='sm'
             onPress={() => setDetailsHidden(!detailsHidden)}
@@ -81,21 +99,12 @@ export default function Orders() {
               )
             }
           >
-            {detailsHidden ? 'Show More' : 'Hide'}
+            {detailsHidden ? 'Show amounts due' : 'Hide amounts due'}
           </Button>
+        </div>
+        <div className='flex w-full justify-end sm:w-auto'>
           <CreateOrderModal locationId={locationId} />
         </div>
-        <Button
-          className='order-1 self-start md:order-1'
-          data-testid='items-manage-vendors-button'
-          as={Link}
-          href={`${APP_MANAGE_VENDORS}/${locationId}`}
-          variant='bordered'
-          color='default'
-          radius='sm'
-        >
-          Vendors
-        </Button>
       </div>
       <Spacer y={4} />
       <OrdersTanStackTable

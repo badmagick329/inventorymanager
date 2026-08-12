@@ -77,17 +77,17 @@ export default function LocationCard({
   return (
     <Card
       data-testid='manage-locations-location-card'
-      className='flex min-w-[280px] max-w-[320px] flex-col rounded-md md:min-w-[480px] md:max-w-[640px]'
+      className='flex min-h-52 w-full flex-col rounded-lg border border-border bg-card shadow-none'
     >
-      <CardHeader className='flex w-full items-center justify-center gap-2'>
+      <CardHeader className='flex w-full items-center justify-start gap-2 px-5 py-4'>
         <LocationCardHeader name={name} locationId={locationId} />
       </CardHeader>
       <Divider />
-      <CardBody>
+      <CardBody className='px-5 py-4'>
         <LocationCardBody users={users ?? []} />
       </CardBody>
       <Divider />
-      <CardFooter>
+      <CardFooter className='px-3 py-2'>
         <LocationCardButtons
           locationId={locationId}
           onEditPress={() => setShowForm(true)}

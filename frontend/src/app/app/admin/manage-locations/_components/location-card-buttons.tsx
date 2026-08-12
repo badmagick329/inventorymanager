@@ -20,7 +20,7 @@ export default function LocationCardButtons({
 }: LocationCardButtonsProps) {
   const deleteLocation = useDeleteLocation();
   return (
-    <div className='flex w-full justify-center gap-4'>
+    <div className='flex w-full justify-end gap-2'>
       <Button
         data-testid='manage-locations-edit-button'
         className='text-warning-600'

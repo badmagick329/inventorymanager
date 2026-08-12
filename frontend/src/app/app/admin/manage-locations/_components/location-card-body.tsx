@@ -6,25 +6,28 @@ import { User } from 'lucide-react';
 export default function LocationCardBody({ users }: { users: string[] }) {
   return (
     <>
-      <ul className='flex flex-wrap justify-center gap-8'>
+      <ul className='flex flex-wrap gap-2'>
         {users.map((user: string) => {
           return (
-            <div key={user} className='flex gap-2'>
+            <li
+              key={user}
+              className='flex items-center gap-2 rounded-md bg-muted px-3 py-2 text-sm'
+            >
               <User className='pb-1' size={ICON_MD} />
               <span data-testid='manage-locations-username'>{user}</span>
-            </div>
+            </li>
           );
         })}
       </ul>
       {users.length === 0 && (
-        <div className='flex w-full justify-center gap-2'>
-          <span>No users assigned. </span>
+        <div className='flex w-full flex-col items-start gap-2 text-sm text-muted-foreground'>
+          <span>No users assigned.</span>
           <Link
-            color='foreground'
+            color='primary'
             href={APP_MANAGE_USERS}
-            className='underline'
+            className='text-sm'
           >
-            Create new user?
+            Manage users
           </Link>
         </div>
       )}

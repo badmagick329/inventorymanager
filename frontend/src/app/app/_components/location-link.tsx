@@ -1,5 +1,5 @@
 import { APP_ITEMS } from '@/consts/urls';
-import { Button, Link } from "@heroui/react";
+import { Link } from '@heroui/react';
 
 type LocationLinkProps = {
   id: number | undefined;
@@ -8,16 +8,13 @@ type LocationLinkProps = {
 
 export default function LocationLink({ id, name }: LocationLinkProps) {
   return (
-    <Button
+    <Link
       data-testid='home-locations-button'
-      as={Link}
       href={`${APP_ITEMS}/${id}`}
-      variant='light'
       color='primary'
-      radius='sm'
-      className='text-xl font-semibold'
+      className='text-lg font-semibold underline-offset-4 hover:underline focus-visible:underline'
     >
       {name}
-    </Button>
+    </Link>
   );
 }
