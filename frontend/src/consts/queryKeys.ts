@@ -23,4 +23,8 @@ export const queryKeys = {
     ['history', String(locationId), page, query] as const,
   feedback: ['feedback'] as const,
   logout: ['logout'] as const,
+  receivablesRoot: ['receivables'] as const,
+  receivables: (params: string) => ['receivables', params] as const,
+  vendorReceivables: (vendorId: number, ageBucket?: string) =>
+    ['receivables', 'vendor', vendorId, ageBucket ?? 'all'] as const,
 };

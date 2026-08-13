@@ -2,7 +2,11 @@
 
 import { ConnectionError, OptionalErrorElement, Spinner } from '@/components';
 import { ICON_SM } from '@/consts';
-import { APP_LOGIN, APP_MANAGE_VENDORS } from '@/consts/urls';
+import {
+  APP_LOGIN,
+  APP_MANAGE_VENDORS,
+  APP_RECEIVABLES,
+} from '@/consts/urls';
 import {
   useDeleteOrder,
   useLocalStorage,
@@ -14,7 +18,7 @@ import { Location } from '@/types';
 import { preFetchVendors as preFetchAdditionalVendorDetails } from '@/utils/requests';
 import { Button, Link, Spacer } from '@heroui/react';
 import { useQueryClient } from '@tanstack/react-query';
-import { ChevronDown, ChevronUp, Store } from 'lucide-react';
+import { ChevronDown, ChevronUp, HandCoins, Store } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   CreateOrderModal,
@@ -84,6 +88,16 @@ export default function Orders() {
             radius='sm'
           >
             Vendors
+          </Button>
+          <Button
+            as={Link}
+            href={`${APP_RECEIVABLES}?location_id=${locationId}`}
+            variant='bordered'
+            color='default'
+            radius='sm'
+            startContent={<HandCoins size={ICON_SM} />}
+          >
+            Receivables
           </Button>
           <Button
             data-testid='items-show-more-button'

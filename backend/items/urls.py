@@ -5,6 +5,7 @@ from items.views.location import (
     ItemLocationsList,
 )
 from items.views.order import OrderDetail, OrderList
+from items.views.receivable import ReceivablesOverview, VendorReceivables
 from items.views.sale import SaleDetail, SaleList
 from items.views.vendor import VendorDetail, VendorList
 
@@ -41,5 +42,15 @@ urlpatterns = [
         "/locations/history/<int:location_id>",
         ItemLocationsHistory.as_view(),
         name="location_history",
+    ),
+    path(
+        "/receivables",
+        ReceivablesOverview.as_view(),
+        name="receivables",
+    ),
+    path(
+        "/receivables/vendors/<int:vendor_id>",
+        VendorReceivables.as_view(),
+        name="vendor_receivables",
     ),
 ]

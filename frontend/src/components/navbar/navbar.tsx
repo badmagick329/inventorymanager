@@ -1,6 +1,7 @@
 import LocationsNavItem from './locations-nav-item';
 import LoggedInDropdown from './logged-in-dropdown';
 import ThemeToggler from './theme-toggler';
+import ReceivablesNavItem from './receivables-nav-item';
 
 export default function Navbar() {
   return (
@@ -9,6 +10,7 @@ export default function Navbar() {
         <li>
           <div className='flex items-center gap-2'>
             <LocationsNavItem />
+            <ReceivablesNavItem />
           </div>
         </li>
         <li>

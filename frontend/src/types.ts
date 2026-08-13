@@ -183,6 +183,77 @@ export type PossibleFrictionSummary = {
   last_occurred: string;
 };
 
+export type ReceivablesBucketKey =
+  | '0_30'
+  | '31_60'
+  | '61_90'
+  | '90_plus'
+  | 'unknown';
+
+export type ReceivablesBucket = {
+  key: ReceivablesBucketKey;
+  label: string;
+  amount: number;
+  saleCount: number;
+};
+
+export type ReceivablesSummary = {
+  totalOutstanding: number;
+  openSaleCount: number;
+  vendorCount: number;
+  oldestAgeDays: number | null;
+  unknownDateCount: number;
+};
+
+export type ReceivableVendor = {
+  vendorId: number;
+  name: string;
+  locationId: number;
+  locationName: string;
+  isArchived: boolean;
+  totalOutstanding: number;
+  openSaleCount: number;
+  oldestAgeDays: number | null;
+  unknownDateCount: number;
+  buckets: ReceivablesBucket[];
+};
+
+export type ReceivableSale = {
+  saleId: number;
+  orderId: number;
+  orderName: string;
+  locationId: number;
+  locationName: string;
+  saleDate: string | null;
+  ageDays: number | null;
+  ageBucket: ReceivablesBucketKey;
+  quantity: number;
+  totalSaleValue: number;
+  amountPaid: number;
+  outstandingAmount: number;
+  isOrderArchived: boolean;
+};
+
+export type ReceivablesOverview = {
+  asOfDate: string;
+  summary: ReceivablesSummary;
+  buckets: ReceivablesBucket[];
+  vendors: ReceivableVendor[];
+  activeAgeBucket: ReceivablesBucketKey | null;
+};
+
+export type VendorReceivablesResponse = {
+  asOfDate: string;
+  vendor: {
+    id: number;
+    name: string;
+    locationId: number;
+    locationName: string;
+    isArchived: boolean;
+  };
+  results: ReceivableSale[];
+};
+
 export type AssistantActivityMessage = {
   id: number;
   role: 'user' | 'assistant';

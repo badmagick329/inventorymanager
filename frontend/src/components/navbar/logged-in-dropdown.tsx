@@ -50,13 +50,16 @@ export default function LoggedInDropdown() {
     <Dropdown isDisabled={logout.isPending}>
       <DropdownTrigger>
         <Button
+          aria-label={`Logged in as ${username}`}
           color={userButtonColor}
           className='rounded-md border-accent p-2 font-semibold text-accent-foreground hover:bg-foreground/20'
           radius='sm'
           variant='bordered'
         >
           <User size={ICON_SM} />
-          <span data-testid='navbar-logged-in-as'>Logged in as {username}</span>
+          <span className='hidden md:inline' data-testid='navbar-logged-in-as'>
+            Logged in as {username}
+          </span>
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label='User Actions' items={items}>

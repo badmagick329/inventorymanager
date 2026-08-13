@@ -459,5 +459,5 @@ def test_concurrent_sales_cannot_oversell(
         thread.join(timeout=10)
 
     assert not failures
-    assert sorted(statuses) == [400, 201]
+    assert sorted(statuses) == [201, 400]
     assert Sale.objects.filter(order=order, deleted=False).count() == 1

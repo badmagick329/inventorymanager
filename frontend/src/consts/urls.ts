@@ -14,6 +14,7 @@ export const NEXT_FRICTION_EVENTS = '/fetch/feedback/friction-events';
 export const NEXT_PROBLEM_REPORTS = '/fetch/feedback/reports';
 export const NEXT_POSSIBLE_FRICTION = '/fetch/feedback/possible-friction';
 export const NEXT_ASSISTANT_ACTIVITY = '/fetch/assistant/activity';
+export const NEXT_RECEIVABLES = '/fetch/receivables';
 
 export const APP_LOCATIONS = '/app';
 export const APP_LOGIN = '/';
@@ -28,6 +29,7 @@ export const APP_ITEMS = '/app/items';
 export const APP_DEMO_WORKFLOW = '/demo/workflow';
 export const APP_MANAGE_VENDORS = '/app/vendors';
 export const APP_CHANGE_PASSWORD = '/app/change-password';
+export const APP_RECEIVABLES = '/app/receivables';
 
 export const API_LOGIN = '/api/users/auth/login';
 export const API_LOGOUT = '/api/users/auth/logout';
@@ -45,3 +47,4 @@ export const API_FRICTION_EVENTS = '/api/users/feedback/friction-events';
 export const API_PROBLEM_REPORTS = '/api/users/feedback/reports';
 export const API_POSSIBLE_FRICTION = '/api/users/feedback/possible-friction';
 export const API_ASSISTANT_ACTIVITY = '/api/users/assistant/activity';
+export const API_RECEIVABLES = '/api/items/receivables';
