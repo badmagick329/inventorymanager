@@ -1,5 +1,5 @@
 import { ICON_SM } from '@/consts';
-import { Button, Modal, useDisclosure } from "@heroui/react";
+import { Button, Modal, useDisclosure } from '@heroui/react';
 import { Plus } from 'lucide-react';
 import React from 'react';
 
@@ -23,9 +23,9 @@ export default function CreateSaleModal({
         data-testid='sales-add-sale-button'
         onPress={onOpen}
         isDisabled={remainingStock <= 0}
-        endContent={<Plus size={ICON_SM} />}
-        variant='ghost'
-        color='default'
+        startContent={<Plus size={ICON_SM} />}
+        variant='solid'
+        color='primary'
         radius='sm'
       >
         Add Sale

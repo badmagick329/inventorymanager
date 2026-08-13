@@ -13,7 +13,8 @@ import {
   isSaleResponseArray,
   isVendorResponseArray,
 } from '@/predicates';
-import { Button, Link, Spacer } from '@heroui/react';
+import { Link } from '@heroui/react';
+import { ChevronLeft, ReceiptText } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import {
@@ -70,43 +71,85 @@ export default function Sales() {
   const remainingStock = currentOrder.quantity - currentOrder.soldQuantity;
 
   return (
-    <div className='flex w-full flex-col justify-center p-4'>
-      <Spacer y={2} />
-      <div className='flex w-full flex-wrap justify-center gap-2 md:gap-[4rem]'>
-        <OrderCard
-          name={currentOrder.name}
-          pricePerItem={currentOrder.pricePerItem}
-          currentSalePrice={currentOrder.currentSalePrice}
-          quantity={currentOrder.quantity}
-          remainingStock={remainingStock}
-        />
-        <VendorsCard vendors={orderVendors} />
-      </div>
-      <Spacer y={2} />
-      <div className='flex justify-center gap-4'>
-        <Button
-          data-testid='sales-back-to-items-button'
-          as={Link}
-          href={`${APP_ITEMS}/${locationId}`}
-          variant='bordered'
-          radius='sm'
-          color='default'
-        >
-          Back to Items
-        </Button>
+    <main className='min-w-0 max-w-full px-4 py-6 lg:px-6 lg:py-8'>
+      <header className='mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between'>
+        <div className='min-w-0'>
+          <Link
+            data-testid='sales-back-to-items-button'
+            href={`${APP_ITEMS}/${locationId}`}
+            color='foreground'
+            className='mb-2 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground'
+          >
+            <ChevronLeft size={16} />
+            {currentOrder.location} inventory
+          </Link>
+          <div className='flex items-center gap-3'>
+            <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary'>
+              <ReceiptText size={22} />
+            </span>
+            <div className='min-w-0'>
+              <h1 className='truncate text-2xl font-semibold tracking-tight'>
+                {currentOrder.name}
+              </h1>
+              <p className='text-sm text-muted-foreground'>
+                {formatPurchaseDate(currentOrder.date)} ·{' '}
+                {currentOrder.quantity.toLocaleString('en-PK')} units purchased
+              </p>
+            </div>
+          </div>
+        </div>
         <CreateSaleModal
           locationId={locationId}
           orderId={orderId}
           remainingStock={remainingStock}
         />
-      </div>
-      <Spacer y={4} />
-      <SalesTanStackTable
-        locationId={locationId}
-        orderId={orderId}
-        sales={sales}
-        deleteSale={deleteSale}
+      </header>
+
+      <OrderCard
+        pricePerItem={currentOrder.pricePerItem}
+        currentSalePrice={currentOrder.currentSalePrice}
+        quantity={currentOrder.quantity}
+        soldQuantity={currentOrder.soldQuantity}
+        profit={currentOrder.profit}
+        debt={currentOrder.debt}
+        amountPaid={currentOrder.amountPaid}
+        salesCount={sales.length}
       />
-    </div>
+
+      <div className='mt-4'>
+        <VendorsCard vendors={orderVendors} locationId={locationId} />
+      </div>
+
+      <section className='mt-8' aria-labelledby='sales-history-heading'>
+        <div className='mb-3 flex items-end justify-between gap-4'>
+          <div>
+            <h2 id='sales-history-heading' className='text-lg font-semibold'>
+              Sales history
+            </h2>
+            <p className='text-sm text-muted-foreground'>
+              {sales.length.toLocaleString('en-PK')}{' '}
+              {sales.length === 1 ? 'recorded sale' : 'recorded sales'}
+            </p>
+          </div>
+        </div>
+        <SalesTanStackTable
+          locationId={locationId}
+          orderId={orderId}
+          sales={sales}
+          deleteSale={deleteSale}
+        />
+      </section>
+    </main>
   );
+}
+
+function formatPurchaseDate(date: string | null) {
+  if (!date) return 'Purchase date not recorded';
+
+  return `Purchased ${new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${date}T00:00:00Z`))}`;
 }

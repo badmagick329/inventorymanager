@@ -78,7 +78,7 @@ export function SalesTanStackTable({
   });
 
   return (
-    <div>
+    <div className='max-w-full overflow-x-auto'>
       <SalesTableToolbar table={table} />
       <TanStackTable
         table={table}
