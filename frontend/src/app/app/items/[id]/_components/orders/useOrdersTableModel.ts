@@ -30,11 +30,7 @@ export function useOrdersTableModel(locationId: string, orders: OrderResponse[])
     if (!tableState.hideFullyPaid) {
       return orders;
     }
-    return orders.filter((order) => {
-      const cost = order.pricePerItem * order.quantity;
-      const due = Math.max(cost - order.amountPaid, 0);
-      return due > 0;
-    });
+    return orders.filter((order) => !isCompletedOrder(order));
   }, [orders, tableState.hideFullyPaid]);
 
   return {
@@ -44,5 +40,12 @@ export function useOrdersTableModel(locationId: string, orders: OrderResponse[])
     setColumnFilters,
     filteredOrders,
   };
+}
+
+export function isCompletedOrder(order: OrderResponse) {
+  const stockIsFullySold = order.soldQuantity >= order.quantity;
+  const customerDebtIsPaid = order.debt <= 0;
+
+  return stockIsFullySold && customerDebtIsPaid;
 }
 
