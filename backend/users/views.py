@@ -8,6 +8,8 @@ from django.utils import timezone
 from knox.views import LoginView as KnoxLoginView
 from rest_framework import permissions, status
 from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.negotiation import BaseContentNegotiation
+from rest_framework.renderers import JSONRenderer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
@@ -314,8 +316,18 @@ class AssistantConversationView(APIView):
         return APIResponses.deleted()
 
 
+class _StreamingContentNegotiation(BaseContentNegotiation):
+    def select_parser(self, request, parsers):
+        return parsers[0]
+
+    def select_renderer(self, request, renderers, format_suffix=None):
+        return (renderers[0], renderers[0].media_type)
+
+
 class AssistantMessageView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
+    renderer_classes = (JSONRenderer,)
+    content_negotiation_class = _StreamingContentNegotiation
 
     def post(self, request: Request):
         user = request.user
@@ -365,6 +377,9 @@ class AssistantMessageView(APIView):
                     if event == "delta":
                         text += data
                         yield sse("delta", {"delta": data})
+                    elif event == "replace":
+                        text = data
+                        yield sse("replace", {"text": data})
                     else:
                         if not text:
                             text = "I couldn’t produce a response. Please try again."

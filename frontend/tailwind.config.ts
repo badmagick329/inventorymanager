@@ -90,7 +90,7 @@ const config: Config = {
       },
     },
   },
-  darkMode: ['class', 'class'],
+  darkMode: 'class',
   plugins: [
     heroui({
       themes: {
@@ -219,6 +219,7 @@ const config: Config = {
       },
     }),
     require('tailwindcss-animate'),
+    require('@tailwindcss/typography'),
   ],
 };
 export default config;
