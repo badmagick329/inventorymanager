@@ -7,7 +7,7 @@ from django.db.models import Sum
 from items.models import ItemLocation, Order, Sale, Vendor
 from openai import OpenAI
 
-VALID_MODELS = {"gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol"}
+VALID_MODELS = {"gpt-6-luna", "gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol"}
 VALID_EFFORTS = {"none", "low", "medium", "high", "xhigh", "max"}
 CHAT_HISTORY_LIMIT = 6
 DEFAULT_RESULT_LIMIT = 10
@@ -51,7 +51,7 @@ PAYMENT_HISTORY_QUESTION = re.compile(
 def configuration():
     if not os.environ.get("OPENAI_API_KEY"):
         raise RuntimeError("OPENAI_API_KEY is not configured on the backend.")
-    model = os.environ.get("OPENAI_MODEL", "gpt-5.6-luna")
+    model = os.environ.get("OPENAI_MODEL", "gpt-6-luna")
     if model not in VALID_MODELS:
         raise RuntimeError("OPENAI_MODEL must be one of: " + ", ".join(sorted(VALID_MODELS)))
     effort = os.environ.get("OPENAI_REASONING_EFFORT", "high")

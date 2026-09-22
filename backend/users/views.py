@@ -307,7 +307,7 @@ class AssistantConversationView(APIView):
         conversations = AssistantConversation.objects.filter(user=user, location=location)
         conversation = conversations.filter(id=conversation_id).first() if conversation_id else None
         messages = [] if not conversation else [{"id": item.id, "role": item.role, "text": item.content, "model": item.model or None, "usage": item.usage, "estimatedCostUsd": item.estimated_cost_usd} for item in conversation.messages.all()]
-        return APIResponses.ok({"conversationId": conversation.id if conversation else None, "messages": messages, "quota": assistant_quota(user), "model": __import__("os").environ.get("OPENAI_MODEL", "gpt-5.6-luna"), "reasoningEffort": __import__("os").environ.get("OPENAI_REASONING_EFFORT", "high")})
+        return APIResponses.ok({"conversationId": conversation.id if conversation else None, "messages": messages, "quota": assistant_quota(user), "model": __import__("os").environ.get("OPENAI_MODEL", "gpt-6-luna"), "reasoningEffort": __import__("os").environ.get("OPENAI_REASONING_EFFORT", "high")})
 
     def delete(self, request: Request):
         user = request.user
