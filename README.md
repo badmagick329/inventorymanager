@@ -1,10 +1,5 @@
 # Inventory Manager
 
-## Architecture
-
-Read this first for full codebase orientation:
-- `notes/AGENT_READ_THIS_FIRST_CODEBASE_ARCHITECTURE.md`
-
 ## Quick Start
 
 1. Copy `.env.example` to `.env` and set values for your environment.

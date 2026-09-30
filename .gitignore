@@ -12,5 +12,5 @@ backend/.env.e2e
 nginx/conf.d/*
 nginx/logs/*
 !nginx/conf.d/main.conf.sample
-notes/
+.ignore/
 deploy.sh
