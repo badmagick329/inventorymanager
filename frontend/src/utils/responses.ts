@@ -34,11 +34,11 @@ export function createErrorResponse(
   return new NextResponse(JSON.stringify(response), responseHeaders);
 }
 
-export function createAuthHeader(): {
+export async function createAuthHeader(): Promise<{
   Authorization?: string;
   ErrorResponse?: NextResponse;
-} {
-  const cookieStore = cookies();
+}> {
+  const cookieStore = await cookies();
   const token = cookieStore.get(TOKEN_KEY);
   if (!token) {
     return {

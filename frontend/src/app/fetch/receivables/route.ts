@@ -12,7 +12,7 @@ export async function GET(req: Request) {
   const target = new URL(`${BASE_URL}${API_RECEIVABLES}`);
   const source = new URL(req.url);
   source.searchParams.forEach((value, key) => target.searchParams.set(key, value));
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) return errorResponse;
 
   try {

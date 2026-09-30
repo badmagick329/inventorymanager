@@ -5,7 +5,7 @@ import axios from 'axios';
 const BASE_URL = process.env.BASE_URL;
 
 export async function GET(req: Request) {
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) return errorResponse;
   try {
     const response = await axios.get(`${BASE_URL}${API_USERS}/assistant${new URL(req.url).search}`, { headers });
@@ -14,7 +14,7 @@ export async function GET(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) return errorResponse;
   try { await axios.delete(`${BASE_URL}${API_USERS}/assistant${new URL(req.url).search}`, { headers }); return new Response(null, { status: 204 }); }
   catch (error) { return handleRouteError(error); }

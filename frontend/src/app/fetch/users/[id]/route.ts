@@ -10,15 +10,16 @@ const BASE_URL = process.env.BASE_URL;
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const url = `${BASE_URL}${API_USERS}`;
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }
   try {
-    const response = await axios.delete(`${url}/${params.id}`, { headers });
+    const response = await axios.delete(`${url}/${id}`, { headers });
     if (response.status === 204) {
       return emptyResponse(204);
     }

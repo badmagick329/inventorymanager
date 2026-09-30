@@ -5,7 +5,7 @@ import axios from 'axios';
 const BASE_URL = process.env.BASE_URL;
 
 export async function GET(req: Request) {
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) return errorResponse;
   try {
     const response = await axios.get(`${BASE_URL}${API_ASSISTANT_ACTIVITY}${new URL(req.url).search}`, { headers });

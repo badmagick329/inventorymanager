@@ -10,7 +10,7 @@ const BASE_URL = process.env.BASE_URL;
 
 export async function GET(req: Request) {
   const url = `${BASE_URL}${API_USERS}`;
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }
@@ -24,7 +24,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const url = `${BASE_URL}${API_USERS}`;
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }

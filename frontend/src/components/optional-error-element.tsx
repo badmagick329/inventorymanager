@@ -6,7 +6,7 @@ export default function OptionalErrorElement({
   errorMessage,
 }: {
   errorMessage: string;
-}): JSX.Element | null {
+}): React.JSX.Element | null {
   let message;
   if (errorMessage.includes('404')) {
     message = 'Location not found. It may have been deleted.';

@@ -11,14 +11,15 @@ const BASE_URL = process.env.BASE_URL;
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { headers, errorResponse } = getAuthHeaders();
+  const { id } = await params;
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }
   try {
-    await axios.delete(`${BASE_URL}${API_VENDORS}/${params.id}`, { headers });
+    await axios.delete(`${BASE_URL}${API_VENDORS}/${id}`, { headers });
     return emptyResponse(204);
   } catch (error) {
     return handleRouteError(error);
@@ -27,9 +28,10 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { headers, errorResponse } = getAuthHeaders();
+  const { id } = await params;
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }
@@ -40,7 +42,7 @@ export async function PATCH(
       locationId: body.locationId,
     };
     const response = await axios.patch(
-      `${BASE_URL}${API_VENDORS}/${params.id}`,
+      `${BASE_URL}${API_VENDORS}/${id}`,
       payload,
       {
         headers,

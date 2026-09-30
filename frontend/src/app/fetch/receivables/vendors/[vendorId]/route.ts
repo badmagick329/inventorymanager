@@ -10,14 +10,15 @@ const BASE_URL = process.env.BASE_URL;
 
 export async function GET(
   req: Request,
-  { params }: { params: { vendorId: string } }
+  { params }: { params: Promise<{ vendorId: string }> }
 ) {
+  const { vendorId } = await params;
   const target = new URL(
-    `${BASE_URL}${API_RECEIVABLES}/vendors/${params.vendorId}`
+    `${BASE_URL}${API_RECEIVABLES}/vendors/${vendorId}`
   );
   const source = new URL(req.url);
   source.searchParams.forEach((value, key) => target.searchParams.set(key, value));
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) return errorResponse;
 
   try {

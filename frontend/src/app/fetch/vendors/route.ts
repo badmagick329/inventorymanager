@@ -19,7 +19,7 @@ export async function GET(req: Request) {
   if (order_id) {
     url.searchParams.append('order_id', order_id);
   }
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }
@@ -32,7 +32,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }

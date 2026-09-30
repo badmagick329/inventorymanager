@@ -11,10 +11,11 @@ const BASE_URL = process.env.BASE_URL;
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const url = `${BASE_URL}${API_ORDERS}/${params.id}`;
-  const { headers, errorResponse } = getAuthHeaders();
+  const { id } = await params;
+  const url = `${BASE_URL}${API_ORDERS}/${id}`;
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }
@@ -33,13 +34,14 @@ export async function GET(
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { headers, errorResponse } = getAuthHeaders();
+  const { id } = await params;
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }
-  const url = `${BASE_URL}${API_ORDERS}/${params.id}`;
+  const url = `${BASE_URL}${API_ORDERS}/${id}`;
   try {
     const body = await req.json();
     if (!isOrderPost(body)) {

@@ -11,16 +11,17 @@ const BASE_URL = process.env.BASE_URL;
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { saleId: string } }
+  { params }: { params: Promise<{ saleId: string }> }
 ) {
+  const { saleId } = await params;
   const url = `${BASE_URL}${API_SALE_DETAIL}`;
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }
   try {
     const body = await req.json();
-    const response = await axios.patch(`${url}/${params.saleId}`, body, {
+    const response = await axios.patch(`${url}/${saleId}`, body, {
       headers,
     });
     return jsonResponse(response.data, 200);
@@ -31,15 +32,16 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { saleId: string } }
+  { params }: { params: Promise<{ saleId: string }> }
 ) {
+  const { saleId } = await params;
   const url = `${BASE_URL}${API_SALE_DETAIL}`;
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }
   try {
-    await axios.delete(`${url}/${params.saleId}`, { headers });
+    await axios.delete(`${url}/${saleId}`, { headers });
     return emptyResponse(204);
   } catch (error) {
     return handleRouteError(error);
@@ -48,10 +50,11 @@ export async function DELETE(
 
 export async function GET(
   req: Request,
-  { params }: { params: { saleId: string } }
+  { params }: { params: Promise<{ saleId: string }> }
 ) {
-  const url = `${BASE_URL}${API_SALE_DETAIL}/${params.saleId}`;
-  const { headers, errorResponse } = getAuthHeaders();
+  const { saleId } = await params;
+  const url = `${BASE_URL}${API_SALE_DETAIL}/${saleId}`;
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }

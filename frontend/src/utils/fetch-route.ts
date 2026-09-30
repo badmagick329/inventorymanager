@@ -3,10 +3,11 @@ import { NextResponse } from 'next/server';
 
 type Headers = Record<string, string>;
 
-export function getAuthHeaders():
+export async function getAuthHeaders(): Promise<
   | { headers: Headers; errorResponse?: undefined }
-  | { headers?: undefined; errorResponse: NextResponse } {
-  const { Authorization, ErrorResponse } = createAuthHeader();
+  | { headers?: undefined; errorResponse: NextResponse }
+> {
+  const { Authorization, ErrorResponse } = await createAuthHeader();
   if (ErrorResponse) {
     return { errorResponse: ErrorResponse };
   }

@@ -23,7 +23,7 @@ function createLoginResponse(response: AxiosResponse<any, any>) {
   const { expiry, token } = response.data;
   const now = new Date();
   const expiryDate = new Date(expiry);
-  const maxAge = (expiryDate.getTime() - now.getTime()) / 1000;
+  const maxAge = Math.floor((expiryDate.getTime() - now.getTime()) / 1000);
   const authCookieSerialized = serialize(TOKEN_KEY, JSON.stringify(token), {
     path: '/',
     httpOnly: true,

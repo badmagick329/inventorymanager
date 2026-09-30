@@ -10,7 +10,7 @@ const BASE_URL = process.env.BASE_URL;
 
 export async function GET(req: Request) {
   const url = `${BASE_URL}${API_USERS_ME}?name_only=true`;
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }
@@ -24,7 +24,7 @@ export async function GET(req: Request) {
 
 export async function PATCH(req: Request) {
   const url = `${BASE_URL}${API_USERS_ME}`;
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }

@@ -10,11 +10,12 @@ const BASE_URL = process.env.BASE_URL;
 
 export async function GET(
   req: Request,
-  { params }: { params: { locationId: string } }
+  { params }: { params: Promise<{ locationId: string }> }
 ) {
+  const { locationId } = await params;
   const query = new URL(req.url).searchParams.toString();
-  const url = `${BASE_URL}${API_LOCATION_HISTORY}/${params.locationId}${query ? `?${query}` : ''}`;
-  const { headers, errorResponse } = getAuthHeaders();
+  const url = `${BASE_URL}${API_LOCATION_HISTORY}/${locationId}${query ? `?${query}` : ''}`;
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }

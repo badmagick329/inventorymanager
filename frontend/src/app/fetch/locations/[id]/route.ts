@@ -11,15 +11,16 @@ const BASE_URL = process.env.BASE_URL;
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const url = `${BASE_URL}${API_LOCATIONS}`;
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }
   try {
-    await axios.delete(`${url}/${params.id}`, { headers });
+    await axios.delete(`${url}/${id}`, { headers });
     return emptyResponse(204);
   } catch (error) {
     return handleRouteError(error);
@@ -28,10 +29,11 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const url = `${BASE_URL}${API_LOCATIONS}`;
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }
@@ -41,7 +43,7 @@ export async function PATCH(
       name: body.location,
       users: body.usernames,
     };
-    const response = await axios.patch(`${url}/${params.id}`, payload, {
+    const response = await axios.patch(`${url}/${id}`, payload, {
       headers,
     });
     return jsonResponse(response.data, 200);

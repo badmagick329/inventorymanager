@@ -9,7 +9,7 @@ import axios from 'axios';
 const BASE_URL = process.env.BASE_URL;
 
 export async function GET() {
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) {
     return errorResponse;
   }

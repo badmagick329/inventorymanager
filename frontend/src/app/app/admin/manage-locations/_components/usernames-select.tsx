@@ -37,7 +37,6 @@ export default function UsernamesSelect({
         <SelectItem
           data-testid='manage-locations-usernames-option'
           key={username}
-          value={username}
         >
           {username}
         </SelectItem>

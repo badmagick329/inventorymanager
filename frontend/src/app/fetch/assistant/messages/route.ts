@@ -4,7 +4,7 @@ import { getAuthHeaders } from '@/utils/fetch-route';
 const BASE_URL = process.env.BASE_URL;
 
 export async function POST(req: Request) {
-  const { headers, errorResponse } = getAuthHeaders();
+  const { headers, errorResponse } = await getAuthHeaders();
   if (errorResponse) return errorResponse;
   try {
     const response = await fetch(`${BASE_URL}${API_USERS}/assistant/messages`, {
