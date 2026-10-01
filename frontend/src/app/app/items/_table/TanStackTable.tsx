@@ -58,7 +58,7 @@ export function TanStackTable<TData>({
               </TableRow>
             ))
           ) : (
-            <TableRow>
+            <TableRow data-testid={`${tableTestId}-empty`}>
               <TableCell colSpan={table.getAllLeafColumns().length} className='h-24 text-center'>
                 {emptyMessage}
               </TableCell>

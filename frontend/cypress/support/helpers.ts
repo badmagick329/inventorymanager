@@ -95,10 +95,10 @@ export function forItemClick(name: string, target: string) {
   waitForOrderFormToClose();
 
   openRowActions();
-
-  cy.get('body').then(($body) => {
-    const hasVisibleTarget = $body.find(`${target}:visible`).length > 0;
-    if (!hasVisibleTarget) {
+  // A click before hydration is dropped, so reopen only once the menu has had
+  // time to render; reopening sooner toggles an opening menu closed.
+  waitForVisible(target, 8).then((visible) => {
+    if (!visible) {
       openRowActions();
     }
   });
@@ -123,6 +123,21 @@ export function forItemClick(name: string, target: string) {
       .scrollIntoView()
       .click({ force: true });
   }
+}
+
+function waitForVisible(
+  selector: string,
+  checksLeft: number
+): Cypress.Chainable<boolean> {
+  return cy.get('body', { log: false }).then(($body) => {
+    const visible = $body.find(`${selector}:visible`).length > 0;
+    if (visible || checksLeft === 0) {
+      return visible;
+    }
+    return cy
+      .wait(250, { log: false })
+      .then(() => waitForVisible(selector, checksLeft - 1));
+  }) as Cypress.Chainable<boolean>;
 }
 
 export function deleteItemViaApi(name: string) {
@@ -207,7 +222,7 @@ export function addSale(
 export function waitForSalesPageReady() {
   cy.url().should('include', APP_ITEMS);
   cy.contains('Loading').should('not.exist');
-  cy.get('[data-testid="sales-vendors-card-title"]', { timeout: 15000 }).should(
+  cy.get('[data-testid="sales-order-summary"]', { timeout: 15000 }).should(
     'exist'
   );
 }

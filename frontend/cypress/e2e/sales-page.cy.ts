@@ -27,7 +27,7 @@ describe('sales page', () => {
     );
     waitForSalesPageReady();
 
-    cy.dataCy('sales-no-sales-data').should('exist');
+    cy.dataCy('sales-table-empty').should('exist');
     cy.dataCy('sales-back-to-items-button').should('exist');
     cy.dataCy('sales-add-sale-button').should('exist');
 

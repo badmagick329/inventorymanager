@@ -100,7 +100,7 @@ function createUser(username: string, password: string, fail: boolean = false) {
 function deleteUser(username: string) {
   cy.contains('[data-testid="manage-users-user-title"]', username)
     .should('exist')
-    .closest('[class*="rounded-md"]')
+    .closest('[data-testid="manage-users-user-card"]')
     .find('[data-testid="manage-users-delete-button"]')
     .click();
   cy.intercept('DELETE', `${NEXT_USERS}/*`).as('deleteUser');

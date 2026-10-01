@@ -1,5 +1,7 @@
 import type { Config } from 'tailwindcss';
 import { heroui } from '@heroui/react';
+import typography from '@tailwindcss/typography';
+import animate from 'tailwindcss-animate';
 
 const config: Config = {
   content: [
@@ -218,8 +220,8 @@ const config: Config = {
         },
       },
     }),
-    require('tailwindcss-animate'),
-    require('@tailwindcss/typography'),
+    animate,
+    typography,
   ],
 };
 export default config;

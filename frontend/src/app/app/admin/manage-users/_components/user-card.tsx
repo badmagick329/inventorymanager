@@ -19,7 +19,10 @@ export default function UserCard({ user }: { user: User }) {
   const disclosure = useDisclosure();
 
   return (
-    <Card className='flex min-h-52 w-full flex-col rounded-lg border border-border bg-card shadow-none'>
+    <Card
+      data-testid='manage-users-user-card'
+      className='flex min-h-52 w-full flex-col rounded-lg border border-border bg-card shadow-none'
+    >
       <CardHeader className='flex items-center justify-start gap-2 px-5 py-4'>
         <UsernameDisplay username={user.username} />
       </CardHeader>
