@@ -58,22 +58,23 @@ This project supports running dev DB and test DB in parallel:
 Setup:
 
 1. Copy `backend/.env.e2e.example` to `backend/.env.e2e`
-2. Copy `frontend/cypress.env.e2e.json.example` to `frontend/cypress.env.json`
+2. Copy `frontend/cypress.env.e2e.json.example` to `frontend/cypress.env.e2e.json`
 3. Start DBs:
 
 ```bash
 just db-up
 ```
 
-Run e2e stack in separate terminals:
+Run the whole suite (starts DBs and servers, resets/seeds, runs Cypress, stops what it started):
+
+```bash
+just e2e-all
+```
+
+Or run the stack in separate terminals and rerun Cypress against it:
 
 ```bash
 just e2e-backend-dev
 just e2e-frontend-dev
-```
-
-Then run Cypress with deterministic reset/seed:
-
-```bash
 just e2e-run
 ```
