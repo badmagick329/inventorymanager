@@ -1,1 +1,4 @@
 deploy.sh
+
+# Private deployment tools and credentials
+.ignore/
