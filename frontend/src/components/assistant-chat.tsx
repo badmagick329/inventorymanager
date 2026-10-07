@@ -276,7 +276,7 @@ export default function AssistantChat() {
       >
         {messages.length === 0 && !error && (
           <div className='rounded-md border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300'>
-            Ask about outstanding debt, unpaid sales, profit, margins, or stock performance.
+            Ask about amounts due, unpaid sales, profit, margins, or stock performance.
           </div>
         )}
         {messages.map((item) => (

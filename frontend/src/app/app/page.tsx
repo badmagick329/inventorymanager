@@ -58,7 +58,7 @@ export default function Locations() {
               Locations
             </h1>
             <p className='mt-1 max-w-2xl text-sm text-muted-foreground'>
-              Open a school inventory or review its financial position.
+              Open a location's inventory or review its financial position.
             </p>
           </div>
           <Chip variant='flat' color='default' radius='sm'>
@@ -76,7 +76,7 @@ export default function Locations() {
               tone={totals.profit >= 0 ? 'positive' : 'negative'}
             />
             <PortfolioMetric
-              label='Outstanding'
+              label='Amount due'
               value={totals.debt}
               tone='warning'
             />

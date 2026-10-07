@@ -6,12 +6,15 @@ type OrderCostInputProps = {
   control: Control<OrderFormValues, any>;
   formState: FormState<OrderFormValues>;
   showHelpText?: boolean;
+  isPerItem: boolean;
 };
 
 export default function OrderCostInput({
   control,
   formState,
+  isPerItem,
 }: OrderCostInputProps) {
+  const label = isPerItem ? 'Purchase Price' : 'Total Spent';
   return (
     <>
       <div className='flex w-full justify-between px-2'>
@@ -22,14 +25,14 @@ export default function OrderCostInput({
       <Controller
         name='cost'
         control={control}
-        rules={{ required: 'Cost is required', validate: (value) => Number.isFinite(Number(value)) && Number(value) >= 1 || 'Please enter a number of at least 1.' }}
+        rules={{ required: `${label} is required`, validate: (value) => Number.isFinite(Number(value)) && Number(value) >= 1 || 'Please enter a number of at least 1.' }}
         render={({ field, fieldState }) => (
           <Input
             data-testid='items-order-cost-input'
             type='number'
             variant='flat'
             autoComplete='off'
-            label='Cost'
+            label={label}
             labelPlacement='outside'
             placeholder=' '
             validationBehavior='aria'

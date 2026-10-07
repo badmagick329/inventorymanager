@@ -73,7 +73,7 @@ describe('location history and charts', () => {
       cy.visit(`${APP_ITEMS}/${locationId}/charts`);
       cy.dataCy('item-cost-chart-title').should(
         'contain',
-        'Highest Item Costs'
+        'Items by Total Spent'
       );
       cy.get('canvas').should('exist');
 

@@ -37,7 +37,7 @@ export default function LocationInformationCard({
       />
       <SummaryMetric
         icon={HandCoins}
-        label='Outstanding'
+        label='Amount due'
         value={debt}
         tone='warning'
       />

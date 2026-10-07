@@ -27,7 +27,7 @@ export default function AssistantActivityPage() {
   if (isLoading && !data) return <Spinner />;
   if (isError || !data) return <ConnectionError />;
   const users = [{ key: 'all', label: 'All users' }, ...data.filterOptions.users.map((user) => ({ key: String(user.id), label: user.username }))];
-  const locations = [{ key: 'all', label: 'All schools' }, ...data.filterOptions.locations.map((location) => ({ key: String(location.id), label: location.name }))];
+  const locations = [{ key: 'all', label: 'All locations' }, ...data.filterOptions.locations.map((location) => ({ key: String(location.id), label: location.name }))];
 
   return (
     <div className='flex w-full flex-col gap-5 p-4'>
@@ -41,7 +41,7 @@ export default function AssistantActivityPage() {
           <Select label='User' items={users} selectedKeys={[filters.userId || 'all']} onChange={(event) => update({ userId: event.target.value === 'all' ? '' : event.target.value })}>
             {(user) => <SelectItem key={user.key}>{user.label}</SelectItem>}
           </Select>
-          <Select label='School' items={locations} selectedKeys={[filters.locationId || 'all']} onChange={(event) => update({ locationId: event.target.value === 'all' ? '' : event.target.value })}>
+          <Select label='Location' items={locations} selectedKeys={[filters.locationId || 'all']} onChange={(event) => update({ locationId: event.target.value === 'all' ? '' : event.target.value })}>
             {(location) => <SelectItem key={location.key}>{location.label}</SelectItem>}
           </Select>
           <Input label='From' type='date' value={filters.dateFrom} onValueChange={(dateFrom) => update({ dateFrom })} />
@@ -69,7 +69,7 @@ function Conversation({ conversation }: { conversation: AssistantActivityConvers
     <Card className='bg-content1'>
       <CardBody className='gap-3'>
         <div className='flex flex-wrap justify-between gap-2 text-sm text-foreground'>
-          <div><span className='font-semibold'>{conversation.user.username}</span> · user #{conversation.user.id} · {conversation.location?.name ?? 'No school'} · {formatDate(conversation.updatedAt)}</div>
+          <div><span className='font-semibold'>{conversation.user.username}</span> · user #{conversation.user.id} · {conversation.location?.name ?? 'No location'} · {formatDate(conversation.updatedAt)}</div>
           <div className={conversation.status === 'completed' ? 'text-success' : 'text-danger'}>{status}</div>
         </div>
         <div className='space-y-2'>

@@ -48,10 +48,10 @@ const AGE_OPTIONS: { key: ReceivablesBucketKey | 'all'; label: string }[] = [
 ];
 
 const ORDER_OPTIONS = [
-  { key: 'outstanding_desc', label: 'Highest outstanding' },
+  { key: 'outstanding_desc', label: 'Highest amount due' },
   { key: 'oldest_desc', label: 'Oldest balance' },
   { key: 'name_asc', label: 'Vendor name' },
-  { key: 'outstanding_asc', label: 'Lowest outstanding' },
+  { key: 'outstanding_asc', label: 'Lowest amount due' },
 ];
 
 const money = new Intl.NumberFormat('en-PK', {
@@ -197,7 +197,7 @@ function ReceivablesDashboard() {
             {data.vendors.length} {data.vendors.length === 1 ? 'vendor' : 'vendors'}
             {filters.ageBucket
               ? ` with balances in ${bucketLabel(filters.ageBucket)}`
-              : ' with an outstanding balance'}
+              : ' with an amount due'}
           </p>
         </div>
         {isFetching && <span className='text-xs text-muted-foreground'>Updating…</span>}
@@ -206,7 +206,7 @@ function ReceivablesDashboard() {
       {data.vendors.length === 0 ? (
         <div className='mt-4 flex min-h-48 flex-col items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 px-6 text-center'>
           <CircleDollarSign className='mb-3 text-muted-foreground' size={28} />
-          <p className='font-medium'>No outstanding balances found</p>
+          <p className='font-medium'>No amounts due</p>
           <p className='mt-1 text-sm text-muted-foreground'>
             Try another location, aging band, or vendor search.
           </p>
@@ -231,7 +231,7 @@ function SummaryBand({
 }) {
   const metrics = [
     {
-      label: 'Total outstanding',
+      label: 'Total amount due',
       value: currency(data.totalOutstanding),
       icon: HandCoins,
       tone: 'text-warning-600 dark:text-warning-500',
@@ -344,7 +344,7 @@ function VendorTable({
           <tr>
             <th className='px-4 py-3 font-medium'>Vendor</th>
             <th className='px-4 py-3 font-medium'>Location</th>
-            <th className='px-4 py-3 text-right font-medium'>Outstanding</th>
+            <th className='px-4 py-3 text-right font-medium'>Amount due</th>
             <th className='px-4 py-3 text-right font-medium'>Unpaid sales</th>
             <th className='px-4 py-3 text-right font-medium'>Oldest age</th>
             <th className='w-36 px-4 py-3 font-medium'>Details</th>
@@ -360,7 +360,7 @@ function VendorTable({
                     <div className='flex items-center gap-2'>
                       <span className='font-medium'>{vendor.name}</span>
                       {vendor.isArchived && (
-                        <Chip size='sm' variant='flat' color='default'>Archived</Chip>
+                        <Chip size='sm' variant='flat' color='default'>Deleted</Chip>
                       )}
                     </div>
                   </td>
@@ -444,7 +444,7 @@ function VendorSales({
             <th className='pb-2 text-right font-medium'>Quantity</th>
             <th className='pb-2 text-right font-medium'>Sale total</th>
             <th className='pb-2 text-right font-medium'>Paid</th>
-            <th className='pb-2 text-right font-medium'>Outstanding</th>
+            <th className='pb-2 text-right font-medium'>Amount due</th>
             <th className='pb-2 pl-4 font-medium'>Record</th>
           </tr>
         </thead>
@@ -476,7 +476,7 @@ function SaleRow({ sale }: { sale: ReceivableSale }) {
       </td>
       <td className='py-3 pl-4'>
         {sale.isOrderArchived ? (
-          <Chip size='sm' variant='flat' color='default'>Archived item</Chip>
+          <Chip size='sm' variant='flat' color='default'>Deleted item</Chip>
         ) : (
           <Button
             as={Link}

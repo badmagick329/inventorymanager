@@ -122,6 +122,7 @@ export default function CreateOrderForm({
                 <OrderCostInput
                   control={control}
                   formState={formState}
+                  isPerItem={isCostPerItem}
                 />
                 <Checkbox
                   defaultSelected={isCostPerItem}

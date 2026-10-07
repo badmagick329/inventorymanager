@@ -137,7 +137,7 @@ export function getOrderColumns(
     {
       id: 'cost',
       accessorKey: 'pricePerItem',
-      header: ({ column }) => <TableColumnHeader column={column} title='Cost' />,
+      header: ({ column }) => <TableColumnHeader column={column} title='Total Spent' />,
       cell: ({ row }) => (
         <PriceFieldContent
           className={textSizeStyle}

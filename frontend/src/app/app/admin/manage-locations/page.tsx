@@ -29,7 +29,7 @@ export default function ManageLocation() {
               Manage Locations
             </h1>
             <p className='mt-1 text-sm text-muted-foreground'>
-              Create schools and control who can access their inventory.
+              Create locations and control who can access their inventory.
             </p>
           </div>
           <Chip variant='flat' radius='sm'>

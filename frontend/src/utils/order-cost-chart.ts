@@ -44,7 +44,7 @@ function createChartDataObject(
     },
     datasets: [
       {
-        label: 'Order Cost',
+        label: 'Total spent',
         data: data.slice(0, n),
         hoverOffset: 4,
         backgroundColor: [

@@ -44,7 +44,7 @@ export default function LocationOverview({
           amount={profit}
           tone={profit >= 0 ? 'positive' : 'negative'}
         />
-        <CurrencyField label='Outstanding' amount={debt} tone='warning' />
+        <CurrencyField label='Amount due' amount={debt} tone='warning' />
       </div>
       <div className='flex items-center justify-between border-t border-border px-5 py-3'>
         <div className='text-xs text-muted-foreground'>

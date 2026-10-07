@@ -44,7 +44,7 @@ export default function VendorsCard({
               data-testid='sales-vendors-card-title'
               className='text-sm font-semibold'
             >
-              Outstanding for this item
+              Amount due for this item
             </h2>
             <p className='text-xs text-muted-foreground'>
               {vendorsInDebt.length}{' '}

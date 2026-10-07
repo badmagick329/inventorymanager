@@ -302,7 +302,7 @@ class AssistantConversationView(APIView):
         assert isinstance(user, UserAccount)
         location = assistant_location(user, request.GET.get("location_id"))
         if not location:
-            return Response({"error": "Open the assistant from a school page."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Open the assistant from a location page."}, status=status.HTTP_400_BAD_REQUEST)
         conversation_id = request.GET.get("conversation_id")
         conversations = AssistantConversation.objects.filter(user=user, location=location)
         conversation = conversations.filter(id=conversation_id).first() if conversation_id else None
@@ -334,7 +334,7 @@ class AssistantMessageView(APIView):
         assert isinstance(user, UserAccount)
         location = assistant_location(user, request.data.get("locationId"))
         if not location:
-            return Response({"error": "Open the assistant from a school page."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Open the assistant from a location page."}, status=status.HTTP_400_BAD_REQUEST)
         message = request.data.get("message", "").strip()
         if not message:
             return APIResponses.bad_request({"message": ["A message is required."]})
@@ -347,7 +347,7 @@ class AssistantMessageView(APIView):
             if conversation_id:
                 conversation = AssistantConversation.objects.filter(id=conversation_id, user=user, location=location).first()
                 if not conversation:
-                    return Response({"error": "That chat is not available for this school."}, status=status.HTTP_404_NOT_FOUND)
+                    return Response({"error": "That chat is not available for this location."}, status=status.HTTP_404_NOT_FOUND)
             usage, _ = AssistantDailyUsage.objects.select_for_update().get_or_create(user=user, date=timezone.localdate())
             if usage.requests >= ASSISTANT_DAILY_LIMIT:
                 return Response({"error": "Daily assistant limit reached.", "quota": assistant_quota(user)}, status=status.HTTP_429_TOO_MANY_REQUESTS)

@@ -31,7 +31,7 @@ export default function ChartsPage() {
         data-testid='item-cost-chart-title'
         className='pt-6 text-2xl font-semibold tracking-wide'
       >
-        Highest Item Costs
+        Items by Total Spent
       </span>
       <div className='flex h-4/5 w-full justify-center'>
         <Pie

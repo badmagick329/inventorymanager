@@ -47,9 +47,9 @@ export default function OrderCard({
       />
       <SummaryMetric
         icon={CircleDollarSign}
-        label='Unit cost'
+        label='Purchase price'
         value={money(pricePerItem)}
-        detail={`${money(pricePerItem * quantity)} total cost`}
+        detail={`${money(pricePerItem * quantity)} total spent`}
       />
       <SummaryMetric
         icon={BadgeDollarSign}
@@ -72,7 +72,7 @@ export default function OrderCard({
       />
       <SummaryMetric
         icon={HandCoins}
-        label='Outstanding'
+        label='Amount due'
         value={money(debt)}
         detail={`${money(amountPaid)} collected`}
         tone={debt > 0 ? 'warning' : 'positive'}
