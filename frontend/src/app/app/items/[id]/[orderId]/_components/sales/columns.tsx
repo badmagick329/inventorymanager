@@ -53,7 +53,7 @@ export function getSalesColumns({
     },
     {
       accessorKey: 'cost',
-      header: ({ column }) => <TableColumnHeader column={column} title='Cost' />,
+      header: ({ column }) => <TableColumnHeader column={column} title='Cost of Goods' />,
       cell: ({ row }) => (
         <PriceFieldContent value={row.original.cost} quantity={row.original.quantity} />
       ),
