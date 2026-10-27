@@ -23,10 +23,10 @@ bun install
 bun run dev
 ```
 
-- Backend tests (if poetry/pytest is installed locally):
+- Backend tests (needs [uv](https://docs.astral.sh/uv/); `uv sync` installs the dependencies):
 
 ```bash
-poetry run pytest backend/users/tests backend/items/tests -q
+uv run pytest backend/users/tests backend/items/tests -q
 ```
 
 - Frontend tests:

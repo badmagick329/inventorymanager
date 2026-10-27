@@ -5,12 +5,15 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-RUN pip install --upgrade pip && \
-    pip install poetry==1.8.2
+# uv lives outside /usr/local so the runtime stage, which copies /usr/local,
+# does not ship it. Syncing into /usr/local installs into the image's own
+# Python instead of a project venv.
+COPY --from=ghcr.io/astral-sh/uv:0.12.3 /uv /bin/uv
+ENV UV_PROJECT_ENVIRONMENT=/usr/local \
+    UV_PYTHON_DOWNLOADS=never
 
-COPY pyproject.toml poetry.lock ./
-RUN poetry config virtualenvs.create false && \
-    poetry install --no-root --without dev
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --no-cache
 
 COPY ./backend .
 

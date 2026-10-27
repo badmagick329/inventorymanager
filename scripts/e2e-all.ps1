@@ -69,7 +69,7 @@ try {
         '-NoLogo',
         '-NoProfile',
         '-Command',
-        'poetry run python manage.py runserver 0.0.0.0:8003'
+        'uv run python manage.py runserver 0.0.0.0:8003'
       ) `
       -WorkingDirectory (Join-Path $projectRoot 'backend') `
       -WindowStyle Hidden

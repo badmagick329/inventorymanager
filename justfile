@@ -5,11 +5,11 @@ default:
 
 # Install dependencies
 install:
-  poetry install
+  uv sync
   cd frontend; bun install
 
 backend-install:
-  poetry install
+  uv sync
 
 frontend-install:
   cd frontend; bun install
@@ -20,7 +20,7 @@ frontend-build:
 
 # Development servers
 backend-dev:
-  cd backend; poetry run python manage.py runserver 0.0.0.0:8002
+  cd backend; uv run python manage.py runserver 0.0.0.0:8002
 
 frontend-dev:
   cd frontend; bun run dev
@@ -32,13 +32,13 @@ db-down:
   docker compose -f docker-compose-db.yml down
 
 e2e-backend-dev:
-  if (!(Test-Path backend/.env.e2e)) { throw "Missing backend/.env.e2e. Copy backend/.env.e2e.example first." }; Get-Content backend/.env.e2e | ForEach-Object { if ($_ -and -not $_.StartsWith('#')) { $name,$value = $_ -split '=',2; [Environment]::SetEnvironmentVariable($name.Trim(),$value.Trim(),'Process') } }; cd backend; poetry run python manage.py runserver 0.0.0.0:8003
+  if (!(Test-Path backend/.env.e2e)) { throw "Missing backend/.env.e2e. Copy backend/.env.e2e.example first." }; Get-Content backend/.env.e2e | ForEach-Object { if ($_ -and -not $_.StartsWith('#')) { $name,$value = $_ -split '=',2; [Environment]::SetEnvironmentVariable($name.Trim(),$value.Trim(),'Process') } }; cd backend; uv run python manage.py runserver 0.0.0.0:8003
 
 e2e-frontend-dev:
   cd frontend; $env:BASE_URL='http://localhost:8003'; bunx next dev -p 5001 -H 0.0.0.0
 
 e2e-reset:
-  if (!(Test-Path backend/.env.e2e)) { throw "Missing backend/.env.e2e. Copy backend/.env.e2e.example first." }; Get-Content backend/.env.e2e | ForEach-Object { if ($_ -and -not $_.StartsWith('#')) { $name,$value = $_ -split '=',2; [Environment]::SetEnvironmentVariable($name.Trim(),$value.Trim(),'Process') } }; cd backend; poetry run python manage.py migrate; poetry run python manage.py flush --no-input; poetry run python manage.py migrate; poetry run python manage.py seed_e2e
+  if (!(Test-Path backend/.env.e2e)) { throw "Missing backend/.env.e2e. Copy backend/.env.e2e.example first." }; Get-Content backend/.env.e2e | ForEach-Object { if ($_ -and -not $_.StartsWith('#')) { $name,$value = $_ -split '=',2; [Environment]::SetEnvironmentVariable($name.Trim(),$value.Trim(),'Process') } }; cd backend; uv run python manage.py migrate; uv run python manage.py flush --no-input; uv run python manage.py migrate; uv run python manage.py seed_e2e
 
 e2e-run:
   just e2e-reset
@@ -59,10 +59,10 @@ e2e:
 
 # Backend utilities
 backend-migrate:
-  cd backend; poetry run python manage.py migrate
+  cd backend; uv run python manage.py migrate
 
 backend-shell:
-  cd backend; poetry run python manage.py shell
+  cd backend; uv run python manage.py shell
 
 # Tests
 test:
@@ -70,7 +70,7 @@ test:
   just test-frontend
 
 test-backend:
-  poetry run pytest backend/users/tests backend/items/tests -q
+  uv run pytest backend/users/tests backend/items/tests -q
 
 test-frontend:
   cd frontend; bun run test --run
