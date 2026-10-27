@@ -10,7 +10,22 @@ export const queryKeys = {
       String(locationId),
       orderId ? String(orderId) : undefined,
     ] as const,
+  orderFormDefaults: (
+    locationId: string | number,
+    orderId?: string | number
+  ) =>
+    [
+      'order-form-defaults',
+      String(locationId),
+      orderId ? String(orderId) : 'new',
+    ] as const,
   salesRoot: ['sales'] as const,
+  saleFormDefaults: (orderId: string | number, saleId?: string | number) =>
+    [
+      'sale-form-defaults',
+      String(orderId),
+      saleId ? String(saleId) : 'new',
+    ] as const,
   sales: (orderId: string | number) => ['sales', String(orderId)] as const,
   vendorsRoot: ['vendors'] as const,
   vendors: (locationId: string | number) =>

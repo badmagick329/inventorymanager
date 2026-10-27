@@ -28,23 +28,33 @@ import {
 
 type CreateOrderMutation = ReturnType<typeof useCreateOrder>['mutateAsync'];
 
-export default function CreateOrderForm({
-  locationId,
-  orderId,
-  onClose,
-}: {
+type CreateOrderFormProps = {
   locationId: string;
   orderId?: string;
   onClose: () => void;
-}) {
+};
+
+export default function CreateOrderForm(props: CreateOrderFormProps) {
+  const { data: defaultValues } = useOrderFormDefaults({
+    locationId: props.locationId,
+    orderId: props.orderId,
+  });
+
+  if (!defaultValues) {
+    return <Spinner />;
+  }
+  return <OrderForm {...props} defaultValues={defaultValues} />;
+}
+
+function OrderForm({
+  locationId,
+  orderId,
+  onClose,
+  defaultValues,
+}: CreateOrderFormProps & { defaultValues: OrderFormValues }) {
   const [isCostPerItem, setIsCostPerItem] = useState(true);
   const [isSalePricePerItem, setIsSalePricePerItem] = useState(true);
   const [value, updateValue] = useLocalStorage('showHelp', true);
-
-  const fetchDefaults = useOrderFormDefaults({
-    locationId,
-    orderId,
-  });
 
   const {
     handleSubmit,
@@ -53,9 +63,8 @@ export default function CreateOrderForm({
     setValue,
     getValues,
     setError,
-  } = useForm({
-    // @ts-ignore
-    defaultValues: fetchDefaults.mutateAsync,
+  } = useForm<OrderFormValues>({
+    defaultValues,
     mode: 'onBlur',
     reValidateMode: 'onChange',
   });
@@ -65,10 +74,6 @@ export default function CreateOrderForm({
     locationId,
     orderId,
   });
-
-  if (formState.isLoading) {
-    return <Spinner />;
-  }
 
   return (
     <>

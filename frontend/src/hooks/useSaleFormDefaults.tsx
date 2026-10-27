@@ -1,10 +1,11 @@
 import { NEXT_SALE_DETAIL } from '@/consts/urls';
 import { isSaleResponse } from '@/predicates';
+import { queryKeys } from '@/consts/queryKeys';
 import {
   getOrderByOrderId,
   getSaleBySaleId,
 } from '@/utils/query-client-reader';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
 import useOrders from './useOrders';
@@ -15,6 +16,10 @@ type useSaleFormDefaultsProps = {
   saleId?: string;
 };
 
+/**
+ * Loads the sale form's starting values once per opening; see
+ * `useOrderFormDefaults` for why the form waits for plain values.
+ */
 export default function useSaleFormDefaults({
   locationId,
   orderId,
@@ -22,13 +27,10 @@ export default function useSaleFormDefaults({
 }: useSaleFormDefaultsProps) {
   const queryClient = useQueryClient();
   useOrders(locationId);
-  const order = getOrderByOrderId(orderId, locationId, queryClient);
-  let salePrice = '';
-  if (order) {
-    salePrice = order.currentSalePrice.toString();
-  }
 
   async function fetchDefaults() {
+    const order = getOrderByOrderId(orderId, locationId, queryClient);
+    const salePrice = order ? order.currentSalePrice.toString() : '';
     if (!saleId) {
       return createSaleDefaultValues(salePrice);
     }
@@ -40,23 +42,18 @@ export default function useSaleFormDefaults({
       const response = await axios.get(`${NEXT_SALE_DETAIL}/${saleId}`);
       return createSaleDefaultValues(salePrice, response.data);
     } catch (error) {
+      console.error(`error during sales defaults. ${error}`);
       return createSaleDefaultValues(salePrice);
     }
   }
 
-  const mutation = useMutation({
-    mutationFn: fetchDefaults,
+  return useQuery({
+    queryKey: queryKeys.saleFormDefaults(orderId, saleId),
+    queryFn: fetchDefaults,
+    staleTime: Infinity,
+    gcTime: 0,
     retry: false,
-    onSettled: () => {},
-    onSuccess: (data) => {
-      // console.log(`success data`, data);
-      // queryClient.setQueryData(['sales', orderId, saleId], data);
-    },
-    onError: (error) => {
-      console.error(`error during sales defaults. ${error}`);
-    },
   });
-  return mutation;
 }
 
 export function createSaleDefaultValues(salePrice: string, sale?: any) {

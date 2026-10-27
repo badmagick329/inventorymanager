@@ -28,26 +28,36 @@ import {
 
 type CreateSaleMutation = ReturnType<typeof useCreateSale>['mutateAsync'];
 
-export default function CreateSaleForm({
-  locationId,
-  orderId,
-  onClose,
-  saleId,
-}: {
+type CreateSaleFormProps = {
   locationId: string;
   orderId: string;
   onClose: () => void;
   saleId?: string;
-}) {
+};
+
+export default function CreateSaleForm(props: CreateSaleFormProps) {
+  const { data: defaultValues } = useSaleFormDefaults({
+    locationId: props.locationId,
+    orderId: props.orderId,
+    saleId: props.saleId,
+  });
+
+  if (!defaultValues) {
+    return <Spinner />;
+  }
+  return <SaleForm {...props} defaultValues={defaultValues} />;
+}
+
+function SaleForm({
+  locationId,
+  orderId,
+  onClose,
+  saleId,
+  defaultValues,
+}: CreateSaleFormProps & { defaultValues: SaleFormValues }) {
   const [isSalePricePerItem, setIsSalePricePerItem] = useState(true);
   const [isAmountPaidPerItem, setIsAmountPaidPerItem] = useState(false);
   const [value, updateValue] = useLocalStorage('showHelp', true);
-
-  const fetchDefaults = useSaleFormDefaults({
-    locationId,
-    orderId,
-    saleId,
-  });
 
   const {
     handleSubmit,
@@ -57,9 +67,8 @@ export default function CreateSaleForm({
     setValue,
     getValues,
     watch,
-  } = useForm({
-    // @ts-ignore
-    defaultValues: fetchDefaults.mutateAsync,
+  } = useForm<SaleFormValues>({
+    defaultValues,
     mode: 'onBlur',
     reValidateMode: 'onChange',
   });
@@ -70,9 +79,6 @@ export default function CreateSaleForm({
     orderId,
   });
 
-  if (formState.isLoading) {
-    return <Spinner />;
-  }
   return (
     <>
       <form
