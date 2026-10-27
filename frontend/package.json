@@ -45,14 +45,15 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^6.1.2",
     "autoprefixer": "^10.0.1",
     "cypress": "^14.0.2",
     "jsdom": "^24.0.0",
     "postcss": "^8.5.23",
     "tailwindcss": "^3.3.0",
     "typescript": "^5",
-    "vitest": "^1.2.1"
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
   },
   "prettier": {
     "semi": true,
