@@ -253,7 +253,7 @@ function SummaryBand({
       {metrics.map(({ label, value, icon: Icon, tone }) => (
         <div
           key={label}
-          className='flex gap-3 border-b border-border px-5 py-4 last:border-b-0 sm:[&:nth-child(odd)]:border-r lg:border-b-0 lg:border-r lg:last:border-r-0'
+          className='flex gap-3 border-b border-border px-5 py-4 last:border-b-0 sm:odd:border-r lg:border-b-0 lg:border-r lg:last:border-r-0'
         >
           <Icon className='mt-0.5 shrink-0 text-muted-foreground' size={18} />
           <div>
@@ -299,7 +299,7 @@ function AgingBand({
               type='button'
               aria-pressed={selected}
               onClick={() => onSelect(selected ? '' : bucket.key)}
-              className={`border-b border-border px-5 py-4 text-left transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset lg:border-b-0 lg:border-r lg:last:border-r-0 ${
+              className={`border-b border-border px-5 py-4 text-left transition-colors hover:bg-muted/50 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset lg:border-b-0 lg:border-r lg:last:border-r-0 ${
                 selected ? 'bg-primary/10' : ''
               }`}
             >

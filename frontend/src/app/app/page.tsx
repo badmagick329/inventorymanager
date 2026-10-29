@@ -147,7 +147,7 @@ function PortfolioMetric({
   }[tone];
 
   return (
-    <div className='border-b border-border px-5 py-4 last:border-b-0 sm:[&:nth-child(odd)]:border-r lg:border-b-0 lg:border-r lg:last:border-r-0'>
+    <div className='border-b border-border px-5 py-4 last:border-b-0 sm:odd:border-r lg:border-b-0 lg:border-r lg:last:border-r-0'>
       <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
         {label}
       </p>

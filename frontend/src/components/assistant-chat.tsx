@@ -14,7 +14,7 @@ export function AssistantMarkdown({ text }: { text: string }) {
   return (
     <div
       data-testid='assistant-markdown'
-      className='prose prose-sm max-w-none break-words text-inherit prose-headings:mb-2 prose-headings:mt-4 prose-headings:text-inherit prose-p:my-2 prose-p:text-inherit prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5 prose-strong:text-inherit prose-a:break-all prose-a:text-blue-700 prose-pre:max-w-full prose-pre:overflow-x-auto prose-pre:rounded-md prose-pre:bg-slate-900 prose-code:break-words prose-code:whitespace-pre-wrap dark:prose-invert dark:prose-a:text-blue-300 [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto [&_table]:whitespace-nowrap [&_th]:bg-slate-100 [&_th]:px-2 [&_th]:py-1.5 [&_td]:px-2 [&_td]:py-1.5 dark:[&_th]:bg-slate-800'
+      className='prose prose-sm max-w-none wrap-break-word text-inherit prose-headings:mb-2 prose-headings:mt-4 prose-headings:text-inherit prose-p:my-2 prose-p:text-inherit prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5 prose-strong:text-inherit prose-a:break-all prose-a:text-blue-700 prose-pre:max-w-full prose-pre:overflow-x-auto prose-pre:rounded-md prose-pre:bg-slate-900 prose-code:break-words prose-code:whitespace-pre-wrap dark:prose-invert dark:prose-a:text-blue-300 [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto [&_table]:whitespace-nowrap [&_th]:bg-slate-100 [&_th]:px-2 [&_th]:py-1.5 [&_td]:px-2 [&_td]:py-1.5 dark:[&_th]:bg-slate-800'
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
@@ -295,7 +295,7 @@ export default function AssistantChat() {
                 <p className='text-sm text-slate-500 dark:text-slate-400'>Thinking…</p>
               )
             ) : (
-              <p className='whitespace-pre-wrap break-words'>{item.text}</p>
+              <p className='whitespace-pre-wrap wrap-break-word'>{item.text}</p>
             )}
             {item.role === 'assistant' && item.usage && (
               <details className='mt-2 text-xs text-slate-500 dark:text-slate-400'>

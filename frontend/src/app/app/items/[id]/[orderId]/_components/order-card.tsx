@@ -102,7 +102,7 @@ function SummaryMetric({
   }[tone];
 
   return (
-    <div className='flex min-w-0 gap-3 border-b border-border px-4 py-4 sm:border-r sm:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0 xl:border-b-0 xl:[&:nth-child(3n)]:border-r xl:last:border-r-0'>
+    <div className='flex min-w-0 gap-3 border-b border-border px-4 py-4 sm:border-r sm:nth-[2n]:border-r-0 lg:nth-[2n]:border-r lg:nth-[3n]:border-r-0 xl:border-b-0 xl:nth-[3n]:border-r xl:last:border-r-0'>
       <Icon className='mt-0.5 shrink-0 text-muted-foreground' size={18} />
       <div className='min-w-0'>
         <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>

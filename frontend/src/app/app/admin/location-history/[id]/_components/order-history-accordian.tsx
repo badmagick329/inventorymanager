@@ -32,7 +32,7 @@ export default function OrderHistoryAccordian({
 
   return (
     <div data-testid='location-history-order' className='flex flex-col px-4'>
-      <div className='flex flex-col rounded-md border-1 border-default-400'>
+      <div className='flex flex-col rounded-md border border-default-400'>
         <Accordion selectionMode='multiple'>
           <AccordionItem
             aria-label='Order History'

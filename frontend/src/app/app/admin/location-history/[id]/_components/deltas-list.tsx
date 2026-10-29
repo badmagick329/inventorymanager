@@ -16,7 +16,7 @@ export default function DeltasList({
     return null;
   }
   return (
-    <div className='flex flex-col rounded-md border-1 border-default-500'>
+    <div className='flex flex-col rounded-md border border-default-500'>
       <Accordion selectionMode='multiple'>
         <AccordionItem
           title={`${nonEmptyDeltas.length} change${nonEmptyDeltas.length > 1 ? 's' : ''} ${message || ''}`}

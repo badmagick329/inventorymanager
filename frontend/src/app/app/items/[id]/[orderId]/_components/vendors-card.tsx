@@ -70,7 +70,7 @@ export default function VendorsCard({
         {vendorsInDebt.map((vendor) => (
           <div
             key={vendor.id}
-            className='flex items-center justify-between gap-4 border-b border-border px-4 py-3 sm:odd:border-r lg:border-r lg:[&:nth-child(3n)]:border-r-0'
+            className='flex items-center justify-between gap-4 border-b border-border px-4 py-3 sm:odd:border-r lg:border-r lg:nth-[3n]:border-r-0'
           >
             <span className='truncate text-sm'>{vendor.name}</span>
             <span className='shrink-0 text-sm font-semibold tabular-nums text-warning-600 dark:text-warning-500'>

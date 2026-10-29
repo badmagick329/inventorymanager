@@ -11,7 +11,7 @@ export default function SaleHistories({
     return null;
   }
   return (
-    <div className='boder-default-500 flex flex-col rounded-md border-1'>
+    <div className='boder-default-500 flex flex-col rounded-md border'>
       {saleHistories.map((sale, i) => (
         <SaleHistoryAccordian key={i} saleHistory={sale} />
       ))}

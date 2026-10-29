@@ -66,7 +66,7 @@ function SummaryMetric({
   }[tone];
 
   return (
-    <div className='flex gap-3 border-b border-border px-5 py-4 last:border-b-0 sm:[&:nth-child(odd)]:border-r lg:border-b-0 lg:border-r lg:last:border-r-0'>
+    <div className='flex gap-3 border-b border-border px-5 py-4 last:border-b-0 sm:odd:border-r lg:border-b-0 lg:border-r lg:last:border-r-0'>
       <Icon className='mt-0.5 shrink-0 text-muted-foreground' size={18} />
       <div className='min-w-0'>
         <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
