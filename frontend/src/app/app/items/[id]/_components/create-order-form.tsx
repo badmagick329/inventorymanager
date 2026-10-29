@@ -11,6 +11,7 @@ import {
   useFailureReporting,
   useLocalStorage,
   useOrderFormDefaults,
+  useOrders,
 } from '@/hooks';
 import { OrderFormValues } from '@/types';
 import { Checkbox, ModalContent, ModalFooter } from '@heroui/react';
@@ -68,6 +69,9 @@ function OrderForm({
     mode: 'onBlur',
     reValidateMode: 'onChange',
   });
+  // Same query `useOrderFormDefaults` already started, so the name history
+  // reads the cached location orders rather than making another request.
+  const { data: orders } = useOrders(locationId);
   const createOrder = useCreateOrder();
   const { failure, recordFailure } = useFailureReporting({
     action: orderId ? 'order_update' : 'order_create',
@@ -111,6 +115,8 @@ function OrderForm({
               <OrderNameInput
                 control={control}
                 formState={formState}
+                orders={orders}
+                excludedOrderId={orderId}
               />
               <OrderDateInput
                 control={control}

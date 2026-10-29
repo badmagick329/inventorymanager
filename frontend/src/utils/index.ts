@@ -104,6 +104,20 @@ export function createSalesTableData(sales: SaleResponse[]) {
   });
 }
 
+/**
+ * Formats a stored `YYYY-MM-DD` date such as an item's purchase date. It is
+ * parsed and printed in UTC because the value is a calendar day, not an
+ * instant; local parsing shifts it a day in timezones west of UTC.
+ */
+export function formatCalendarDate(date: string) {
+  return new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${date}T00:00:00Z`));
+}
+
 export function getISODateString(date: Date) {
   return date.toISOString().split('T')[0];
 }

@@ -13,6 +13,7 @@ import {
   isSaleResponseArray,
   isVendorResponseArray,
 } from '@/predicates';
+import { formatCalendarDate } from '@/utils';
 import { Link } from '@heroui/react';
 import { ChevronLeft, ReceiptText } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -146,10 +147,5 @@ export default function Sales() {
 function formatPurchaseDate(date: string | null) {
   if (!date) return 'Purchase date not recorded';
 
-  return `Purchased ${new Intl.DateTimeFormat('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  }).format(new Date(`${date}T00:00:00Z`))}`;
+  return `Purchased ${formatCalendarDate(date)}`;
 }
