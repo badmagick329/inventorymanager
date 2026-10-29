@@ -34,8 +34,13 @@ export default function SaleAmountPaid({
 }: SaleAmountPaidProps) {
   const helpText =
     'Amount paid so far by the vendor. This cannot be more than the total amount owed';
-  const { buttonText, buttonDisabled, buttonColor, fullAmountCallback } =
-    useSaleAmountPaidInput({
+  const {
+    buttonText,
+    buttonDisabled,
+    buttonColor,
+    fullAmount,
+    fullAmountCallback,
+  } = useSaleAmountPaidInput({
       getValues,
       setValue,
       watch,
@@ -63,7 +68,10 @@ export default function SaleAmountPaid({
               autoComplete='off'
               label='Amount Paid'
               labelPlacement='outside'
-              placeholder=' '
+              // The full amount owed, matching what "Set as fully paid" would
+              // fill. Falls back to a space because an empty placeholder
+              // makes HeroUI draw the outside label inside the input.
+              placeholder={fullAmount === null ? ' ' : fullAmount.toString()}
               validationBehavior='aria'
               isInvalid={Boolean(fieldState.error)}
               {...field}

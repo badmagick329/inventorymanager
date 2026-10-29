@@ -65,8 +65,10 @@ export default function useSaleAmountPaidInput({
   ]);
 
   const fullAmountCallback = () => {
+    const [quantity, salePrice] = getValues(['quantity', 'salePrice']);
     const fullAmount = calculateFullAmount(
-      getValues,
+      quantity,
+      salePrice,
       isSalePricePerItem,
       isAmountPaidPerItem
     );
@@ -76,10 +78,18 @@ export default function useSaleAmountPaidInput({
     setValue('amountPaid', fullAmount.toString());
   };
 
+  const fullAmount = calculateFullAmount(
+    watchedQuantity,
+    watchedSalePrice,
+    isSalePricePerItem,
+    isAmountPaidPerItem
+  );
+
   return {
     buttonText,
     buttonDisabled,
     buttonColor,
+    fullAmount,
     fullAmountCallback,
   };
 }
@@ -107,11 +117,11 @@ function amountIsFullyPaid(
 }
 
 function calculateFullAmount(
-  getValues: UseFormGetValues<SaleFormValues>,
+  quantityString: string,
+  salePriceString: string,
   isSalePricePerItem: boolean,
   isAmountPaidPerItem: boolean
 ) {
-  let [quantityString, salePriceString] = getValues(['quantity', 'salePrice']);
   const salePrice = parseInt(salePriceString);
   const quantity = parseInt(quantityString);
 
