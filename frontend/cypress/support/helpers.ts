@@ -14,6 +14,25 @@ export function addItem(
   cy.intercept('POST', `${NEXT_ORDERS}/*`).as('createItem');
   assertOrderLinkAbsent(name);
   cy.dataCy('items-add-item-button').should('exist').click();
+  fillItemForm(name, quantity, cost, sale);
+  cy.dataCy('create-button').should('exist').click();
+  cy.wait('@createItem').its('response.statusCode').should('eq', 200);
+  waitForOrderFormToClose();
+  cy.dataCy('items-order-link')
+    .contains(name)
+    .should('exist')
+    .closest('[data-testid="items-table-row"]')
+    .find('[data-testid="items-order-quantity"]')
+    .should('exist')
+    .contains(quantity);
+}
+
+export function fillItemForm(
+  name: string,
+  quantity: number,
+  cost: number,
+  sale: number
+) {
   cy.dataCy('items-order-name-input')
     .should('exist')
     .type(name)
@@ -31,16 +50,6 @@ export function addItem(
     .should('exist')
     .type(sale.toString())
     .should('have.value', sale.toString());
-  cy.dataCy('create-button').should('exist').click();
-  cy.wait('@createItem').its('response.statusCode').should('eq', 200);
-  waitForOrderFormToClose();
-  cy.dataCy('items-order-link')
-    .contains(name)
-    .should('exist')
-    .closest('[data-testid="items-table-row"]')
-    .find('[data-testid="items-order-quantity"]')
-    .should('exist')
-    .contains(quantity);
 }
 
 export function deleteItem(name: string) {
@@ -189,17 +198,11 @@ export function addSale(
   salePrice: number,
   amountPaid: number
 ) {
-  forItemClick(itemName, '[data-testid="items-view-sales-button"]');
-  waitForSalesPageReady();
-  cy.dataCy('sales-add-sale-button').should('exist').click();
-  cy.dataCy('sales-form-title').should('exist');
-  cy.dataCy('sales-form-help-button').should('exist');
+  openAddSaleForm(itemName);
   cy.intercept('POST', `${NEXT_SALES}/*`).as('createSale');
   cy.dataCy('sale-vendor-input').type(vendor).blur();
   cy.contains('New Vendor').should('exist');
-  cy.dataCy('sale-quantity-input').type(quantity.toString());
-  cy.dataCy('sale-price-input').clear().type(salePrice.toString());
-  cy.dataCy('sale-amount-paid-input').type(amountPaid.toString());
+  fillSaleAmounts(quantity, salePrice, amountPaid);
   cy.dataCy('create-button').should('exist').click();
   cy.wait('@createSale').then((interception) => {
     expect(interception.response?.statusCode).to.eq(200);
@@ -217,6 +220,31 @@ export function addSale(
     .find('[data-testid="sales-name"]')
     .should('exist')
     .contains(itemName);
+}
+
+export function openAddSaleForm(itemName: string) {
+  forItemClick(itemName, '[data-testid="items-view-sales-button"]');
+  waitForSalesPageReady();
+  cy.dataCy('sales-add-sale-button').should('exist').click();
+  cy.dataCy('sales-form-title').should('exist');
+  cy.dataCy('sales-form-help-button').should('exist');
+}
+
+export function fillSaleAmounts(
+  quantity: number,
+  salePrice: number,
+  amountPaid: number
+) {
+  cy.dataCy('sale-quantity-input')
+    .type(quantity.toString())
+    .should('have.value', quantity.toString());
+  cy.dataCy('sale-price-input')
+    .clear()
+    .type(salePrice.toString())
+    .should('have.value', salePrice.toString());
+  cy.dataCy('sale-amount-paid-input')
+    .type(amountPaid.toString())
+    .should('have.value', amountPaid.toString());
 }
 
 export function waitForSalesPageReady() {

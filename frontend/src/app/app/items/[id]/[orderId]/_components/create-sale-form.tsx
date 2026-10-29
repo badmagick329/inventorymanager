@@ -1,4 +1,5 @@
 import {
+  BlockImplicitSubmit,
   CancelButton,
   CreateButton,
   ItemFormHeader,
@@ -99,6 +100,7 @@ function SaleForm({
           );
         })}
       >
+        <BlockImplicitSubmit />
         <ModalContent>
           {(onClose) => (
             <div className='flex flex-col gap-4 px-4'>

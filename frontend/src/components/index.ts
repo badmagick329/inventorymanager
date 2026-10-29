@@ -1,4 +1,5 @@
 import AmountPaidDueContent from './amount-paid-due-content';
+import BlockImplicitSubmit from './block-implicit-submit';
 import CancelButton from './cancel-button';
 import CreateButton from './create-button';
 import DeleteModal from './delete-modal';
@@ -18,6 +19,7 @@ import UpdateButton from './update-button';
 
 export {
   AmountPaidDueContent,
+  BlockImplicitSubmit,
   CancelButton,
   CreateButton,
   DeleteModal,

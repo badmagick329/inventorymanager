@@ -1,4 +1,5 @@
 import {
+  BlockImplicitSubmit,
   CancelButton,
   CreateButton,
   ReportProblem,
@@ -98,6 +99,7 @@ function OrderForm({
           );
         })}
       >
+        <BlockImplicitSubmit />
         <ModalContent>
           {(onClose) => (
             <div className='flex flex-col gap-4 px-4'>

@@ -1,5 +1,14 @@
-import { APP_ITEMS, APP_LOCATIONS } from '../../src/consts/urls';
-import { addItem, deleteItem, editItem } from '../support/helpers';
+import {
+  APP_ITEMS,
+  APP_LOCATIONS,
+  NEXT_ORDERS,
+} from '../../src/consts/urls';
+import {
+  addItem,
+  deleteItem,
+  editItem,
+  fillItemForm,
+} from '../support/helpers';
 import { createTestName } from '../support/test-data';
 
 describe('items page', () => {
@@ -28,6 +37,33 @@ describe('items page', () => {
   it('can add an item', () => {
     const itemName = createTestName('Cypress Test Item');
     addItem(itemName, 100, 100, 150);
+    deleteItem(itemName);
+  });
+
+  it('keeps the item form open when Enter is pressed in a field', () => {
+    const itemName = createTestName('Cypress Test Item');
+    cy.intercept('POST', `${NEXT_ORDERS}/*`).as('createItem');
+    cy.dataCy('items-add-item-button').should('exist').click();
+    fillItemForm(itemName, 100, 100, 150);
+
+    for (const testId of [
+      'items-order-name-input',
+      'items-order-quantity-input',
+      'items-order-cost-input',
+      'items-order-sale-input',
+    ]) {
+      cy.dataCy(testId).type('{enter}');
+    }
+    cy.dataCy('items-order-name-input').should('have.value', itemName);
+    cy.dataCy('items-order-quantity-input').should('have.value', '100');
+    cy.dataCy('items-order-cost-input').should('have.value', '100');
+    cy.dataCy('items-order-sale-input').should('have.value', '150');
+
+    cy.dataCy('create-button').click();
+    cy.wait('@createItem').its('response.statusCode').should('eq', 200);
+    // Only the Create click reached the backend; none of the Enter presses.
+    cy.get('@createItem.all').should('have.length', 1);
+    cy.dataCy('items-order-name-input').should('not.exist');
     deleteItem(itemName);
   });
 
