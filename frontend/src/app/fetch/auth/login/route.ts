@@ -1,4 +1,4 @@
-import { TOKEN_KEY } from '@/consts';
+import { TOKEN_COOKIE_OPTIONS, TOKEN_KEY } from '@/consts';
 import { API_LOGIN } from '@/consts/urls';
 import { handleRouteError } from '@/utils/fetch-route';
 import axios, { AxiosResponse } from 'axios';
@@ -25,10 +25,8 @@ function createLoginResponse(response: AxiosResponse<any, any>) {
   const expiryDate = new Date(expiry);
   const maxAge = Math.floor((expiryDate.getTime() - now.getTime()) / 1000);
   const authCookieSerialized = serialize(TOKEN_KEY, JSON.stringify(token), {
-    path: '/',
-    httpOnly: true,
+    ...TOKEN_COOKIE_OPTIONS,
     maxAge,
-    sameSite: 'lax',
   });
   return new NextResponse(JSON.stringify({}), {
     status: 200,

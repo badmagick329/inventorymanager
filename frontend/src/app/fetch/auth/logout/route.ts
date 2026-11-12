@@ -1,4 +1,4 @@
-import { TOKEN_KEY } from '@/consts';
+import { TOKEN_COOKIE_OPTIONS, TOKEN_KEY } from '@/consts';
 import { API_LOGOUT } from '@/consts/urls';
 import {
   getAuthHeaders,
@@ -18,10 +18,8 @@ export async function POST(req: Request) {
   }
   const responseHeaders = {
     'Set-Cookie': serialize(TOKEN_KEY, '', {
-      path: '/',
-      httpOnly: true,
+      ...TOKEN_COOKIE_OPTIONS,
       maxAge: 0,
-      sameSite: true,
     }),
     'Content-Type': 'application/json',
   };
